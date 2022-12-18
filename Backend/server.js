@@ -3,15 +3,30 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-
+const userRoute = require("./routes/userRoute");
+const errorHandler = require("./middleware/errorMiddleware");
 const app = express();
 
+///middlewares///
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const PORT = process.env.PORT || 5000;
 
+
+////ROUTES Middleware/////
+app.use("/api/users", userRoute);
+
+///Routes/////
+app.get("/", (req, res) => {
+  res.send("Hello world");
+});
+
+////Error Middleware/////
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 5000;
+mongoose.set("strictQuery", false);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
