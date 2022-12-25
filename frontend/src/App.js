@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import Dashboard from "./pages/Dashboard";
+import {BrowserRouter, Routes, Route, Router} from "react-router-dom";
+import { isAuthenticUser } from "./utils/isAuthenticated";
+import Login from "./components/Auth/SignIn";
+import Signup from "./components/Auth/Signup";
+import CanidateTable from "./components/Candidates/CanidateTable";
+import PrivateRoute from "./components/PrivateRoute";
+
+
 
 function App() {
+    // if (window.location.pathname === "/"){
+      // if(!isAuthenticUser()){
+      //  window.location.pathname = "/login";
+      // }      
+    // }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Dashboard />
+        <Routes>
+          <Route element={<PrivateRoute />}>
+            <Route path="/candidates" element={<CanidateTable />} exact />
+          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

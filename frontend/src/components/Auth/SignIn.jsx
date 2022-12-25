@@ -1,0 +1,136 @@
+import React, {useState, useEffect} from "react";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
+import {useForm} from "react-hook-form";
+
+function SignIn() {
+  const {
+    register,
+    handleSubmit,
+    formState: {errors},
+    watch,
+  } = useForm();
+  const [isFromPlansPage, setValue] = useState(
+    localStorage.getItem("fromsubs")
+  );
+  const [isFromLogin, setValue2] = useState(localStorage.getItem("fromlogin"));
+
+  const onSubmit = data => LoginUser(data);
+  let navigate = useNavigate();
+  const LoginUser = data => {
+    let bodyFormData = new FormData();
+    // console.log(data.password.trim(),data.email.trim());
+    bodyFormData.append("password", data.password);
+    bodyFormData.append("username", data.email);
+    axios
+      .post("http://localhost:8000/auth/login", bodyFormData, {
+        headers: {
+          accept: "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(res => {
+        let {data} = res.data;
+        if (res.status === 200) {
+          localStorage.setItem("token", res.data.token);
+
+          if (isFromLogin) {
+            navigate("/");
+          }
+          if (isFromPlansPage) {
+            navigate("/subscription");
+          }
+          if (!isFromLogin && !isFromPlansPage) {
+            navigate("/");
+          }
+          window.location.reload();
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+  useEffect(() => {
+    console.log(isFromPlansPage, "hmm check its same");
+  }, []);
+  return (
+    <>
+      <div className="h-[90vh] flex items-center justify-center  bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . ">
+        {/* <Header /> */}
+        <div className="items-center justify-center bg-blue-50 rounded-2xl">
+          <div className="flex  items-center justify-center overflow-x-hidden">
+            <div className="flex-none w-96 m-16 mx-4 my-4  sm:m-12 sm:overflow-x-hidden bg-white rounded-2xl">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className=" bg-white/40 sm:p-6 rounded-2xl border broder-gray-800  bg-gray-100 px-6   h-96">
+                  <div>
+                    <p className="text-2xl text-gray-800 font-bold text-center mb-2">
+                      Sign in
+                    </p>
+                  </div>
+                  <div
+                    onClick={() => {
+                      navigate("/signup");
+                    }}
+                    className=" underline cursor-pointer text-center font-semibold text-xs"
+                  >
+                    Not signed up yet? Create a free account
+                  </div>
+                  <div className="col-span-6 sm:col-span-3 pt-4">
+                    <label
+                      htmlFor="Email"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Email *
+                    </label>
+                    <input
+                      {...register("email", {required: true})}
+                      aria-invalid={errors.email ? "true" : "false"}
+                      className={` ${
+                        errors.email ? " border border-red-500" : ""
+                      } mt-1 px-2 block w-full   sm:w-11/12 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
+                    />
+                    {errors.email?.type === "required" && (
+                      <p role="alert" className="text-red-500">
+                        email is required
+                      </p>
+                    )}
+                  </div>
+                  <div className="col-span-6 sm:col-span-3 pt-4">
+                    <label
+                      htmlFor="last-name"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Password *
+                    </label>
+                    <input
+                      {...register("password", {required: true})}
+                      aria-invalid={errors.password ? "true" : "false"}
+                      className={` ${
+                        errors.password ? " border border-red-500" : ""
+                      } mt-1 px-2 block w-full   sm:w-11/12 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
+                    />
+                    {errors.password?.type === "required" && (
+                      <p role="alert" className="text-red-500">
+                        password is required
+                      </p>
+                    )}
+                  </div>
+                
+                  <div className="flex flex-col  items-center mt-8">
+                    <button
+                      type="submit"
+                      class=" text-center content-center border broder-gray-500 bg-blue-700 text-white hover:bg-[#FFDA37] hover:text-black font-bold py-2 px-4 rounded-full w-40  justify-center"
+                    >
+                      Login
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+export default SignIn;
