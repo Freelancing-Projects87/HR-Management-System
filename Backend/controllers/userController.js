@@ -14,8 +14,8 @@ const generateToken = (id) => {
 
 ////RegisterUser Route controller/////////
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, photo, phone, bio } = req.body;
-  if (!name || !email || !password) {
+  const { name, email,surname, password, photo, phone, bio } = req.body;
+  if (!name || !email || !password || !surname) {
     res.status(400);
     throw new Error("Please insert all required fields");
   }
@@ -37,6 +37,7 @@ const registerUser = asyncHandler(async (req, res) => {
     photo,
     phone,
     bio,
+    surname
   });
 
   /////Generate Token/////
@@ -63,13 +64,14 @@ const registerUser = asyncHandler(async (req, res) => {
         phone,
         bio,
         token,
+        surname
       },
     });
   } else {
     res.status(400);
     throw new Error("Invalid User Data");
   }
-});
+})
 
 ///Login User controller/////////
 const loginUser = asyncHandler(async (req, res) => {
