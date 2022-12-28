@@ -1,6 +1,5 @@
 export const isAuthenticUser = () => {
-  const tokenjson = localStorage.getItem("userData");
-  const token = JSON.parse(tokenjson && tokenjson);
+  const token = localStorage.getItem("token");
   if (token == undefined || !token) {
     return false;
   }

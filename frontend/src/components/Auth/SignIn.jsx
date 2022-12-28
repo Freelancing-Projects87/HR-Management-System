@@ -18,41 +18,26 @@ function SignIn() {
   const onSubmit = data => LoginUser(data);
   let navigate = useNavigate();
   const LoginUser = data => {
-    let bodyFormData = new FormData();
-    // console.log(data.password.trim(),data.email.trim());
-    bodyFormData.append("password", data.password);
-    bodyFormData.append("username", data.email);
+   console.log(data);
     axios
-      .post("http://localhost:8000/auth/login", bodyFormData, {
+      .post("http://localhost:8000/api/users/login", data, {
         headers: {
           accept: "application/json",
-          "Content-Type": "multipart/form-data",
         },
       })
       .then(res => {
-        let {data} = res.data;
+        console.log(res,"data of loged in user");
         if (res.status === 200) {
-          localStorage.setItem("token", res.data.token);
-
-          if (isFromLogin) {
-            navigate("/");
-          }
-          if (isFromPlansPage) {
-            navigate("/subscription");
-          }
-          if (!isFromLogin && !isFromPlansPage) {
-            navigate("/");
-          }
-          window.location.reload();
+          localStorage.setItem("token", res?.data?.data.token);
+                      navigate("/");
+                      window.location.reload()
         }
       })
       .catch(err => {
         console.error(err);
       });
   };
-  useEffect(() => {
-    console.log(isFromPlansPage, "hmm check its same");
-  }, []);
+
   return (
     <>
       <div className="h-[90vh] flex items-center justify-center  bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . ">

@@ -221,7 +221,7 @@ export default function Dashboard() {
                   className={classNames(
                     `text-gray-600  ${
                       style1 ? "bg-purple-600" : ""
-                    } bg-gray-100 cursor-pointer `,
+                    } cursor-pointer `,
                     "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
                   )}
                 >
@@ -242,7 +242,9 @@ export default function Dashboard() {
                     setStyle2(true);
                     setStyle1(false);
                     setStyle3(false);
+                       navigate("/bussinessline");
                   }}
+
                   className={classNames(
                     `text-gray-600 ${
                       style2 ? "bg-purple-600 text-white" : ""
@@ -268,6 +270,7 @@ export default function Dashboard() {
                     setStyle3(true);
                     setStyle2(false);
                     setStyle1(false);
+                    navigate('metrics')
                   }}
                   className={classNames(
                     `text-gray-600 ${
@@ -284,7 +287,7 @@ export default function Dashboard() {
                     aria-hidden="true"
                   />
                   <span className={`${style3 ? "text-white" : ""}`}>
-                    Products
+                    Candidate Metrics
                   </span>
                 </p>
               </nav>

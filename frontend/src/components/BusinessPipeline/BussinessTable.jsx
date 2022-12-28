@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { AiOutlineDelete,AiOutlinePlusSquare,AiOutlineUserAdd } from "react-icons/ai";
+import React, {useEffect, useState} from "react";
+import {
+  AiOutlineDelete,
+  AiOutlinePlusSquare,
+  AiOutlineUserAdd,
+} from "react-icons/ai";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from "react-router-dom";
 
-
-function Candidate() {
- 
- const navigate = useNavigate()
+function BussinessTable() {
+  const navigate = useNavigate();
 
   return (
     <>
       <div className="flex mb-4 ml-2 items-end justify-end w-full ">
         <button
-        onClick={()=>{navigate('/addcandidate')}}
+          onClick={() => {
+            navigate("/addcandidate");
+          }}
           type="button"
           className="inline-flex  relative right-12 top-2 items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
       shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -120,4 +124,4 @@ function Candidate() {
   );
 }
 
-export default Candidate;
+export default BussinessTable;

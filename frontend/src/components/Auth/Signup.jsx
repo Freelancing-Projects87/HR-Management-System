@@ -13,37 +13,25 @@ function Signup() {
     watch,
   } = useForm();
 
-  const onSubmit = data => getApiData(data);
-  console.log(errors.firstName?.message, "hmm");
+  const onSubmit = data => SignupUser(data);
 
   console.log(watch("example")); // watch input value by passing the name of it
 
-  const getApiData = data => {
-    console.log(data);
-    data.address = "matiani143";
-    axios
-      .post("http://localhost:8000/user/create_user", data, {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      })
+  const SignupUser = data => {
+    console.log(data,"look data");
+    axios.post("http://localhost:8000/api/users/register", data)
       .then(res => {
-        let {data} = res.data;
-        if (res.status === 200) {
-          console.log(res.data, "hmm");
-
+        // let {data} = res.data;
+        console.log(res,"you know");
+        if (res.status === 201) {
+          console.log(res, "hmm");
           navigate("/login");
-          window.location.reload();
         }
       })
       .catch(err => {
         console.error(err);
       });
   };
-  useEffect(() => {
-    console.log("heu u am");
-  }, []);
 
   return (
     <>
@@ -74,6 +62,26 @@ function Signup() {
                     {errors.name?.type === "required" && (
                       <p role="alert" className="text-red-500">
                         Name is required
+                      </p>
+                    )}
+                  </div>
+                  <div className="col-span-6 sm:col-span-3 pt-4 ">
+                    <label
+                      htmlFor="surname"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Surname
+                    </label>
+                    <input
+                      {...register("surname", {required: true})}
+                      aria-invalid={errors.first_name ? "true" : "false"}
+                      className={` ${
+                        errors.name ? " border border-red-500" : ""
+                      } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
+                    />
+                    {errors.surname?.type === "required" && (
+                      <p role="alert" className="text-red-500">
+                        surname is required
                       </p>
                     )}
                   </div>
