@@ -17,11 +17,14 @@ import BussinessPipeline from "./components/BusinessPipeline/BussinessTable";
 import {useEffect, useState} from "react";
 
 function App() {
- if (window.location.pathname === "/") {
-   if (!isAuthenticUser()) {
-     window.location.pathname = "/login";
-   }
- }
+  const paths = ["/candidates", "/editcandidate", "/addcandidate","/bussinessline"];
+  useEffect(() => {
+    if (window.location.pathname === "/") {
+      if (!isAuthenticUser()) {
+        window.location.pathname = "/login";
+      }
+    }
+  }, [isAuthenticUser()]);
  
 
   return (
