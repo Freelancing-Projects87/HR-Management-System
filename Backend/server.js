@@ -9,7 +9,6 @@ const errorHandler = require("./middleware/errorMiddleware");
 const cookieParser = require("cookie-parser");
 
 const app = express();
-
 ///middlewares///
 app.use(express.json());
 app.use(cookieParser());
@@ -42,5 +41,4 @@ mongoose
     app.listen(PORT, () => {
       console.log("Server is running on port: ", PORT);
     });
-  })
-  .catch((err) => console.log(err));
+  }).catch((err) => console.log(err));
