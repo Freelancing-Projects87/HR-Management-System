@@ -45,7 +45,7 @@ function Business() {
           Add <AiOutlineBank className="ml-2 text-xl" />
         </button>
       </div>
-      <div className="flex flex-col w-[82.3%]  float-right ">
+      <div className="flex flex-col w-[82.3%]  float-right overflow-hidden ">
         <div className="-my-2 overflow-hidden sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden  border-b border-gray-200 sm:rounded-lg">
@@ -130,14 +130,14 @@ function Business() {
                             className=" cursor-pointer   h-6 w-6  p-1 rounded-sm bg-blue-700 hover:bg-blue-500 text-white text-xl"
                           />
                         </td>
-                        <td>
+                        {/* <td>
                           <AiFillEye
                             onClick={() => {
                               navigate("/businessView", {state: business});
                             }}
                             className=" cursor-pointer   h-6 w-6  p-1 rounded-sm bg-gray-300 text-blue text-xl hover:bg-gray-500"
                           />
-                        </td>
+                        </td> */}
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <AiOutlineDelete
                             onClick={() => {

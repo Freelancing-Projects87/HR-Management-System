@@ -1,38 +1,53 @@
-import React, {useState} from "react";
+import React, {useState, useRef} from "react";
 import axios from "axios";
-import {useNavigate,useLocation} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 import {useEffect} from "react";
 import {useForm} from "react-hook-form";
+  import {toast, ToastContainer} from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
 
 function CandidateEdit() {
   let navigate = useNavigate();
-  const location = useLocation()
-  const [candidate,setCandidate]=useState({})
-    const [countries, setCountries] = useState([]);
+  const location = useLocation();
+  const [candidate, setCandidate] = useState({});
+  const [countries, setCountries] = useState([]);
+  let imgRef = useRef();
 
   const {
     register,
     handleSubmit,
     formState: {errors},
     watch,
-    setValue
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      firstname: location.state?.firstname,
+      lastname: location.state?.lastname,
+      email: location.state?.email,
+      phone: location.state?.email,
+      nationality: location.state?.nationality,
+    },
+  });
 
   const onSubmit = data => updateCandidate(data);
 
   const updateCandidate = data => {
-    data._id=candidate._id
+    data._id = candidate._id;
     console.log(data, " edit data");
-     data.cv = data.cv[0];
-     let formData = new FormData();
-     formData.append("cv",  data.cv);
-     formData.append("_id", data._id);
-     formData.append("firstname", data.firstname);
-     formData.append("lastname", data.lastname);
-     formData.append("email", data.email);
-     formData.append("phone", data.phone);
-     formData.append("nationality", data.nationality);
-     console.log(formData, "formData edit ");
+    data.cv = data.cv[0];
+    if(data.cv==undefined){
+          toast.error("please select cv", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+    }else{
+    let formData = new FormData();
+    formData.append("cv", data.cv);
+    formData.append("_id", data._id);
+    formData.append("firstname", data.firstname);
+    formData.append("lastname", data.lastname);
+    formData.append("email", data.email);
+    formData.append("phone", data.phone);
+    formData.append("nationality", data.nationality);
+    console.log(formData, "formData edit ");
     axios
       .post("http://localhost:8000/api/admin/update_candidate", formData)
       .then(res => {
@@ -45,11 +60,12 @@ function CandidateEdit() {
       .catch(err => {
         console.error(err);
       });
+    }
   };
-useEffect(()=>{
-setCandidate(location?.state);
-console.log(location?.state);
-},[])
+  useEffect(() => {
+    setCandidate(location?.state);
+    console.log(location?.state);
+  }, []);
   function getCountries() {
     axios
       .get("https://trial.mobiscroll.com/content/countries.json")
@@ -58,8 +74,10 @@ console.log(location?.state);
   useEffect(() => {
     getCountries();
   }, []);
+  console.log(errors, "errors");
   return (
     <>
+    <ToastContainer/>
       {" "}
       {/* bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . */}
       <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
@@ -80,9 +98,9 @@ console.log(location?.state);
                       First Name
                     </label>
                     <input
+                    type={'text'}
                       {...register("firstname", {required: true})}
                       aria-invalid={errors.firstname ? "true" : "false"}
-                      defaultValue={candidate?.firstname}
                       className={` ${
                         errors.firstname ? " border border-red-500" : ""
                       } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
@@ -103,7 +121,6 @@ console.log(location?.state);
                     <input
                       {...register("lastname", {required: true})}
                       aria-invalid={errors.lastname ? "true" : "false"}
-                      defaultValue={candidate.lastname}
                       className={` ${
                         errors.lastname ? " border border-red-500" : ""
                       } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
@@ -124,7 +141,6 @@ console.log(location?.state);
                     <input
                       type="email"
                       {...register("email", {required: true})}
-                      defaultValue={candidate.email}
                       aria-invalid={errors.email ? "true" : "false"}
                       className={` ${
                         errors.email ? " border border-red-500" : ""
@@ -144,7 +160,6 @@ console.log(location?.state);
                       Nationality
                     </label>
                     <select
-                    defaultValue={candidate.nationality}
                       {...register("nationality", {required: true})}
                       className={` ${
                         errors.nationality ? " border border-red-500" : ""
@@ -257,7 +272,6 @@ console.log(location?.state);
                       type="text"
                       placeholder=""
                       name="phone"
-                      defaultValue={candidate.phone}
                       id="password"
                       {...register("phone", {required: true})}
                       aria-invalid={errors.password ? "true" : "false"}
@@ -271,7 +285,11 @@ console.log(location?.state);
                       </p>
                     )}
                   </div>
-                  <div></div>
+                  <div>
+                    {/* {!previewImg?
+                    <img src={candidate.cv} className="w-24 h-24" alt="" />: */}
+                    {/* <img className="w-24 h-24" ref={imgRef} /> */}
+                  </div>
                   <div className="flex flex-col  items-center mt-4">
                     <button
                       type="submit"

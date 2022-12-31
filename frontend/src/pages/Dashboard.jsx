@@ -15,6 +15,7 @@ import {
 import { SearchIcon } from '@heroicons/react/solid'
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 
 const userNavigation = [
@@ -34,7 +35,15 @@ export default function Dashboard() {
   const [style2,setStyle2]=useState(false)
   const [style3,setStyle3]=useState(false)
   const navigate = useNavigate()
-
+function signOut(){
+   axios.get("http://localhost:8000/api/users/logout").then((res)=>{
+    if(res.status==200){
+     localStorage.removeItem('token')
+     navigate('/login')
+     window.location.reload()
+    }
+   })
+}
 
 
 //   const userSignout=async ()=>{
@@ -366,7 +375,7 @@ export default function Dashboard() {
                                 "block px-4 py-2 text-sm text-gray-700"
                               )}
                             >
-                              <p>{userNavigation[2].name}</p>
+                              <p onClick={()=>{signOut()}}>{userNavigation[2].name }</p>
                             </Link>
                           )}
                         </Menu.Item>
