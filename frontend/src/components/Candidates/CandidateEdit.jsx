@@ -8,19 +8,33 @@ function CandidateEdit() {
   let navigate = useNavigate();
   const location = useLocation()
   const [candidate,setCandidate]=useState({})
+    const [countries, setCountries] = useState([]);
+
   const {
     register,
     handleSubmit,
     formState: {errors},
     watch,
+    setValue
   } = useForm();
 
   const onSubmit = data => updateCandidate(data);
 
   const updateCandidate = data => {
     data._id=candidate._id
+    console.log(data, " edit data");
+     data.cv = data.cv[0];
+     let formData = new FormData();
+     formData.append("cv",  data.cv);
+     formData.append("_id", data._id);
+     formData.append("firstname", data.firstname);
+     formData.append("lastname", data.lastname);
+     formData.append("email", data.email);
+     formData.append("phone", data.phone);
+     formData.append("nationality", data.nationality);
+     console.log(formData, "formData edit ");
     axios
-      .post("http://localhost:8000/api/admin/update_candidate", data)
+      .post("http://localhost:8000/api/admin/update_candidate", formData)
       .then(res => {
         console.log(res, "you know");
         if (res.status === 200) {
@@ -36,40 +50,132 @@ useEffect(()=>{
 setCandidate(location?.state);
 console.log(location?.state);
 },[])
+  function getCountries() {
+    axios
+      .get("https://trial.mobiscroll.com/content/countries.json")
+      .then(res => setCountries(res.data));
+  }
+  useEffect(() => {
+    getCountries();
+  }, []);
   return (
     <>
-      <div className="h-[90vh] w-[83.3%] ml-auto flex items-center justify-center  bg-white ">
+      {" "}
+      {/* bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . */}
+      <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
         {/* <Header /> */}
         <div className="  bg-blue-50 w-[70%] rounded-2xl">
           <div className=" overflow-hidden ">
             <div className=" m-8 mx-4 my-4 bg-white rounded-2xl">
               <form onSubmit={handleSubmit(onSubmit)}>
-                <div className=" bg-white/40 sm:p-6 rounded-2xl  bg-gray-600 px-6 w-[87%] mx-auto ">
-                  <p className="text-2xl text-gray-800 font-bold text-center mb-2">
-                    Update Candidate detail
-                  </p>
-                  <div className="col-span-6 sm:col-span-3 pt-4 w-full ">
+                <p className="text-xl text-gray-600 p-4 font-bold text-center mb-2">
+                  Add Candidate detail
+                </p>
+                <div className=" bg-white/40 sm:p-2 rounded-2xl grid grid-cols-2 gap-y-4 h-full   bg-gray-600 px-6 w-[87%]  mx-auto ">
+                  <div className=" pt-4 ">
                     <label
                       htmlFor="firstname"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Name
+                      First Name
                     </label>
                     <input
-                      defaultValue={candidate.name}
-                      {...register("name", {required: true})}
-                      aria-invalid={errors.first_name ? "true" : "false"}
+                      {...register("firstname", {required: true})}
+                      aria-invalid={errors.firstname ? "true" : "false"}
+                      defaultValue={candidate?.firstname}
                       className={` ${
-                        errors.name ? " border border-red-500" : ""
+                        errors.firstname ? " border border-red-500" : ""
                       } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
                     />
-                    {errors.name?.type === "required" && (
+                    {errors.firstname?.type === "required" && (
                       <p role="alert" className="text-red-500">
-                        Name is required
+                        firstname is required
                       </p>
                     )}
                   </div>
-                  <div className="col-span-6 sm:col-span-3 pt-4 ">
+                  <div className=" pt-4 w-full ">
+                    <label
+                      htmlFor="lastname"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Last Name
+                    </label>
+                    <input
+                      {...register("lastname", {required: true})}
+                      aria-invalid={errors.lastname ? "true" : "false"}
+                      defaultValue={candidate.lastname}
+                      className={` ${
+                        errors.lastname ? " border border-red-500" : ""
+                      } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
+                    />
+                    {errors.lastname?.type === "required" && (
+                      <p role="alert" className="text-red-500">
+                        lastname is required
+                      </p>
+                    )}
+                  </div>
+                  <div className=" pt-4 w-full ">
+                    <label
+                      htmlFor="lastname"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      {...register("email", {required: true})}
+                      defaultValue={candidate.email}
+                      aria-invalid={errors.email ? "true" : "false"}
+                      className={` ${
+                        errors.email ? " border border-red-500" : ""
+                      } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
+                    />
+                    {errors.email?.type === "required" && (
+                      <p role="alert" className="text-red-500">
+                        email is required
+                      </p>
+                    )}
+                  </div>
+                  <div className=" pt-4 w-full ">
+                    <label
+                      for="small"
+                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Nationality
+                    </label>
+                    <select
+                    defaultValue={candidate.nationality}
+                      {...register("nationality", {required: true})}
+                      className={` ${
+                        errors.nationality ? " border border-red-500" : ""
+                      } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
+                    >
+                      <option selected>{candidate.nationality}</option>
+                      {countries?.map(country => (
+                        <>
+                          <option
+                            className="border border-gray-500"
+                            value={country.text}
+                          >
+                            {country.text}
+                          </option>
+                        </>
+                      ))}
+                      {/* 
+                      <option value="US">United States</option>
+                      <option value="CA">Canada</option>
+                      <option value="FR">France</option>
+                      <option value="DE">Germany</option>
+                      <option value="DE">Pakistan</option>
+                      <option value="DE">India</option>
+                      <option value="DE">uk</option>
+                      <option value="DE">Spain</option>
+                      <option value="DE">Argentina</option>
+                      <option value="DE">Portgal</option>
+                      <option value="DE">Uae</option> */}
+                    </select>
+                  </div>
+                  {/* <div className="col-span-6 sm:col-span-3 pt-4 ">
                     <label
                       htmlFor="surname"
                       className="block text-sm font-medium text-gray-700"
@@ -78,7 +184,6 @@ console.log(location?.state);
                     </label>
 
                     <select
-                      defaultValue={candidate?.recomendation}
                       {...register("recomendation", {required: true})}
                       id="countries"
                       class="w-full sm:w-11/12 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -93,9 +198,8 @@ console.log(location?.state);
                         recomendation is required
                       </p>
                     )}
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-3 pt-4">
+                  </div> */}
+                  {/* <div className="col-span-6 sm:col-span-3 pt-4">
                     <label
                       htmlFor="email"
                       className="block text-sm font-medium text-gray-700"
@@ -103,7 +207,6 @@ console.log(location?.state);
                       Starting Date *
                     </label>
                     <input
-                      defaultValue={candidate?.startingDate}
                       type="date"
                       placeholder="your@gmail.com"
                       name="startingDate"
@@ -118,38 +221,61 @@ console.log(location?.state);
                         startingDate is required
                       </p>
                     )}
-                  </div>
-                  <div className="col-span-6 sm:col-span-3 pt-4">
+                  </div> */}
+                  <div className=" pt-4">
                     <label
                       htmlFor="password"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Grade *
+                      Cv
                     </label>
                     <input
-                      defaultValue={candidate?.grade}
-                      type="number"
+                      type="file"
                       placeholder=""
-                      name="password"
+                      name="cv"
                       id="password"
-                      {...register("grade", {required: true})}
+                      {...register("cv", {required: true})}
                       aria-invalid={errors.password ? "true" : "false"}
                       className={` ${
-                        errors.grade ? " border border-red-500" : ""
+                        errors.cv ? " border border-red-500" : ""
                       } mt-1 px-2 block w-full   sm:w-11/12 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
                     />
-                    {errors.grade?.type === "required" && (
+                    {errors.cv?.type === "required" && (
                       <p role="alert" className="text-red-500">
-                        grade is required
+                        cv is required
                       </p>
                     )}
                   </div>
-
+                  <div className=" pt-4">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      placeholder=""
+                      name="phone"
+                      defaultValue={candidate.phone}
+                      id="password"
+                      {...register("phone", {required: true})}
+                      aria-invalid={errors.password ? "true" : "false"}
+                      className={` ${
+                        errors.phone ? " border border-red-500" : ""
+                      } mt-1 px-2 block w-full   sm:w-11/12 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
+                    />
+                    {errors.phone?.type === "required" && (
+                      <p role="alert" className="text-red-500">
+                        phone is required
+                      </p>
+                    )}
+                  </div>
+                  <div></div>
                   <div className="flex flex-col  items-center mt-4">
                     <button
                       type="submit"
-                      // onClick={saveCandidate}
-                      class=" text-center content-center border broder-gray-500 bg-blue-700 text-white hover:bg-[] hover:text-black font-bold py-2 px-4 rounded-full w-40  justify-center"
+                      class=" text-center mb-4 content-center border broder-gray-500 bg-blue-700 text-white hover:bg-[] hover:text-black font-bold py-2 px-4 rounded-full w-40  justify-center"
                     >
                       Save
                     </button>

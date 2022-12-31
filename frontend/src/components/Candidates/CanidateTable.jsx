@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { AiOutlineDelete,AiOutlinePlusSquare,AiOutlineUserAdd,AiOutlineEdit } from "react-icons/ai";
+import {
+  AiOutlineDelete,
+  AiOutlinePlusSquare,
+  AiOutlineUserAdd,
+  AiOutlineEdit,
+  AiFillEye,
+} from "react-icons/ai";
 import {FaPencilAlt} from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import DeleteModel from '../ModelDelete';
 
 
+
 function Candidate() {
  const [candidateData,setCandidateData]=useState([])
+ const [popup,setPopup]=useState(true)
  let [open,setOpen]=useState(false)
  const navigate = useNavigate()
 const getCandidates = () => {
@@ -22,10 +30,10 @@ const getCandidates = () => {
       console.error(err);
     });
 };
-useEffect(()=>{
-getCandidates()
-        console.log(candidateData, "candidateData");
-},[])
+useEffect(() => {
+  getCandidates();
+  console.log(candidateData && candidateData, "candidateData");
+}, []);
 return (
   <>
     <div className="flex mb-4 ml-2 items-end justify-end w-full ">
@@ -51,9 +59,40 @@ return (
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Name
+                    First Name
                   </th>
                   <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Last Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Email
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Nationality
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Phone
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Cv
+                  </th>
+
+                  {/* <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
@@ -71,6 +110,12 @@ return (
                   >
                     Grade
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Skills
+                  </th> */}
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
                   </th>
@@ -84,12 +129,69 @@ return (
                         <div className="flex items-center">
                           <div className="">
                             <div className="text-sm font-medium text-gray-900">
-                              {candidate.name}
+                              {candidate.firstname}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6  py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="">
+                            <div className="text-sm font-medium text-gray-900">
+                              {candidate.lastname}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6  py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="">
+                            <div className="text-sm font-medium text-gray-900">
+                              {candidate.email}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6  py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="">
+                            <div className="text-sm font-medium text-gray-900">
+                              {candidate.nationality}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6  py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="">
+                            <div className="text-sm font-medium text-gray-900">
+                              {candidate.phone}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="flex items-center">
+                          <div className="">
+                            <div
+                              className={`${
+                                popup
+                                  ? "text-sm h-12 w-12 cursor-pointer font-medium text-gray-900"
+                                  : "text-sm h-20vh w-[30%] cursor-pointer absolute top-[20%] left-[40%] font-medium text-gray-900"
+                              }`}
+                            >
+                              <img
+                                onClick={() => setPopup(!popup)}
+                                src={candidate.cv}
+                                alt={candidate.cv}
+                                className="w-full h-full"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
                           {candidate.recomendation}
                         </div>
@@ -99,21 +201,29 @@ return (
                         onClick={e => {}}
                         className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                       >
-                        {candidate.startingDate.substr(0, 10)}
+                        {candidate.startingDate?.substr(0, 10)}
                       </td>
                       <td
                         onClick={e => {}}
                         className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                       >
                         {candidate.grade}
-                      </td>
+                      </td> */}
 
                       <td className="px-6 py-4 whitespace-nowrap  text-right text-sm font-medium">
                         <FaPencilAlt
                           onClick={() => {
                             navigate("/editcandidate", {state: candidate});
                           }}
-                          className=" cursor-pointer   h-6 w-6  p-1 rounded-sm bg-blue-700 text-white text-xl"
+                          className=" cursor-pointer   h-6 w-6  p-1 rounded-sm bg-blue-700 hover:bg-blue-500 text-white text-xl"
+                        />
+                      </td>
+                      <td>
+                        <AiFillEye
+                          onClick={() => {
+                            navigate("/candidateView", {state: candidate});
+                          }}
+                          className=" cursor-pointer   h-6 w-6  p-1 rounded-sm bg-gray-300 text-blue text-xl hover:bg-gray-500"
                         />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -127,8 +237,9 @@ return (
                       <DeleteModel
                         open={open}
                         setOpen={setOpen}
-                        candidate={candidate}
-                        getCandidates={getCandidates}
+                        data={candidate}
+                        getData={getCandidates}
+                        to={"delete_candidate"}
                       />
                     </tr>
                   ))}

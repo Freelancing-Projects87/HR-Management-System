@@ -242,7 +242,7 @@ export default function Dashboard() {
                     setStyle2(true);
                     setStyle1(false);
                     setStyle3(false);
-                       navigate("/bussinessline");
+                       navigate("/business");
                   }}
 
                   className={classNames(
@@ -306,7 +306,7 @@ export default function Dashboard() {
             </button>
             <div className="flex-1 px-4 flex justify-between">
               <div className="flex-1 flex">
-                <form className="w-full flex md:ml-0" action="#" method="GET">
+                {/* <form className="w-full flex md:ml-0" action="#" method="GET">
                   <label htmlFor="search-field" className="sr-only">
                     Search
                   </label>
@@ -322,7 +322,7 @@ export default function Dashboard() {
                       name="search"
                     />
                   </div>
-                </form>
+                </form> */}
               </div>
               <div className="ml-4 flex items-center md:ml-6">
                 <button

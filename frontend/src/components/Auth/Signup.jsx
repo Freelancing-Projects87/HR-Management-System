@@ -3,9 +3,13 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import {useForm} from "react-hook-form";
+import {AiFillEye} from "react-icons/ai";
+
 
 function Signup() {
   let navigate = useNavigate();
+  const [show, setPasswordShow] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -19,6 +23,7 @@ function Signup() {
 
   const SignupUser = data => {
     console.log(data,"look data");
+    
     axios.post("http://localhost:8000/api/users/register", data)
       .then(res => {
         // let {data} = res.data;
@@ -110,7 +115,7 @@ function Signup() {
                       </p>
                     )}
                   </div>
-                  <div className="col-span-6 sm:col-span-3 pt-4">
+                  <div className="col-span-6 relative sm:col-span-3 pt-4">
                     <label
                       htmlFor="password"
                       className="block text-sm font-medium text-gray-700"
@@ -118,7 +123,7 @@ function Signup() {
                       Password *
                     </label>
                     <input
-                      type="text"
+                      type={`${show ? "text" : "password"}`}
                       placeholder="min 8 characters"
                       name="password"
                       id="password"
@@ -128,6 +133,16 @@ function Signup() {
                         errors.password ? " border border-red-500" : ""
                       } mt-1 px-2 block w-full   sm:w-11/12 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
                     />
+                    <span
+                      onClick={() => {
+                        setPasswordShow(!show);
+                      }}
+                      className={` ${
+                        show ? "border border-gray-400 rounded-xl" : ""
+                      } absolute  right-[11%] bottom-[12%] cursor-pointer text-xl`}
+                    >
+                      <AiFillEye />
+                    </span>
                     {errors.password?.type === "required" && (
                       <p role="alert" className="text-red-500">
                         Password is required

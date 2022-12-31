@@ -12,15 +12,15 @@ function DeleteModel(props) {
   const navigate=useNavigate()
     const deleteCandidate = ()=> {
     axios
-      .post("http://localhost:8000/api/admin/delete_candidate", {
-        id: props.candidate?._id,
+      .post(`http://localhost:8000/api/admin/${props.to}`, {
+        id: props.data?._id,
       })
       .then(res => {
         if (res.status === 200) {
-          props.setOpen(false)
-          props.getCandidates()
-          console.log(res, "is deleted");
-          navigate("/candidates");
+          props.setOpen(false);
+          props.getData();
+          // console.log(res, "is deleted");
+          // navigate(`${navigate(props.to)}`);
         }
       })
       .catch(err => {
@@ -81,7 +81,7 @@ function DeleteModel(props) {
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      Are you sure. you delete this Candidate
+                      Are you sure you want to Delete
                     </p>
                   </div>
                 </div>
