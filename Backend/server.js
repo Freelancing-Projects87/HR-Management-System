@@ -7,13 +7,17 @@ const userRoute = require("./routes/userRoute");
 const adminRoute=require('./routes/adminRoute')
 const errorHandler = require("./middleware/errorMiddleware");
 const cookieParser = require("cookie-parser");
+const multer = require("multer");
+
 
 const app = express();
 ///middlewares///
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
+app.use("/cv", express.static("images"));
 app.use(bodyParser.json());
+
 const corsOptions = {
   origin: "*",
   credentials: true, //access-control-allow-credentials:true
@@ -21,10 +25,19 @@ const corsOptions = {
 };
 app.use(cors(corsOptions)); 
 
+
 ////ROUTES Middleware/////
 app.use("/api/users", userRoute);
 app.use("/api/admin", adminRoute);
-
+function errHandler(err, req, res, next) {
+  if (err instanceof multer.MulterError) {
+    res.json({
+      success: 0,
+      message: err.message,
+    });
+  }
+}
+app.use(errHandler);
 ///Routes/////
 app.get("/", (req, res) => {
   res.send("Hello world");

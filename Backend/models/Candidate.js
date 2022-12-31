@@ -24,19 +24,23 @@ const Candidates = mongoose.Schema(
     },
     lastname: {
       type: String,
-      required: true,
+      required: false,
     },
     nationality: {
       type: String,
-      required: true,
+      required: false,
     },
     phone: {
       type: String,
-      required: true,
+      required: false,
+    },
+    email:{
+      type:String,
+      required:false
     },
     cv: {
       type: String,
-      required: [true, "Please add your Profile Image"],
+      required: [false, "Please add your CV"],
     },
   },
   {
