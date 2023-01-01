@@ -4,6 +4,8 @@ import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {useLocation} from "react-router-dom";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function BusinessEdit() {
   let navigate = useNavigate();
@@ -33,6 +35,9 @@ function BusinessEdit() {
         if (res.status == 200) {
           console.log(res, "hmm");
           navigate("/business");
+              toast.success("Business pipeline edited successfully..!", {
+                position: toast.POSITION.TOP_CENTER,
+              });
         }
       })
       .catch(err => {

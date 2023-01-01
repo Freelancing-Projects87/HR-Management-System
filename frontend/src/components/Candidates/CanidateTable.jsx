@@ -8,16 +8,20 @@ import {
 } from "react-icons/ai";
 import {FaPencilAlt} from "react-icons/fa";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate ,useLocation} from 'react-router-dom';
 import DeleteModel from '../ModelDelete';
-
+  import {toast, ToastContainer} from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
 
 
 function Candidate() {
  const [candidateData,setCandidateData]=useState([])
  const [popup,setPopup]=useState(true)
  let [open,setOpen]=useState(false)
+   const [delId, setDelId] = useState(null);
+
  const navigate = useNavigate()
+ const location=useLocation()
 const getCandidates = () => {
   axios
     .get("http://localhost:8000/api/admin/getCandidates")
@@ -34,9 +38,11 @@ useEffect(() => {
   getCandidates();
   console.log(candidateData && candidateData, "candidateData");
 }, []);
+
 return (
   <>
     <div className="flex mb-4 ml-2 items-end justify-end w-full ">
+      <ToastContainer/>
       <button
         onClick={() => {
           navigate("/addcandidate");
@@ -230,6 +236,8 @@ return (
                         <AiOutlineDelete
                           onClick={() => {
                             setOpen(true);
+                               setDelId(candidate._id)
+
                           }}
                           className=" cursor-pointer  text-red-500 text-xl"
                         />
@@ -237,7 +245,7 @@ return (
                       <DeleteModel
                         open={open}
                         setOpen={setOpen}
-                        data={candidate}
+                        id={delId}
                         getData={getCandidates}
                         to={"delete_candidate"}
                       />

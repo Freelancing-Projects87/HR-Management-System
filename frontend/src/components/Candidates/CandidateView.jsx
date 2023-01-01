@@ -14,13 +14,13 @@ function CandidateEdit() {
     <>
       {" "}
       {/* bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . */}
-      <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
+      <div className="  w-[85%] ml-auto flex items-center justify-center  bg-white ">
         {/* <Header /> */}
-        <div className="   h-screen w-[90%] h-auto  rounded-2xl">
-          <div class="container mx-auto ">
+        <div className="   h-auto py-12 w-[90%] h-auto  rounded-2xl">
+          <div class="container mx-auto  ">
             <div>
-              <div class="bg-white relative shadow rounded-md py-18 w-5/6 md:w-5/6  lg:w-11/12 xl:w-11/12 mx-auto">
-                <div class=" mt-64" >
+              <div class="bg-white  py-6 relative shadow rounded-md py-18 w-5/6 md:w-5/6  lg:w-11/12 xl:w-11/12 mx-auto">
+                <div class=" mt-12" >
                   <h1 class="font-bold text-center text-3xl text-gray-900">
                     {location.state.firstname} {location.state.lastname}
                   </h1>
@@ -119,7 +119,7 @@ function CandidateEdit() {
                     <img
                       src={location.state?.cv}
                       alt=""
-                      class="rounded-sm mx-auto mt-12 w-[70%] h-[70vh]  shadow-md border-4 border-white transition duration-200 transform hover:scale-110"
+                      class="rounded-sm mx-auto mt-12 w-[50%] h-[40vh]  shadow-md border-4 border-white transition duration-200 transform hover:scale-110"
                     />
                   </div>
                 </div>

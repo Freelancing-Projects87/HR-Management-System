@@ -3,8 +3,8 @@ import axios from "axios";
 import {useNavigate, useLocation} from "react-router-dom";
 import {useEffect} from "react";
 import {useForm} from "react-hook-form";
-  import {toast, ToastContainer} from "react-toastify";
-  import "react-toastify/dist/ReactToastify.css";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CandidateEdit() {
   let navigate = useNavigate();
@@ -34,32 +34,35 @@ function CandidateEdit() {
     data._id = candidate._id;
     console.log(data, " edit data");
     data.cv = data.cv[0];
-    if(data.cv==undefined){
-          toast.error("please select cv", {
-            position: toast.POSITION.TOP_CENTER,
-          });
-    }else{
-    let formData = new FormData();
-    formData.append("cv", data.cv);
-    formData.append("_id", data._id);
-    formData.append("firstname", data.firstname);
-    formData.append("lastname", data.lastname);
-    formData.append("email", data.email);
-    formData.append("phone", data.phone);
-    formData.append("nationality", data.nationality);
-    console.log(formData, "formData edit ");
-    axios
-      .post("http://localhost:8000/api/admin/update_candidate", formData)
-      .then(res => {
-        console.log(res, "you know");
-        if (res.status === 200) {
-          console.log(res, "hmm");
-          navigate("/candidates");
-        }
-      })
-      .catch(err => {
-        console.error(err);
+    if (data.cv == undefined) {
+      toast.error("please upload cv", {
+        position: toast.POSITION.TOP_CENTER,
       });
+    } else {
+      let formData = new FormData();
+      formData.append("cv", data.cv);
+      formData.append("_id", data._id);
+      formData.append("firstname", data.firstname);
+      formData.append("lastname", data.lastname);
+      formData.append("email", data.email);
+      formData.append("phone", data.phone);
+      formData.append("nationality", data.nationality);
+      console.log(formData, "formData edit ");
+      axios
+        .post("http://localhost:8000/api/admin/update_candidate", formData)
+        .then(res => {
+          console.log(res, "you know");
+          if (res.status === 200) {
+            console.log(res, "hmm");
+            navigate("/candidates", {state: {sucess: false}});
+            toast.success("Candidate edited successfully..!", {
+              position: toast.POSITION.TOP_CENTER,
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
   };
   useEffect(() => {
@@ -77,8 +80,7 @@ function CandidateEdit() {
   console.log(errors, "errors");
   return (
     <>
-    <ToastContainer/>
-      {" "}
+      <ToastContainer />{" "}
       {/* bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . */}
       <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
         {/* <Header /> */}
@@ -98,7 +100,7 @@ function CandidateEdit() {
                       First Name
                     </label>
                     <input
-                    type={'text'}
+                      type={"text"}
                       {...register("firstname", {required: true})}
                       aria-invalid={errors.firstname ? "true" : "false"}
                       className={` ${

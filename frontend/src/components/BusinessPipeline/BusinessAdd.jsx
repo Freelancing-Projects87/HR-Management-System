@@ -3,6 +3,8 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import {useForm} from "react-hook-form";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function BusinessAdd() {
   let navigate = useNavigate();
@@ -24,6 +26,9 @@ function BusinessAdd() {
         if (res.status == 200) {
           console.log(res, "hmm");
           navigate("/business");
+            toast.success("Business Pipeline added successfully..!", {
+              position: toast.POSITION.TOP_CENTER,
+            });
         }
       })
       .catch(err => {

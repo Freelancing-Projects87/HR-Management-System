@@ -3,6 +3,9 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import {useForm} from "react-hook-form";
+  import {toast, ToastContainer} from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
+
 
 function CandidateAdd() {
   let navigate = useNavigate();
@@ -19,6 +22,11 @@ function CandidateAdd() {
   const saveCandidate = data => {
     console.log(data.cv, "data");
     data.cv = data.cv[0];
+     if(!data.cv){
+          toast.error("please upload cv", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+    }else{
     console.log(data, "after");
     let formData = new FormData();
     formData.append("cv", data.cv);
@@ -35,12 +43,17 @@ function CandidateAdd() {
         console.log(res, "you know");
         if (res.status === 201) {
           console.log(res, "hmm");
-          navigate("/candidates");
+          navigate("/candidates", {state: {sucess: true}});
+            toast.success("Candidate added successfully...!", {
+              position: toast.POSITION.TOP_CENTER,
+            });
+
         }
       })
       .catch(err => {
         console.error(err);
       });
+    }
   };
   function getCountries() {
     axios
@@ -56,6 +69,7 @@ function CandidateAdd() {
       {" "}
       {/* bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . */}
       <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
+        <ToastContainer/>
         {/* <Header /> */}
         <div className="  bg-blue-50 w-[70%] rounded-2xl">
           <div className=" overflow-hidden ">

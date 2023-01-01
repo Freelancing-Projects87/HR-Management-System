@@ -34,6 +34,8 @@ export default function Dashboard() {
   const [style1,setStyle1]=useState(false)
   const [style2,setStyle2]=useState(false)
   const [style3,setStyle3]=useState(false)
+    const [style4, setStyle4] = useState(false);
+
   const navigate = useNavigate()
 function signOut(){
    axios.get("http://localhost:8000/api/users/logout").then((res)=>{
@@ -224,8 +226,9 @@ function signOut(){
                     setStyle1(true);
                     setStyle2(false);
                     setStyle3(false);
+                    setStyle4(false)
                     // window.location.href = "/candidates";
-                    navigate('/candidates')
+                    navigate("/candidates");
                   }}
                   className={classNames(
                     `text-gray-600  ${
@@ -251,9 +254,9 @@ function signOut(){
                     setStyle2(true);
                     setStyle1(false);
                     setStyle3(false);
-                       navigate("/business");
+                    setStyle4(false)
+                    navigate("/business");
                   }}
-
                   className={classNames(
                     `text-gray-600 ${
                       style2 ? "bg-purple-600 text-white" : ""
@@ -279,7 +282,8 @@ function signOut(){
                     setStyle3(true);
                     setStyle2(false);
                     setStyle1(false);
-                    navigate('metrics')
+                    setStyle4(false)
+                    navigate("/metrics");
                   }}
                   className={classNames(
                     `text-gray-600 ${
@@ -297,6 +301,32 @@ function signOut(){
                   />
                   <span className={`${style3 ? "text-white" : ""}`}>
                     Candidate Metrics
+                  </span>
+                </p>
+                <p
+                  onClick={() => {
+                    setStyle4(true)
+                    setStyle3(false);
+                    setStyle2(false);
+                    setStyle1(false);
+                    navigate("/interview");
+                  }}
+                  className={classNames(
+                    `text-gray-600 ${
+                      style4 ? "bg-purple-600" : ""
+                    }  cursor-pointer`,
+                    "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
+                  )}
+                >
+                  <InboxIcon
+                    className={classNames(
+                      "text-gray-400 group-hover:text-gray-500",
+                      "mr-3 flex-shrink-0 h-6 w-6"
+                    )}
+                    aria-hidden="true"
+                  />
+                  <span className={`${style4 ? "text-white" : ""}`}>
+                    Interview
                   </span>
                 </p>
               </nav>
@@ -375,7 +405,13 @@ function signOut(){
                                 "block px-4 py-2 text-sm text-gray-700"
                               )}
                             >
-                              <p onClick={()=>{signOut()}}>{userNavigation[2].name }</p>
+                              <p
+                                onClick={() => {
+                                  signOut();
+                                }}
+                              >
+                                {userNavigation[2].name}
+                              </p>
                             </Link>
                           )}
                         </Menu.Item>
@@ -387,7 +423,6 @@ function signOut(){
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </>

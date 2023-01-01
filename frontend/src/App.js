@@ -1,4 +1,4 @@
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./LayoutAdmin/Dashboard";
 import {
   BrowserRouter,
   Routes,
@@ -17,11 +17,19 @@ import PrivateRoute from "./components/PrivateRoute";
 import {useEffect, useState} from "react";
 import Business from "./components/BusinessPipeline/BussinessTable";
 import BusinessAdd from "./components/BusinessPipeline/BusinessAdd";
-import BusinessEdit from "./components/BusinessPipeline/BusinessEdit"
+import BusinessEdit from "./components/BusinessPipeline/BusinessEdit";
 import BusinessView from "./components/BusinessPipeline/BusinessView";
+import Interview from "./components/Interview/Interview";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const paths = ["/candidates", "/editcandidate", "/addcandidate","/bussinessline"];
+  const paths = [
+    "/candidates",
+    "/editcandidate",
+    "/addcandidate",
+    "/bussinessline",
+  ];
   useEffect(() => {
     if (window.location.pathname === "/") {
       if (!isAuthenticUser()) {
@@ -29,10 +37,10 @@ function App() {
       }
     }
   }, [isAuthenticUser()]);
- 
 
   return (
     <div className="App">
+      <ToastContainer />
       <BrowserRouter>
         {isAuthenticUser() ? <Dashboard /> : ""}
 
@@ -46,6 +54,7 @@ function App() {
             <Route path="/editBusiness" element={<BusinessEdit />} exact />
             <Route path="/addbusiness" element={<BusinessAdd />} exact />
             <Route path="/businessView" element={<BusinessView />} />
+            <Route path="/interview" element={<Interview />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

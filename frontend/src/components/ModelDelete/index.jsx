@@ -13,7 +13,7 @@ function DeleteModel(props) {
     const deleteCandidate = ()=> {
     axios
       .post(`http://localhost:8000/api/admin/${props.to}`, {
-        id: props.data?._id,
+        id: props.id,
       })
       .then(res => {
         if (res.status === 200) {
