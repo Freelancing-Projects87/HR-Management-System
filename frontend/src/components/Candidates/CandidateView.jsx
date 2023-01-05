@@ -4,8 +4,10 @@ import {useNavigate, useLocation} from "react-router-dom";
 import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import Candidate from "./CanidateTable";
+import {Document, Page} from "react-pdf";
 
-function CandidateEdit() {
+
+function CandidateView() {
   let navigate = useNavigate();
   const location = useLocation();
  console.log(location.state,"profile data");
@@ -20,15 +22,12 @@ function CandidateEdit() {
           <div class="container mx-auto  ">
             <div>
               <div class="bg-white  py-6 relative shadow rounded-md py-18 w-5/6 md:w-5/6  lg:w-11/12 xl:w-11/12 mx-auto">
-                <div class=" mt-12" >
+                <div class=" mt-12">
                   <h1 class="font-bold text-center text-3xl text-gray-900">
                     {location.state.firstname} {location.state.lastname}
                   </h1>
                   <div class="my-5 px-6">
-                    <p
-                    
-                      class="text-gray-200 block rounded-lg text-center font-medium leading-6 px-6 py-3 bg-gray-900 hover:bg-black hover:text-white"
-                    >
+                    <p class="text-gray-200 block rounded-lg text-center font-medium leading-6 px-6 py-3 bg-gray-900 hover:bg-black hover:text-white">
                       Email of Candidate is :{" "}
                       <span class="font-bold text-blue-500">
                         {location.state.email}
@@ -116,11 +115,20 @@ function CandidateEdit() {
                     <h1 className="text-blue-600 font-extrabold text-xl underline text-center w-full ">
                       Cv
                     </h1>
-                    <img
+                    {/* <iframe
                       src={location.state?.cv}
-                      alt=""
-                      class="rounded-sm mx-auto mt-12 w-[50%] h-[40vh]  shadow-md border-4 border-white transition duration-200 transform hover:scale-110"
-                    />
+                      className="rounded-sm mx-auto mt-12 w-[50%] h-[40vh] shadow-md
+                    border-4 border-white transition duration-200 transform
+                    hover:scale-110"
+                    /> */}
+                    <Document
+                      file={"C:UsersHpDownloadsworlds.pdf"}
+                      className="rounded-sm mx-auto mt-12 w-[50%] h-[40vh] shadow-md
+                    border-4 border-white transition duration-200 transform
+                    hover:scale-110"
+                    >
+                      <Page pageNumber={1} />
+                    </Document>
                   </div>
                 </div>
               </div>
@@ -131,4 +139,4 @@ function CandidateEdit() {
     </>
   );
 }
-export default CandidateEdit;
+export default CandidateView;

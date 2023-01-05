@@ -9,6 +9,7 @@ import {useForm} from "react-hook-form";
 
 function CandidateAdd() {
   let navigate = useNavigate();
+  const [pdf,getPdf]=useState(null)
   const {
     register,
     handleSubmit,
@@ -21,15 +22,15 @@ function CandidateAdd() {
 
   const saveCandidate = data => {
     console.log(data.cv, "data");
-    data.cv = data.cv[0];
-     if(!data.cv){
+    // data.cv = data.cv[0];
+     if(!pdf){
           toast.error("please upload cv", {
             position: toast.POSITION.TOP_CENTER,
           });
     }else{
     console.log(data, "after");
     let formData = new FormData();
-    formData.append("cv", data.cv);
+    formData.append("cv", pdf);
     formData.append("firstname", data. firstname);
     formData.append("lastname", data.lastname);
     formData.append("email", data.email);
@@ -238,6 +239,7 @@ function CandidateAdd() {
                       name="cv"
                       id="password"
                       {...register("cv", {required: true})}
+                      onChange={(e)=>{getPdf(e.target.files[0])}}
                       aria-invalid={errors.password ? "true" : "false"}
                       className={` ${
                         errors.cv ? " border border-red-500" : ""
@@ -277,7 +279,6 @@ function CandidateAdd() {
                   <div className="flex flex-col  items-center mt-4">
                     <button
                       type="submit"
-                      onClick={saveCandidate}
                       class=" text-center mb-4 content-center border broder-gray-500 bg-blue-700 text-white hover:bg-[] hover:text-black font-bold py-2 px-4 rounded-full w-40  justify-center"
                     >
                       Save

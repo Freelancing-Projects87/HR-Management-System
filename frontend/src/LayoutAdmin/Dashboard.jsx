@@ -283,7 +283,7 @@ function signOut(){
                     setStyle2(false);
                     setStyle1(false);
                     setStyle4(false)
-                    navigate("/metrics");
+                    navigate("/businesscase")
                   }}
                   className={classNames(
                     `text-gray-600 ${
@@ -300,7 +300,7 @@ function signOut(){
                     aria-hidden="true"
                   />
                   <span className={`${style3 ? "text-white" : ""}`}>
-                    Candidate Metrics
+                    Business Case
                   </span>
                 </p>
                 <p

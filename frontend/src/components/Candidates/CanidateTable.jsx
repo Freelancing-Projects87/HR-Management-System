@@ -4,14 +4,17 @@ import {
   AiOutlinePlusSquare,
   AiOutlineUserAdd,
   AiOutlineEdit,
+  AiOutlineInteraction,
   AiFillEye,
 } from "react-icons/ai";
-import {FaPencilAlt} from "react-icons/fa";
+import {FaPencilAlt,FaMeetup,} from "react-icons/fa";
 import axios from "axios";
 import { useNavigate ,useLocation} from 'react-router-dom';
 import DeleteModel from '../ModelDelete';
   import {toast, ToastContainer} from "react-toastify";
   import "react-toastify/dist/ReactToastify.css";
+  import {AiFillFilePdf,AiFillInteraction} from "react-icons/ai";
+  import interview from "../../images/interview.png"
 
 
 function Candidate() {
@@ -42,7 +45,7 @@ useEffect(() => {
 return (
   <>
     <div className="flex mb-4 ml-2 items-end justify-end w-full ">
-      <ToastContainer/>
+      <ToastContainer />
       <button
         onClick={() => {
           navigate("/addcandidate");
@@ -66,6 +69,12 @@ return (
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     First Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Interview
                   </th>
                   <th
                     scope="col"
@@ -144,6 +153,15 @@ return (
                         <div className="flex items-center">
                           <div className="">
                             <div className="text-sm font-medium text-gray-900">
+                              <img src={interview} className="w-10 cursor-pointer h-10 pointer"  onClick={()=>{navigate('/interview',{state:candidate._id})}}/>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6  py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="">
+                            <div className="text-sm font-medium text-gray-900">
                               {candidate.lastname}
                             </div>
                           </div>
@@ -178,21 +196,8 @@ return (
                       </td>
                       <td>
                         <div className="flex items-center">
-                          <div className="">
-                            <div
-                              className={`${
-                                popup
-                                  ? "text-sm h-12 w-12 cursor-pointer font-medium text-gray-900"
-                                  : "text-sm h-20vh w-[30%] cursor-pointer absolute top-[20%] left-[40%] font-medium text-gray-900"
-                              }`}
-                            >
-                              <img
-                                onClick={() => setPopup(!popup)}
-                                src={candidate.cv}
-                                alt={candidate.cv}
-                                className="w-full h-full"
-                              />
-                            </div>
+                          <div className=" cursor-pointer">
+                            <AiFillFilePdf className="h-10 w-10 ml-3 text-red-500" />
                           </div>
                         </div>
                       </td>
@@ -236,8 +241,7 @@ return (
                         <AiOutlineDelete
                           onClick={() => {
                             setOpen(true);
-                               setDelId(candidate._id)
-
+                            setDelId(candidate._id);
                           }}
                           className=" cursor-pointer  text-red-500 text-xl"
                         />
