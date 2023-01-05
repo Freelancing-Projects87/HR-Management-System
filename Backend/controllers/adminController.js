@@ -3,6 +3,8 @@ const Candidate = require("../models/Candidate");
 const BusinessPipeline = require("../models/BusinessPipeline");
 const protectApi = require("../middleware/authMiddleware");
 var mongodb = require("mongodb");
+var mongodb = require("mongodb");
+
 
 ////Admin Routes/////
 
@@ -10,7 +12,7 @@ var mongodb = require("mongodb");
 
 const updateCandidate = async (req, res) => {
   console.log(req.body, "edit data in server");
-  let cv = `http://localhost:8000/cv/${req.file.filename}`;
+  let cv = `http://localhost:8000/cv/${req.file?.filename}`;
 
   try {
     console.log(req.body, "edit data in server");
@@ -63,8 +65,8 @@ const addCandidate = async (req, res) => {
     grade,
   } = req.body;
   console.log(req.body, "add data");
-  let cv = `http://localhost:8000/cv/${req.file.filename}`;
-  if (!firstname) {
+  let cv = `http://localhost:8000/cv/${req.file}`;
+  if (!firstname ||!lastname ||!email ||!phone) {
     res.status(400);
     throw new Error("Please insert all required fields");
   }
@@ -82,7 +84,7 @@ const addCandidate = async (req, res) => {
     phone,
   });
 
-  if (firstname) {
+  if (firstname && email) {
     const {
       firstname,
       recomendation,
@@ -106,7 +108,7 @@ const addCandidate = async (req, res) => {
         lastname,
         email,
         nationality,
-        cv: `http://localhost:8000/cv/${req.file.filename}`,
+        cv: `cv/${req.file?.filename}`,
         phone,
         _id,
       },
@@ -167,7 +169,9 @@ const getAllcandidate = async (req, res, next) => {
     });
   }
 };
-//  bussiness pipeline controllers
+
+
+//  bussiness pipeline controllers start from here////////////////////
 const updateBusinessline = async (req, res) => {
   try {
     console.log(req.body, "edit data in server");
@@ -289,6 +293,42 @@ const getAllBusinessPipeline = async (req, res, next) => {
   }
 };
 
+// quiz controler start from here
+const addQuiz = async (req, res, next) => {
+  console.log(req.body, "quiz data");
+  try {
+    Candidate.findByIdAndUpdate(
+      {_id: new mongodb.ObjectId(req.body.candidateId)},
+
+      {
+        $set: {
+          quizData: req.body.QA,
+        },
+      },
+      function (err, docs) {
+        if (err) {
+          console.log("err", err);
+          res.status(201).json({
+            success: false,
+            message: err.toString(),
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "Quiz Added to candidate profile successfully...!",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
+
 module.exports = {
   addCandidate,
   updateCandidate,
@@ -297,5 +337,6 @@ module.exports = {
   addBusinessPipeline,
   updateBusinessline,
   getAllBusinessPipeline,
-  deleteBusinessPipeline
+  deleteBusinessPipeline,
+  addQuiz,
 };

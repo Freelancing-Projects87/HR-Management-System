@@ -15,7 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-app.use("/cv", express.static("images"));
+// app.use("/cv", express.static("images"));
 app.use(bodyParser.json());
 
 const corsOptions = {
@@ -27,6 +27,7 @@ app.use(cors(corsOptions));
 
 
 ////ROUTES Middleware/////
+
 app.use("/api/users", userRoute);
 app.use("/api/admin", adminRoute);
 function errHandler(err, req, res, next) {

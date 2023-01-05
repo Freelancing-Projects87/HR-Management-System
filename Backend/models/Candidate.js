@@ -42,6 +42,11 @@ const Candidates = mongoose.Schema(
       type: String,
       required: [false, "Please add your CV"],
     },
+    quizData:[{ 
+      question:String,
+      answer:String,
+      id:Number
+    }]
   },
   {
     timestamps: true,
