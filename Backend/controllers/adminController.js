@@ -1,10 +1,9 @@
 const asyncHandler = require("express-async-handler"); ///for not using trycatch block////
 const Candidate = require("../models/Candidate");
+const Businesscase = require("../models/BusinessCase");
 const BusinessPipeline = require("../models/BusinessPipeline");
 const protectApi = require("../middleware/authMiddleware");
 var mongodb = require("mongodb");
-var mongodb = require("mongodb");
-
 
 ////Admin Routes/////
 
@@ -66,7 +65,7 @@ const addCandidate = async (req, res) => {
   } = req.body;
   console.log(req.body, "add data");
   let cv = `http://localhost:8000/cv/${req.file}`;
-  if (!firstname ||!lastname ||!email ||!phone) {
+  if (!firstname || !lastname || !email || !phone) {
     res.status(400);
     throw new Error("Please insert all required fields");
   }
@@ -170,7 +169,126 @@ const getAllcandidate = async (req, res, next) => {
   }
 };
 
+//  bussiness case controllers start from here////////////////////
+const addBusinessCase = async (req, res) => {
+  const {bcTitle, difficulty, type, expectedTime} = req.body;
+  console.log(req.body, "b case");
+  if (!bcTitle || !difficulty || !type || !expectedTime) {
+    res.status(400);
+    throw new Error("Please insert all required fields");
+  }
 
+  //   create new user
+  const businessCase = await Businesscase.create({
+    bcTitle,
+    difficulty,
+    type,
+    expectedTime,
+  });
+
+  if (bcTitle) {
+    const {bcTitle, difficulty, type, expectedTime, _id} = businessCase;
+
+    res.status(200).send({
+      message: "Business Case Created Successfully!",
+      data: {
+        bcTitle,
+        difficulty,
+        type,
+        expectedTime,
+        _id,
+      },
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid Business pipeline  Data");
+  }
+};
+const updateBusinessCase = async (req, res) => {
+  try {
+    console.log(req.body, "edit data in server");
+    Businesscase.findByIdAndUpdate(
+      mongodb.ObjectId(req.body.id),
+      {
+        bcTitle: req.body?.bcTitle,
+        type: req.body?.type,
+        expectedTime: req.body?.expectedTime,
+        difficulty: req.body?.difficulty,
+      },
+      function (err, docs) {
+        if (err) {
+          console.log(err);
+          res.status(201).json({
+            success: false,
+            message: err.toString(),
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "Bussiness Case updated successfully...!",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
+const deleteBusinessCase = async (req, res) => {
+  console.log(req.body.id, " b c id..........");
+  try {
+    Businesscase.findByIdAndRemove(
+      {_id: mongodb.ObjectId(req.body.id)},
+      function (err, docs) {
+        if (err) {
+          console.log("err", err);
+          res.status(201).json({
+            success: false,
+            message: err.toString(),
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "Business Case deleted successfully...!",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
+const getAllBusinessCase = async (req, res, next) => {
+  try {
+    Businesscase.find(async (err, data) => {
+      if (err) {
+        console.log(err);
+      }
+      if (!data) {
+        console.log("bussiness Case not found");
+        return;
+      }
+      res.status(200).json({
+        success: true,
+        data: data,
+      });
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
 //  bussiness pipeline controllers start from here////////////////////
 const updateBusinessline = async (req, res) => {
   try {
@@ -224,7 +342,7 @@ const addBusinessPipeline = async (req, res) => {
   });
 
   if (requester) {
-    const {requester, neededBy, project, internAssigned,_id} = businessline;
+    const {requester, neededBy, project, internAssigned, _id} = businessline;
 
     res.status(200).send({
       message: "BusinessPipeline Created Successfully!",
@@ -233,7 +351,7 @@ const addBusinessPipeline = async (req, res) => {
         neededBy,
         project,
         internAssigned,
-        _id
+        _id,
       },
     });
   } else {
@@ -339,4 +457,8 @@ module.exports = {
   getAllBusinessPipeline,
   deleteBusinessPipeline,
   addQuiz,
+  addBusinessCase,
+  updateBusinessCase,
+  deleteBusinessCase,
+  getAllBusinessCase,
 };
