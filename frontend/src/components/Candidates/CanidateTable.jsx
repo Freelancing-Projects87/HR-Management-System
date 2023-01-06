@@ -11,6 +11,7 @@ import {FaPencilAlt,FaMeetup,} from "react-icons/fa";
 import axios from "axios";
 import { useNavigate ,useLocation} from 'react-router-dom';
 import DeleteModel from '../ModelDelete';
+import GradeModel from './GradeModel';
   import {toast, ToastContainer} from "react-toastify";
   import "react-toastify/dist/ReactToastify.css";
   import {AiFillFilePdf,AiFillInteraction} from "react-icons/ai";
@@ -153,7 +154,15 @@ return (
                         <div className="flex items-center">
                           <div className="">
                             <div className="text-sm font-medium text-gray-900">
-                              <img src={interview} className="w-10 cursor-pointer h-10 pointer"  onClick={()=>{navigate('/interview',{state:candidate._id})}}/>
+                              <img
+                                src={interview}
+                                className="w-10 cursor-pointer h-10 pointer"
+                                onClick={() => {
+                                  navigate("/interview", {
+                                    state: candidate._id,
+                                  });
+                                }}
+                              />
                             </div>
                           </div>
                         </div>
@@ -201,7 +210,6 @@ return (
                           </div>
                         </div>
                       </td>
-
                       {/* <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
                           {candidate.recomendation}
@@ -220,7 +228,6 @@ return (
                       >
                         {candidate.grade}
                       </td> */}
-
                       <td className="px-6 py-4 whitespace-nowrap  text-right text-sm font-medium">
                         <FaPencilAlt
                           onClick={() => {
@@ -253,6 +260,12 @@ return (
                         getData={getCandidates}
                         to={"delete_candidate"}
                       />
+                      <GradeModel
+                        candidate={candidate}
+                        open={open}
+                        setOpen={setOpen}
+                      />
+                      =
                     </tr>
                   ))}
               </tbody>

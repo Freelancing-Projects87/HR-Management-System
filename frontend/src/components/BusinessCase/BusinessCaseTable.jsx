@@ -18,9 +18,9 @@ function BusinessCaseTable() {
   const [delId, setDelId] = useState(null);
   console.log(delId, "delId");
   const navigate = useNavigate();
-  const getBusinessline = () => {
+  const getBusinessCase= () => {
     axios
-      .get("http://localhost:8000/api/admin/getBusinessline")
+      .get("http://localhost:8000/api/admin/getBusinessCase")
       .then(res => {
         if (res.status === 200) {
           setBusiness(res.data?.data);
@@ -31,7 +31,7 @@ function BusinessCaseTable() {
       });
   };
   useEffect(() => {
-    getBusinessline();
+    getBusinessCase();
   }, []);
   return (
     <>
@@ -91,7 +91,7 @@ function BusinessCaseTable() {
                           <div className="flex items-center">
                             <div className="">
                               <div className="text-sm font-medium text-gray-900">
-                                {business.requester}
+                                {business.bcTitle}
                               </div>
                             </div>
                           </div>
@@ -100,7 +100,7 @@ function BusinessCaseTable() {
                           <div className="flex items-center">
                             <div className="">
                               <div className="text-sm font-medium text-gray-900">
-                                {business.neededBy.substr(0, 10)}
+                                {business.type}
                               </div>
                             </div>
                           </div>
@@ -109,7 +109,7 @@ function BusinessCaseTable() {
                           <div className="flex items-center">
                             <div className="">
                               <div className="text-sm font-medium text-gray-900">
-                                {business.project}
+                                {business.difficulty}
                               </div>
                             </div>
                           </div>
@@ -118,7 +118,7 @@ function BusinessCaseTable() {
                           <div className="flex items-center">
                             <div className="">
                               <div className="text-sm font-medium text-gray-900">
-                                {business.internAssigned}
+                                {business.expectedTime}
                               </div>
                             </div>
                           </div>
@@ -153,8 +153,8 @@ function BusinessCaseTable() {
                           open={open}
                           setOpen={setOpen}
                           id={delId && delId}
-                          getData={getBusinessline}
-                          to={"delete_Businessline"}
+                          getData={getBusinessCase}
+                          to={"deleteBusinessCase"}
                         />
                       </tr>
                     ))}

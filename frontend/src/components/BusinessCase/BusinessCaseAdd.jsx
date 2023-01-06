@@ -21,12 +21,12 @@ function BusinessCaseAdd() {
     console.log(data, "data");
 
     axios
-      .post("http://localhost:8000/api/admin/addBusinessline", data)
+      .post("http://localhost:8000/api/admin/addBusinessCase", data)
       .then(res => {
         if (res.status == 200) {
           console.log(res, "hmm");
-          navigate("/business");
-          toast.success("Business Pipeline added successfully..!", {
+          navigate("/businesscase");
+          toast.success("Business Case added successfully..!", {
             position: toast.POSITION.TOP_CENTER,
           });
         }
@@ -55,19 +55,19 @@ function BusinessCaseAdd() {
                       htmlFor="requester"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Requester
+                      Business Case Title
                     </label>
                     <input
                       type={"text"}
-                      {...register("requester", {required: true})}
-                      aria-invalid={errors.requester ? "true" : "false"}
+                      {...register("bcTitle", {required: true})}
+                      aria-invalid={errors.bcTitle ? "true" : "false"}
                       className={` ${
-                        errors.requester ? " border border-red-500" : ""
+                        errors.bcTitle ? " border border-red-500" : ""
                       } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
                     />
-                    {errors.requester?.type === "required" && (
+                    {errors.bcTitle?.type === "required" && (
                       <p role="alert" className="text-red-500">
-                        requester is required
+                        Bc Title is required
                       </p>
                     )}
                   </div>
@@ -76,40 +76,19 @@ function BusinessCaseAdd() {
                       htmlFor="neededby"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Needed By
+                      Expected Time to solve
                     </label>
                     <input
-                      type={"date"}
-                      {...register("neededBy", {required: true})}
-                      aria-invalid={errors.neededBy ? "true" : "false"}
+                      type={"text"}
+                      {...register("expectedTime", {required: true})}
+                      aria-invalid={errors.expectedTime ? "true" : "false"}
                       className={` ${
-                        errors.neededBy ? " border border-red-500" : ""
+                        errors.expectedTime ? " border border-red-500" : ""
                       } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
                     />
-                    {errors.neededBy?.type === "required" && (
+                    {errors.expectedTime?.type === "required" && (
                       <p role="alert" className="text-red-500">
-                        neededBy is required
-                      </p>
-                    )}
-                  </div>
-                  <div className=" pt-4 w-full ">
-                    <label
-                      htmlFor="project"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Project
-                    </label>
-                    <input
-                      type="text"
-                      {...register("project", {required: true})}
-                      aria-invalid={errors.project ? "true" : "false"}
-                      className={` ${
-                        errors.project ? " border border-red-500" : ""
-                      } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
-                    />
-                    {errors.project?.type === "required" && (
-                      <p role="alert" className="text-red-500">
-                        project is required
+                        Expected Time is required
                       </p>
                     )}
                   </div>
@@ -118,21 +97,47 @@ function BusinessCaseAdd() {
                       for="small"
                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Intern Assigned
+                      Diffculty
                     </label>
                     <select
-                      {...register("internAssigned", {required: true})}
+                      {...register("difficulty", {required: true})}
                       className={` ${
-                        errors.internAssigned ? " border border-red-500" : ""
+                        errors.difficulty ? " border border-red-500" : ""
+                      } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
+                    >
+                      {/* <option selected>Slecect</option>   */}
+                      <option value="low" selected>
+                        Low
+                      </option>
+                      <option value="medium">medium</option>
+                      <option value="high">High</option>
+                    </select>
+                    {errors.difficulty?.type === "required" && (
+                      <p role="alert" className="text-red-500">
+                        Difficulty is required
+                      </p>
+                    )}
+                  </div>
+                  <div className=" pt-4 w-full ">
+                    <label
+                      for="small"
+                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Type
+                    </label>
+                    <select
+                      {...register("type", {required: true})}
+                      className={` ${
+                        errors.type ? " border border-red-500" : ""
                       } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
                     >
                       {/* <option selected>Assigned </option>   */}
-                      <option value="yes">Yes</option>
-                      <option value="No">No</option>
+                      <option value="Marketing Size" selected>Marketing Size</option>
+                      <option value="Teaser">Teaser</option>
                     </select>
-                    {errors.internAssigned?.type === "required" && (
+                    {errors.type?.type === "required" && (
                       <p role="alert" className="text-red-500">
-                        internAssigned is required
+                        Type is required
                       </p>
                     )}
                   </div>
