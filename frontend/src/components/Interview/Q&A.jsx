@@ -10,82 +10,41 @@ import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import {useLocation, useNavigate} from "react-router-dom";
+import {quizMetadata} from "../../utils/questions";
 
 function QuestionsAnswers() {
   const location = useLocation();
-  let [quizData, setQuestions] = useState([
-    {question: "Elevator pitch interviewee", answer: "", id: 0},
-    {question: "What did you achieve in this experience?", answer: "", id: 1},
-    {
-      question: "What have you precisely done in this experience?",
-      answer: "",
-      id: 2,
-    },
-    {question: "What is your favorite experience?", answer: "", id: 3},
-    {question: "Why consulting?", answer: "", id: 4},
-    {question: "Why Accenture?", answer: "", id: 5},
-    {question: "Working under stress?", answer: "", id: 6},
-    {
-      question: "Experience failures? How did you handle it?",
-      answer: "",
-      id: 7,
-    },
-    {question: "What motivates you / what demotivates you?", answer: "", id: 8},
-    {
-      question: "3 most important skills of consultant and why?",
-      answer: "",
-      id: 9,
-    },
-    {
-      question:
-        "Tell me about a time where you had a leading role / managed people",
-      answer: "",
-      id: 10,
-    },
-    {
-      question:
-        "What are the current trends and dynamics in the financial services industry?",
-      answer: "",
-      id: 11,
-    },
-    {
-      question:
-        "Tell me about your understanding of a current new technology and the impact / role in the FS industry? ",
-      answer: "",
-      id: 12,
-    },
-    {
-      question: "What is the future of banks in your perspective?",
-      answer: "",
-      id: 13,
-    },
-    {question: "Business case", answer: "", id: 14},
-  ]);
+  let [quizData, setQuestions] = useState(quizMetadata);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  let [index, setIndexes] = useState({firstIndex: 0, lastIndex: 14});
+  let [index, setIndexes] = useState({firstIndex: 0, lastIndex: 15});
   const navigate = useNavigate();
 
   const saveQuiz = data => {
-    axios
-      .post("http://localhost:8000/api/admin/quizadd", {
-        QA: data,
-        candidateId: location?.state,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          console.log(res, "quiz result");
-          navigate("/candidates");
-          toast.success("quiz added successfully..!", {
-            position: toast.POSITION.TOP_CENTER,
-          });
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    console.log(data,location.state,"quiz data for db");
+    if (data[0].percent && data[quizData.length-1].percent) {
+      axios
+        .post("http://localhost:8000/api/admin/quizadd", {
+          QA: data,
+          candidateId: location?.state,
+          isInterviewed: true,
+        })
+        .then(res => {
+          if (res.status == 200) {
+            console.log(res, "quiz result");
+            navigate("/candidates");
+            toast.success("quiz added successfully..!", {
+              position: toast.POSITION.TOP_CENTER,
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    }
+    
   };
   useEffect(() => {
-    console.log(location.state, "location state");
+    console.log(quizData, "location state");
   }, []);
   return (
     <section className="w-[98%] h-[90vh] ml-auto flex">
@@ -107,7 +66,7 @@ function QuestionsAnswers() {
               className="text-3xl text-blue-500 hover:bg-blue-700 rounded-full"
               onClick={() => {
                 setCurrentQuestion(current =>
-                  current == 0 ? (current = 14) : current - 1
+                  current == 0 ? (current = 15) : current - 1
                 );
               }}
             />
@@ -132,6 +91,7 @@ function QuestionsAnswers() {
                               answer: e.target.value,
                               question: ques.question,
                               id: ques.id,
+                              percent:ques.percent
                             }
                           : ques
                       )
@@ -151,7 +111,7 @@ function QuestionsAnswers() {
               className="text-3xl text-blue-500 hover:bg-blue-700 rounded-full"
               onClick={() => {
                 setCurrentQuestion(current =>
-                  current == 14 ? (current = 0) : current + 1
+                  current == 15 ? (current = 0) : current + 1
                 );
               }}
             />
@@ -178,11 +138,17 @@ function QuestionsAnswers() {
         <div className="w-11/12 mt-4 flex items-center justify-between">
           <div className="prev_ques flex w-1/3 text-center justify-between flex-col">
             <h2>Previous Question</h2>
-            <div className="bg-blue-500 text-sm text-white px-4 rounded-lg py-2">
-              {quizData[currentQuestion - 1]?.question
-                ? quizData[currentQuestion - 1]?.question
-                : quizData[currentQuestion]?.question}
-            </div>
+            {quizData[currentQuestion - 1] ? (
+              <div className="bg-blue-500 text-sm text-white px-4 rounded-lg py-2">
+                {
+                  quizData[currentQuestion - 1]?.question
+                  // ? quizData[currentQuestion - 1]?.question
+                  // : quizData[currentQuestion]?.question
+                }
+              </div>
+            ) : (
+              ""
+            )}
           </div>
           {currentQuestion == index.lastIndex ? (
             <button
@@ -198,11 +164,17 @@ function QuestionsAnswers() {
           )}
           <div className="prev_ques flex flex-col text-center w-1/3 justify-between">
             <h2>Next Question</h2>
-            <div className="bg-blue-500 text-white px-4 rounded-lg py-2">
-              {quizData[currentQuestion + 1]?.question
-                ? quizData[currentQuestion + 1]?.question
-                : quizData[currentQuestion]?.question}
-            </div>
+            {quizData[currentQuestion + 1] ? (
+              <div className="bg-blue-500 text-white px-4 rounded-lg py-2">
+                {
+                  quizData[currentQuestion + 1]?.question
+                  // ? quizData[currentQuestion + 1]?.question
+                  // : quizData[currentQuestion]?.question
+                }
+              </div>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>

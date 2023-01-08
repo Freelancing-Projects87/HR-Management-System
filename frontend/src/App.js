@@ -13,8 +13,6 @@ import CanidateTable from "./components/Candidates/CanidateTable";
 import CandidateEdit from "./components/Candidates/CandidateEdit";
 import CandidateAdd from "./components/Candidates/CandidateAdd";
 import CandidateView from "./components/Candidates/CandidateView";
-import CandidateInterview from "./components/Candidates/CandidateInterview";
-
 import PrivateRoute from "./components/PrivateRoute";
 import {useEffect, useState} from "react";
 import Business from "./components/BusinessPipeline/BussinessTable";
@@ -24,6 +22,7 @@ import BusinessView from "./components/BusinessPipeline/BusinessView";
 import BusinessCaseTable from "./components/BusinessCase/BusinessCaseTable";
 import BusinessCaseAdd from "./components/BusinessCase/BusinessCaseAdd";
 import BusinesscaseEdit from "./components/BusinessCase/BusinessCaseEdit";
+import GradeIng from "./components/Candidates/GradeIng";
 
 import Interview from "./components/Interview/Interview";
 import {toast, ToastContainer} from "react-toastify";
@@ -64,7 +63,7 @@ function App() {
             <Route path="/businesscase" element={<BusinessCaseTable />} />
             <Route path="/businesscaseAdd" element={<BusinessCaseAdd />} />
             <Route path="/businesscaseEdit" element={<BusinesscaseEdit />} />
-            <Route path="/CandidateInterview" element={<CandidateInterview/>}/>
+            <Route path="/grading"  element={<GradeIng/>}/>
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

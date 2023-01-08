@@ -5,15 +5,30 @@ import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import Candidate from "./CanidateTable";
 import {Document, Page} from "react-pdf";
-import GradeModel from "./GradeModel";
+import GradeIng from "./GradeIng";
+import {AiFillCheckSquare} from "react-icons/ai"
 
 function CandidateView() {
   let navigate = useNavigate();
   const location = useLocation();
     let [open, setOpen] = useState(false);
 
- console.log(location.state,"profile data");
- 
+ console.log(location.state,"candidate data");
+//   const getCandidates = () => {
+//     axios
+//       .get("http://localhost:8000/api/admin/getCandidates")
+//       .then(res => {
+//         if (res.status === 200) {
+//           setCandidateData(res.data?.data);
+//         }
+//       })
+//       .catch(err => {
+//         console.error(err);
+//       });
+//   };
+//  useEffect(()=>{
+
+//  },[location.state])
   return (
     <>
       {" "}
@@ -64,74 +79,37 @@ function CandidateView() {
                       {location.state.phone}
                     </p>
                   </div>
-                  {/* <div class="w-full">
-                    <h3 class="font-medium text-gray-900 text-left px-6">
-                      Recent activites
-                    </h3>
-                    <div class="mt-5 w-full flex flex-col items-center overflow-hidden text-sm">
-                      <a
-                        href="#"
-                        class="w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 w-full block hover:bg-gray-100 transition duration-150"
-                      >
-                        <img
-                          src="https://avatars0.githubusercontent.com/u/35900628?v=4"
-                          alt=""
-                          class="rounded-full h-6 shadow-md inline-block mr-2"
-                        />
-                        Updated his status
-                        <span class="text-gray-500 text-xs">24 min ago</span>
-                      </a>
 
-                      <a
-                        href="#"
-                        class="w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 w-full block hover:bg-gray-100 transition duration-150"
-                      >
-                        <img
-                          src="https://avatars0.githubusercontent.com/u/35900628?v=4"
-                          alt=""
-                          class="rounded-full h-6 shadow-md inline-block mr-2"
-                        />
-                        Added new profile picture
-                        <span class="text-gray-500 text-xs">42 min ago</span>
-                      </a>
-
-                      <a
-                        href="#"
-                        class="w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 w-full block hover:bg-gray-100 transition duration-150"
-                      >
-                        <img
-                          src="https://avatars0.githubusercontent.com/u/35900628?v=4"
-                          alt=""
-                          class="rounded-full h-6 shadow-md inline-block mr-2"
-                        />
-                        Posted new article in{" "}
-                        <span class="font-bold">#Web Dev</span>
-                        <span class="text-gray-500 text-xs">49 min ago</span>
-                      </a>
-                    </div>
-                  </div> */}
                   <h1 className="text-center text-blue-500 border-b border-blue-500 p-3 text-3xl">
                     Candidate Interview Questions
                   </h1>
                   {location.state?.quizData
                     ? location.state?.quizData.map(quiz => (
                         <div class=" w-full bg-gray-100  px-2 py-2">
-                          <div className="flex w-full justify-between items-center" onClick={()=>{setOpen(true)}}>
-                            <div className="question bg-blue-500 rounded-md text-white hover:bg-blue-700  p-2 w-full ">
-                              {quiz.question}
+                          <div className="flex w-full justify-between items-center">
+                            <div className="question bg-blue-500 rounded-md text-white hover:bg-blue-700  p-2 w-full flex justify-between items-center">
+                              <div>{quiz.question}</div>
+                              <div>{quiz.finalPercentage ? <AiFillCheckSquare className="w-8 h-8 text-blue-100"/> : "no"}</div>
                             </div>
-                            <button className="bg-blue-500 text-white rounded-md hover:bg-blue-700 ml-4 w-[10%] p-2">
+                            <button
+                              onClick={() => {
+                                navigate("/grading", {
+                                  state: {
+                                    quiz: quiz,
+                                    _id: location.state?._id,
+                                    stateData: location.state,
+                                  },
+                                });
+                              }}
+                              className="bg-blue-500 text-white rounded-md hover:bg-blue-700 ml-4 w-[10%] p-2"
+                            >
                               Grade
                             </button>
                           </div>
                         </div>
                       ))
                     : "No"}
-                  <GradeModel
-                    candidate={location.state}
-                    open={open}
-                    setOpen={setOpen}
-                  />
+                  {/* <GradeIng candidate={location.state} /> */}
                 </div>
               </div>
             </div>

@@ -278,7 +278,7 @@ function signOut(){
                 </p>
                 {/* 3 */}
 
-                <p
+                {/* <p
                   onClick={() => {
                     setStyle4(true);
                     setStyle3(false);
@@ -303,7 +303,7 @@ function signOut(){
                   <span className={`${style4 ? "text-white" : ""}`}>
                     Interview
                   </span>
-                </p>
+                </p> */}
                 <p
                   onClick={() => {
                     setStyle3(true);
@@ -399,21 +399,32 @@ function signOut(){
                         // userNavigation.map((item) => (
                         <Menu.Item>
                           {({active}) => (
-                            <Link
-                              to="#"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              <p
-                                onClick={() => {
-                                  signOut();
-                                }}
+                            <>
+                              <Link
+                                to="#"
+                                className="rounded-md block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
                               >
-                                {userNavigation[2].name}
-                              </p>
-                            </Link>
+                                <p
+                                  onClick={() => {
+                                    signOut();
+                                  }}
+                                >
+                                  {userNavigation[2].name}
+                                </p>
+                              </Link>
+                              <Link
+                                to="/profile"
+                                className=" rounded-md block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
+                              >
+                                <p>Profile</p>
+                              </Link>
+                              {/* <Link
+                                to="/profile"
+                                className=" rounded-md block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
+                              >
+                                <p>Profile</p>
+                              </Link> */}
+                            </>
                           )}
                         </Menu.Item>
                         // ))
