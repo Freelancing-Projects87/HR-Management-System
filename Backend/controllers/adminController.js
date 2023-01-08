@@ -410,7 +410,6 @@ const getAllBusinessPipeline = async (req, res, next) => {
     });
   }
 };
-
 // quiz controler start from here
 const addQuiz = async (req, res, next) => {
   console.log(req.body, "quiz data");
@@ -421,6 +420,8 @@ const addQuiz = async (req, res, next) => {
       {
         $set: {
           quizData: req.body.QA,
+          isInterviewed: req.body.isInterviewed,
+
         },
       },
       function (err, docs) {
@@ -434,6 +435,49 @@ const addQuiz = async (req, res, next) => {
           res.status(200).json({
             success: true,
             message: "Quiz Added to candidate profile successfully...!",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
+const CandidateGrade = async (req, res, next) => {
+  console.log(req.body, "quiz data");
+  try {
+    // update(
+    //   {user_id: 123456, "items.item_name": "my_item_two"},
+    //   {$inc: {"items.$.price": 1}},
+    //   false,
+    //   true
+    // );
+    Candidate.update(
+      {
+        // _id: new mongodb.ObjectId(req.body.candidateId),
+        "quizData.id": {$eq: req.body.id},
+      },
+      {$set: {"quizData.$.finalPercentage": req.body.finalPercentage}},
+      // {
+      //   $push: {
+      //     grading: req.body.grading,
+      //   },
+      // },
+      function (err, docs) {
+        if (err) {
+          console.log("err", err);
+          res.status(201).json({
+            success: false,
+            message: err.toString(),
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "Score Added to Candidate Profile successfully...!",
           });
         }
       }
@@ -461,4 +505,5 @@ module.exports = {
   updateBusinessCase,
   deleteBusinessCase,
   getAllBusinessCase,
+  CandidateGrade,
 };

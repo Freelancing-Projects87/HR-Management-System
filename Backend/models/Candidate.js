@@ -34,19 +34,33 @@ const Candidates = mongoose.Schema(
       type: String,
       required: false,
     },
-    email:{
-      type:String,
-      required:false
+    email: {
+      type: String,
+      required: false,
     },
     cv: {
       type: String,
       required: [false, "Please add your CV"],
     },
-    quizData:[{ 
-      question:String,
-      answer:String,
-      id:Number
-    }]
+    quizData: [
+      {
+        question: String,
+        answer: String,
+        id: Number,
+        percent: String,
+        finalPercentage:String,
+      },
+    ],
+    grading: [
+      {
+        grade: String,
+        score: String,
+      },
+    ],
+    isInterviewed: {
+      type: Boolean,
+      required: [true, "yes interview is happend"],
+    },
   },
   {
     timestamps: true,

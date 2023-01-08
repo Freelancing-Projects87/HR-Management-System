@@ -9,7 +9,12 @@ const {
   updateBusinessline,
   getAllBusinessPipeline,
   deleteBusinessPipeline,
-  addQuiz,addBusinessCase,updateBusinessCase,getAllBusinessCase,deleteBusinessCase
+  addQuiz,
+  addBusinessCase,
+  updateBusinessCase,
+  getAllBusinessCase,
+  deleteBusinessCase,
+  CandidateGrade,
 } = require("../controllers/adminController");
 const multer = require("multer");
 const path = require("path");
@@ -44,6 +49,7 @@ router.post("/update_Businessline", updateBusinessline);
 router.post("/delete_Businessline", deleteBusinessPipeline);
 router.get("/getBusinessline", getAllBusinessPipeline);
 router.post("/quizadd",addQuiz);
+router.post("/addGrades", CandidateGrade);
 router.post('/addBusinessCase',addBusinessCase);
 router.post('/updateBusinessCase',updateBusinessCase);
 router.get('/getBusinessCase',getAllBusinessCase);
