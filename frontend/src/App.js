@@ -23,6 +23,11 @@ import BusinessCaseTable from "./components/BusinessCase/BusinessCaseTable";
 import BusinessCaseAdd from "./components/BusinessCase/BusinessCaseAdd";
 import BusinesscaseEdit from "./components/BusinessCase/BusinessCaseEdit";
 import GradeIng from "./components/Candidates/GradeIng";
+import AddSkill from "./components/Skills/SkillAdd"
+import EditSkill from "./components/Skills/SkillEdit";
+import Skills from "./components/Skills/Skills";
+
+
 
 import Interview from "./components/Interview/Interview";
 import {toast, ToastContainer} from "react-toastify";
@@ -63,7 +68,10 @@ function App() {
             <Route path="/businesscase" element={<BusinessCaseTable />} />
             <Route path="/businesscaseAdd" element={<BusinessCaseAdd />} />
             <Route path="/businesscaseEdit" element={<BusinesscaseEdit />} />
-            <Route path="/grading"  element={<GradeIng/>}/>
+            <Route path="/grading" element={<GradeIng />} />
+            <Route path="/skills" element={<Skills />} />
+            <Route path="/addskill" element={<AddSkill />} />
+            <Route path="/editskill" element={<EditSkill />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

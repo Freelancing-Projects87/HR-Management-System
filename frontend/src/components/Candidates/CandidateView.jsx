@@ -6,29 +6,47 @@ import {useForm} from "react-hook-form";
 import Candidate from "./CanidateTable";
 import {Document, Page} from "react-pdf";
 import GradeIng from "./GradeIng";
-import {AiFillCheckSquare} from "react-icons/ai"
+import {AiFillCheckSquare} from "react-icons/ai";
+import {MultiSelect} from "react-multi-select-component";
 
+const options = [
+  {label: "Grapes 🍇", value: "grapes"},
+  {label: "Mango 🥭", value: "mango"},
+  {label: "Strawberry 🍓", value: "strawberry"},
+];
 function CandidateView() {
+  const [selected, setSelected] = useState([]);
+    const [skills, setSkills] = useState([]);
+
   let navigate = useNavigate();
   const location = useLocation();
-    let [open, setOpen] = useState(false);
+  let [open, setOpen] = useState(false);
+  function CalculateGrandTotal() {
+    const percentages = location.state?.quizData.map(data =>
+      Number(data.finalPercentage)
+    );
+    console.log(percentages, "percentages");
+    const grandTotal = percentages.reduce((acc, curr) => acc + (curr || 0), 0);
+    alert(grandTotal+"%")
+  }
+  const getSkills = () => {
 
- console.log(location.state,"candidate data");
-//   const getCandidates = () => {
-//     axios
-//       .get("http://localhost:8000/api/admin/getCandidates")
-//       .then(res => {
-//         if (res.status === 200) {
-//           setCandidateData(res.data?.data);
-//         }
-//       })
-//       .catch(err => {
-//         console.error(err);
-//       });
-//   };
-//  useEffect(()=>{
-
-//  },[location.state])
+    axios
+      .get("http://localhost:8000/api/admin/getskills")
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res.data.data, "skills 2.0");
+          setSkills(res.data?.data.map((skill)=>{return{label:skill?.skill,value:skill?.skill}}));
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+  useEffect(() => {
+    getSkills()
+    console.log(skills, "skills 3.0")
+  }, []);
   return (
     <>
       {" "}
@@ -51,13 +69,8 @@ function CandidateView() {
                       </span>
                     </p>
                   </div>
-                  <div class="sm:grid sm:grid-cols-4  my-5 px-1">
-                    <p class="text-gray-500 hover:text-gray-900 bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
-                      First Name
-                    </p>
-                    <p class="text-gray-500 hover:text-gray-900 bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
-                      Last Name
-                    </p>
+                  <div class="sm:grid sm:grid-cols-2  my-5 px-1">
+                   
                     <p class="text-gray-500 hover:text-gray-900 bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
                       Nationality
                     </p>
@@ -65,12 +78,7 @@ function CandidateView() {
                     <p class="text-gray-500 hover:text-gray-900 bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
                       Phone
                     </p>
-                    <p class="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
-                      {location.state.firstname}
-                    </p>
-                    <p class="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
-                      {location.state.lastname}
-                    </p>
+                  
                     <p class="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
                       {location.state.nationality}
                     </p>
@@ -83,13 +91,45 @@ function CandidateView() {
                   <h1 className="text-center text-blue-500 border-b border-blue-500 p-3 text-3xl">
                     Candidate Interview Questions
                   </h1>
+                  <div className="w-11/12 m-auto p-4 flex items-center justify-between">
+                    <div className="w-1/3">
+                      <span className="font-bold">Skills</span>
+                      <MultiSelect
+                        options={skills}
+                        value={selected}
+                        onChange={setSelected}
+                        labelledBy="Select"
+                      />
+                    </div>
+                    <div className="w-1/3 flex flex-col">
+                      <span className="font-bold">Recomendation</span>
+                      <select className="border broder-gray-2 py-3 px-2  ">
+                        <option value="">choose Recomendation</option>
+                        <option value="offer">Offer</option>
+                        <option value="offer">Not offer</option>
+                        <option value="offer">Second Interview</option>
+                      </select>
+                    </div>
+                  </div>
+
                   {location.state?.quizData
                     ? location.state?.quizData.map(quiz => (
                         <div class=" w-full bg-gray-100  px-2 py-2">
                           <div className="flex w-full justify-between items-center">
                             <div className="question bg-blue-500 rounded-md text-white hover:bg-blue-700  p-2 w-full flex justify-between items-center">
                               <div>{quiz.question}</div>
-                              <div>{quiz.finalPercentage ? <AiFillCheckSquare className="w-8 h-8 text-blue-100"/> : "no"}</div>
+                              <div className="flex">
+                                <span className="lml-4">
+                                  {quiz.finalPercentage
+                                    ? quiz.finalPercentage + "%"
+                                    : ""}
+                                </span>{" "}
+                                {quiz.finalPercentage ? (
+                                  <AiFillCheckSquare className="w-8 h-8 text-blue-100" />
+                                ) : (
+                                  ""
+                                )}
+                              </div>
                             </div>
                             <button
                               onClick={() => {
@@ -109,6 +149,17 @@ function CandidateView() {
                         </div>
                       ))
                     : "No"}
+              {  location.state?.quizData.legth>0?  <div className="flex w-full items-center justify-center p-4">
+                    <button
+                      onClick={() => {
+                        CalculateGrandTotal();
+                      }}
+                      className="bg-blue-500 p-4 text-white rounded-md hover:bg-blue-400 hover:font-semibold"
+                    >
+                      Calculate Total
+                    </button>
+                  </div>:''
+}
                   {/* <GradeIng candidate={location.state} /> */}
                 </div>
               </div>

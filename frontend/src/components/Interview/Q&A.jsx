@@ -17,6 +17,8 @@ function QuestionsAnswers() {
   let [quizData, setQuestions] = useState(quizMetadata);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   let [index, setIndexes] = useState({firstIndex: 0, lastIndex: 15});
+  let gradeArray=[1,2,3,4,5,6,7,8,9,10];
+  const [isGradeActive,setGradeActive]=useState(false)
   const navigate = useNavigate();
 
   const saveQuiz = data => {
@@ -45,7 +47,7 @@ function QuestionsAnswers() {
   };
   useEffect(() => {
     console.log(quizData, "location state");
-  }, []);
+  }, [quizData]);
   return (
     <section className="w-[98%] h-[90vh] ml-auto flex">
       <div className="right-video w-[35%] bg-gray-200 h-[90%] flex flex-col items-center justify-start">
@@ -74,31 +76,60 @@ function QuestionsAnswers() {
           {quizData?.map((textarea, i) => (
             <div className="quiz w-[100%]  ">
               {currentQuestion == i ? (
-                <textarea
-                  className={`w-full text-center ${
-                    currentQuestion % 2 === 0
-                      ? "bg-blue-100 text-black"
-                      : "bg-blue-50 text-black"
-                  } py-24 rounded-lg border-2 border-gray-400 `}
-                  name={i}
-                  value={quizData[i].answer}
-                  id=""
-                  onChange={e => {
-                    setQuestions(prevItems =>
-                      prevItems.map(ques =>
-                        ques.id == e.target.name
-                          ? {
-                              answer: e.target.value,
-                              question: ques.question,
-                              id: ques.id,
-                              percent:ques.percent
-                            }
-                          : ques
-                      )
-                    );
-                  }}
-                  placeholder="write about interviewee"
-                ></textarea>
+                <>
+                  <textarea
+                    className={`w-full text-center ${
+                      currentQuestion % 2 === 0
+                        ? "bg-blue-100 text-black"
+                        : "bg-blue-50 text-black"
+                    } py-24 rounded-lg border-2 border-gray-400 `}
+                    name={i}
+                    value={quizData[i].answer}
+                    id=""
+                    onChange={e => {
+                      setQuestions(prevItems =>
+                        prevItems.map(ques =>
+                          ques.id == e.target.name
+                            ? {
+                                answer: e.target.value,
+                                question: ques.question,
+                                id: ques.id,
+                                percent: ques.percent,
+                              }
+                            : ques
+                        )
+                      );
+                    }}
+                    placeholder="write about interviewee"
+                  ></textarea>
+                  <div className="pagination w-full h-24 bg-gray-200 flex items-center justify-evenly">
+                    {gradeArray?.map((data, index) => (
+                      <>
+                        <button
+                          className={`w-10 h-10 hover:bg-red-500
+                       ${!isGradeActive? "bg-gray-400":"bg-blue-400"} text-black
+                    rounded-full`}
+                          onClick={e => {
+                            // setGradeActive(!isGradeActive)
+                            // alert(index)
+                            setQuestions(prevItems =>
+                              prevItems.map(ques =>
+                                ques.id == i
+                                  ? {
+                                      ...ques,
+                                      grade: data,
+                                    }
+                                  : ques
+                              )
+                            );
+                          }}
+                        >
+                          {data}
+                        </button>
+                      </>
+                    ))}
+                  </div>
+                </>
               ) : (
                 ""
               )}
@@ -116,24 +147,6 @@ function QuestionsAnswers() {
               }}
             />
           </button>
-          <div className="pagination w-full h-24 bg-gray-200 flex items-center justify-evenly">
-            {quizData.map((data, value) => (
-              <>
-                <button
-                  className={`w-10 h-10 ${
-                    value == currentQuestion
-                      ? "bg-blue-600 text-white"
-                      : " bg-gray-400 text-black"
-                  }  rounded-full`}
-                  onClick={() => {
-                    setCurrentQuestion(value);
-                  }}
-                >
-                  {value + 1}
-                </button>
-              </>
-            ))}
-          </div>
         </div>
         <div className="w-11/12 mt-4 flex items-center justify-between">
           <div className="prev_ques flex w-1/3 text-center justify-between flex-col">

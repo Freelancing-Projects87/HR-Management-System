@@ -84,14 +84,15 @@ function Candidate() {
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      First Name
+                      Interview
                     </th>
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Interview
+                      First Name
                     </th>
+
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -160,7 +161,13 @@ function Candidate() {
                           <div className="flex items-center">
                             <div className="">
                               <div className="text-sm font-medium text-gray-900">
-                                {candidate.firstname}
+                                <img
+                                  src={interview}
+                                  className="w-10 cursor-pointer h-10 pointer"
+                                  onClick={() => {
+                                    checkInterviewd(candidate);
+                                  }}
+                                />
                               </div>
                             </div>
                           </div>
@@ -169,17 +176,12 @@ function Candidate() {
                           <div className="flex items-center">
                             <div className="">
                               <div className="text-sm font-medium text-gray-900">
-                                <img
-                                  src={interview}
-                                  className="w-10 cursor-pointer h-10 pointer"
-                                  onClick={() => {
-                                   checkInterviewd(candidate)
-                                  }}
-                                />
+                                {candidate.firstname}
                               </div>
                             </div>
                           </div>
                         </td>
+
                         <td className="px-6  py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="">

@@ -278,32 +278,6 @@ function signOut(){
                 </p>
                 {/* 3 */}
 
-                {/* <p
-                  onClick={() => {
-                    setStyle4(true);
-                    setStyle3(false);
-                    setStyle2(false);
-                    setStyle1(false);
-                    navigate("/interview");
-                  }}
-                  className={classNames(
-                    `text-gray-600 ${
-                      style4 ? "bg-purple-600" : ""
-                    }  cursor-pointer`,
-                    "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
-                  )}
-                >
-                  <InboxIcon
-                    className={classNames(
-                      "text-gray-400 group-hover:text-gray-500",
-                      "mr-3 flex-shrink-0 h-6 w-6"
-                    )}
-                    aria-hidden="true"
-                  />
-                  <span className={`${style4 ? "text-white" : ""}`}>
-                    Interview
-                  </span>
-                </p> */}
                 <p
                   onClick={() => {
                     setStyle3(true);
@@ -328,6 +302,32 @@ function signOut(){
                   />
                   <span className={`${style3 ? "text-white" : ""}`}>
                     Business Case
+                  </span>
+                </p>
+                <p
+                  onClick={() => {
+                    setStyle4(true);
+                    setStyle3(false);
+                    setStyle2(false);
+                    setStyle1(false);
+                    navigate("/skills");
+                  }}
+                  className={classNames(
+                    `text-gray-600 ${
+                      style4 ? "bg-purple-600" : ""
+                    }  cursor-pointer`,
+                    "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
+                  )}
+                >
+                  <InboxIcon
+                    className={classNames(
+                      "text-gray-400 group-hover:text-gray-500",
+                      "mr-3 flex-shrink-0 h-6 w-6"
+                    )}
+                    aria-hidden="true"
+                  />
+                  <span className={`${style4 ? "text-white" : ""}`}>
+                    Skills
                   </span>
                 </p>
               </nav>
