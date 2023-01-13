@@ -17,7 +17,18 @@ function QuestionsAnswers() {
   let [quizData, setQuestions] = useState(quizMetadata);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   let [index, setIndexes] = useState({firstIndex: 0, lastIndex: 15});
-  let gradeArray=[1,2,3,4,5,6,7,8,9,10];
+  const [gradeArray, setGradeArray] = useState([
+    {value: 1, id: 1, isGradeActive: false},
+    {value: 2, id: 2, isGradeActive: false},
+    {value: 3, id: 3, isGradeActive: false},
+    {value: 4, id: 4, isGradeActive: false},
+    {value: 5, id: 5, isGradeActive: false},
+    {value: 6, id: 6, isGradeActive: false},
+    {value: 7, id: 7, isGradeActive: false},
+    {value: 8, id: 8, isGradeActive: false},
+    {value: 9, id: 9, isGradeActive: false},
+    {value: 10, id: 10, isGradeActive: false},
+  ]);
   const [isGradeActive,setGradeActive]=useState(false)
   const navigate = useNavigate();
 
@@ -47,6 +58,7 @@ function QuestionsAnswers() {
   };
   useEffect(() => {
     console.log(quizData, "location state");
+    console.log(gradeArray, "gradeArray");
   }, [quizData]);
   return (
     <section className="w-[98%] h-[90vh] ml-auto flex">
@@ -73,7 +85,7 @@ function QuestionsAnswers() {
               }}
             />
           </button>
-          {quizData?.map((textarea, i) => (
+          {quizData?.map((quizd, i) => (
             <div className="quiz w-[100%]  ">
               {currentQuestion == i ? (
                 <>
@@ -106,25 +118,36 @@ function QuestionsAnswers() {
                     {gradeArray?.map((data, index) => (
                       <>
                         <button
-                          className={`w-10 h-10 hover:bg-red-500
-                       ${!isGradeActive? "bg-gray-400":"bg-blue-400"} text-black
+                          className={`w-10 h-10 
+                       ${quizd.grade>0 &&quizd.grade==data.id ? " bg-blue-400" : "bg-gray-400"} text-black
                     rounded-full`}
                           onClick={e => {
-                            // setGradeActive(!isGradeActive)
-                            // alert(index)
+                            // setGradeArray(prev =>
+                            //   prev?.map(data =>
+                            //     data.id == index + 1
+                            //       ? {
+                            //           ...data,
+                            //           isGradeActive: data.isGradeActive
+                            //             ? false
+                            //             : true,
+                            //         }
+                            //       : data
+                            //   )
+                            // )
+                            // setGradeActive(data.map((data)=>data.id))
                             setQuestions(prevItems =>
                               prevItems.map(ques =>
                                 ques.id == i
                                   ? {
                                       ...ques,
-                                      grade: data,
+                                      grade: data.value,
                                     }
                                   : ques
                               )
                             );
                           }}
                         >
-                          {data}
+                          <span id="grade-btn">{data.value}</span>
                         </button>
                       </>
                     ))}

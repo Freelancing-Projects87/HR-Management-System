@@ -1,22 +1,31 @@
 export const quizMetadata = [
-  {question: "Elevator pitch interviewee", answer: "", id: 0, percent: "10"},
+  {
+    question: "Elevator pitch interviewee",
+    answer: "",
+    id: 0,
+    percent: "10",
+    grade: 0,
+  },
   {
     question: "What did you achieve in this experience?",
     answer: "",
     id: 1,
     percent: "1",
+    grade: 0,
   },
   {
     question: "What have you precisely done in this experience?",
     answer: "",
     id: 2,
     percent: "1",
+    grade: 0,
   },
   {
     question: "What is your favorite experience?",
     answer: "",
     id: 3,
     percent: "1",
+    grade: 0,
   },
   {question: "Why consulting?", answer: "", id: 4, percent: "1"},
   {question: "Why Accenture?", answer: "", id: 5, percent: "1"},
@@ -26,24 +35,28 @@ export const quizMetadata = [
     answer: "",
     id: 7,
     percent: "10",
+    grade: 0,
   },
   {
     question: "What motivates you / what demotivates you?",
     answer: "",
     id: 8,
     percent: "10",
+    grade: 0,
   },
   {
     question: "  What does a consultant do?",
     answer: "",
     id: 9,
     percent: "5",
+    grade: 0,
   },
   {
     question: "3 most important skills of consultant and why?",
     answer: "",
     id: 10,
     percent: "5",
+    grade: 0,
   },
 
   {
@@ -52,6 +65,7 @@ export const quizMetadata = [
     answer: "",
     id: 11,
     percent: "1",
+    grade: 0,
   },
   {
     question:
@@ -59,6 +73,7 @@ export const quizMetadata = [
     answer: "",
     id: 12,
     percent: "1",
+    grade: 0,
   },
   {
     question:
@@ -66,12 +81,14 @@ export const quizMetadata = [
     answer: "",
     id: 13,
     percent: "1",
+    grade: 0,
   },
   {
     question: "What is the future of banks in your perspective?",
     answer: "",
     id: 14,
     percent: "1",
+    grade: 0,
   },
-  {question: "Business case", answer: "", id: 15, percent: "50"},
+  {question: "Business case", answer: "", id: 15, percent: "50", grade: 0},
 ];
