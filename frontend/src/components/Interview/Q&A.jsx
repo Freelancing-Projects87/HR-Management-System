@@ -11,12 +11,25 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import {useLocation, useNavigate} from "react-router-dom";
 import {quizMetadata} from "../../utils/questions";
+import * as XLSX from "xlsx";
+import readXlsxFile from "read-excel-file";
+import { MultiSelect } from "react-multi-select-component";
 
+const options = [
+  {label: "Grapes 🍇", value: "grapes"},
+  {label: "Mango 🥭", value: "mango"},
+  {label: "Strawberry 🍓", value: "strawberry", disabled: true},
+];
 function QuestionsAnswers() {
   const location = useLocation();
   let [quizData, setQuestions] = useState(quizMetadata);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  let [index, setIndexes] = useState({firstIndex: 0, lastIndex: 15});
+  let [indexOfQuestion, setIndexes] = useState({firstIndex: 0, lastIndex: 15});
+    const [businessCases, setBusinessCases] = useState([]);
+      const [selected, setSelected] = useState([]);
+
+
+  const [exceldata, setData] = useState([]);
   const [gradeArray, setGradeArray] = useState([
     {value: 1, id: 1, isGradeActive: false},
     {value: 2, id: 2, isGradeActive: false},
@@ -29,37 +42,84 @@ function QuestionsAnswers() {
     {value: 9, id: 9, isGradeActive: false},
     {value: 10, id: 10, isGradeActive: false},
   ]);
-  const [isGradeActive,setGradeActive]=useState(false)
+  const [isGradeActive, setGradeActive] = useState(false);
   const navigate = useNavigate();
 
   const saveQuiz = data => {
-    console.log(data,location.state,"quiz data for db");
-    if (data[0].percent && data[quizData.length-1].percent) {
-      axios
-        .post("http://localhost:8000/api/admin/quizadd", {
-          QA: data,
-          candidateId: location?.state,
-          isInterviewed: true,
-        })
-        .then(res => {
-          if (res.status == 200) {
-            console.log(res, "quiz result");
-            navigate("/candidates");
-            toast.success("quiz added successfully..!", {
-              position: toast.POSITION.TOP_CENTER,
-            });
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
+    console.log(data, location.state, "quiz data for db");
+    if (data[0].percent && data[quizData.length - 1].percent) {
+      navigate("/candidateView", {state: {quizData: data}});
+      // axios
+      //   .post("http://localhost:8000/api/admin/quizadd", {
+      //     QA: data,
+      //     candidateId: location?.state,
+      //     isInterviewed: true,
+      //   })
+      //   .then(res => {
+      //     if (res.status == 200) {
+      //       console.log(res, "quiz result");
+      //       navigate("/candidates");
+      //       toast.success("quiz added successfully..!", {
+      //         position: toast.POSITION.TOP_CENTER,
+      //       });
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.error(err);
+      //   });
     }
-    
+  }
+  const getBusinessCase = () => {
+    axios
+      .get("http://localhost:8000/api/admin/getBusinessCase")
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res.data?.data,"business");
+          setBusinessCases(res.data?.data.map((d)=>{return{value:d._id,label:d.bcTitle}}))
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+  const handleFileUpload = e => {
+    e.preventDefault();
+
+    var files = e.target.files,
+      f = files[0];
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var data = e.target.result;
+      let readedData = XLSX.read(data, {type: "binary"});
+      const wsname = readedData.SheetNames[0];
+      const ws = readedData.Sheets[wsname];
+
+      /* Convert array to json*/
+      const dataParse = XLSX.utils.sheet_to_json(ws, {header: 1, defval: ""});
+      // dataParse && setData(dataParse[1]);
+      let er = document.getElementById("er");
+      let approach = document.getElementById("approach");
+      let context = document.getElementById("context");
+      console.log(dataParse[1]);
+      dataParse && setData(dataParse[1]);
+      if (dataParse.length > 1) {
+        // context.value = dataParse && dataParse[1][0];
+        // approach.value = dataParse[1][1] && dataParse[1][0];
+        // er.value = dataParse && dataParse[1][2];
+      }
+
+      console.log("dataParse", exceldata && exceldata, dataParse[1][1]);
+    };
+    reader.readAsBinaryString(f);
   };
   useEffect(() => {
     console.log(quizData, "location state");
     console.log(gradeArray, "gradeArray");
+    console.log();
   }, [quizData]);
+  useEffect(()=>{
+getBusinessCase()
+  },[])
   return (
     <section className="w-[98%] h-[90vh] ml-auto flex">
       <div className="right-video w-[35%] bg-gray-200 h-[90%] flex flex-col items-center justify-start">
@@ -77,7 +137,7 @@ function QuestionsAnswers() {
         <div className="relative quiz w-[80%]  mt-4">
           <button className="absolute top-1/3 -left-12">
             <FaArrowAltCircleLeft
-              className="text-3xl text-blue-500 hover:bg-blue-700 rounded-full"
+              className="text-3xl h-10 w-10  text-blue-500 hover:bg-blue-700 rounded-full"
               onClick={() => {
                 setCurrentQuestion(current =>
                   current == 0 ? (current = 15) : current - 1
@@ -89,52 +149,112 @@ function QuestionsAnswers() {
             <div className="quiz w-[100%]  ">
               {currentQuestion == i ? (
                 <>
-                  <textarea
-                    className={`w-full text-center ${
-                      currentQuestion % 2 === 0
-                        ? "bg-blue-100 text-black"
-                        : "bg-blue-50 text-black"
-                    } py-24 rounded-lg border-2 border-gray-400 `}
-                    name={i}
-                    value={quizData[i].answer}
-                    id=""
-                    onChange={e => {
-                      setQuestions(prevItems =>
-                        prevItems.map(ques =>
-                          ques.id == e.target.name
-                            ? {
-                                answer: e.target.value,
-                                question: ques.question,
-                                id: ques.id,
-                                percent: ques.percent,
-                              }
-                            : ques
-                        )
-                      );
-                    }}
-                    placeholder="write about interviewee"
-                  ></textarea>
+                  {indexOfQuestion.lastIndex == i ? (
+                    <>
+                      <div className="flex w-full items-center mb-1">
+                        <input
+                          type="file"
+                          onChange={handleFileUpload}
+                          className="w-1/2"
+                        />
+                        <MultiSelect
+                          options={businessCases}
+                          value={selected}
+                          onChange={setSelected}
+                          labelledBy="Select"
+                          className="w-1/2"
+                        />
+                      </div>
+
+                      <div
+                        className={`w-full text-center py-1 flex  h-72 border-2  border-gray-400 `}
+                      >
+                        <div className="w-1/2  flex items-start  flex-col p-1  space-y-2">
+                          <textarea
+                            name="context"
+                            id="context"
+                            value={exceldata[0]}
+                            placeholder="Context"
+                            className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
+                          ></textarea>
+                          <textarea
+                            name="approach"
+                            value={exceldata[1]}
+                            placeholder="Approach"
+                            id="approach"
+                            className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
+                          ></textarea>
+                          <textarea
+                            name="expectedResults"
+                            value={exceldata[2]}
+                            placeholder="Expected Results"
+                            className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
+                            id="er"
+                          ></textarea>
+                        </div>
+                        <div className="w-1/2 p-1">
+                          <textarea
+                            name={i}
+                            value={quizData[i].answer}
+                            onChange={e => {
+                              setQuestions(prevItems =>
+                                prevItems.map(ques =>
+                                  ques.id == e.target.name
+                                    ? {
+                                        answer: e.target.value,
+                                        question: ques.question,
+                                        id: ques.id,
+                                        percent: ques.percent,
+                                      }
+                                    : ques
+                                )
+                              );
+                            }}
+                            className="bg-white shadow-md w-full py-3  rounded-xl h-full  text-center py-24"
+                          ></textarea>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <textarea
+                      className={`w-full text-center ${
+                        currentQuestion % 2 === 0
+                          ? "bg-blue-100 text-black"
+                          : "bg-blue-50 text-black"
+                      } py-24 rounded-lg border-2 border-gray-400 `}
+                      name={i}
+                      value={quizData[i].answer}
+                      id=""
+                      onChange={e => {
+                        setQuestions(prevItems =>
+                          prevItems.map(ques =>
+                            ques.id == e.target.name
+                              ? {
+                                  answer: e.target.value,
+                                  question: ques.question,
+                                  id: ques.id,
+                                  percent: ques.percent,
+                                }
+                              : ques
+                          )
+                        );
+                      }}
+                      placeholder="write about interviewee"
+                    ></textarea>
+                  )}
+                  {/* grading  point */}
                   <div className="pagination w-full h-24 bg-gray-200 flex items-center justify-evenly">
                     {gradeArray?.map((data, index) => (
                       <>
                         <button
                           className={`w-10 h-10 
-                       ${quizd.grade>0 &&quizd.grade==data.id ? " bg-blue-400" : "bg-gray-400"} text-black
+                       ${
+                         quizd.grade > 0 && quizd.grade == data.id
+                           ? " bg-blue-400"
+                           : "bg-gray-400"
+                       } text-black
                     rounded-full`}
                           onClick={e => {
-                            // setGradeArray(prev =>
-                            //   prev?.map(data =>
-                            //     data.id == index + 1
-                            //       ? {
-                            //           ...data,
-                            //           isGradeActive: data.isGradeActive
-                            //             ? false
-                            //             : true,
-                            //         }
-                            //       : data
-                            //   )
-                            // )
-                            // setGradeActive(data.map((data)=>data.id))
                             setQuestions(prevItems =>
                               prevItems.map(ques =>
                                 ques.id == i
@@ -162,7 +282,7 @@ function QuestionsAnswers() {
           <button className="absolute top-1/3 -right-12">
             {" "}
             <FaArrowAltCircleRight
-              className="text-3xl text-blue-500 hover:bg-blue-700 rounded-full"
+              className="text-3xl h-10 w-10 text-blue-500 hover:bg-blue-700 rounded-full"
               onClick={() => {
                 setCurrentQuestion(current =>
                   current == 15 ? (current = 0) : current + 1
@@ -186,7 +306,7 @@ function QuestionsAnswers() {
               ""
             )}
           </div>
-          {currentQuestion == index.lastIndex ? (
+          {currentQuestion == indexOfQuestion.lastIndex ? (
             <button
               onClick={() => {
                 saveQuiz(quizData);

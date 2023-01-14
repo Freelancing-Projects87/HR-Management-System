@@ -9,34 +9,44 @@ import GradeIng from "./GradeIng";
 import {AiFillCheckSquare} from "react-icons/ai";
 import {MultiSelect} from "react-multi-select-component";
 
-const options = [
-  {label: "Grapes 🍇", value: "grapes"},
-  {label: "Mango 🥭", value: "mango"},
-  {label: "Strawberry 🍓", value: "strawberry"},
-];
 function CandidateView() {
   const [selected, setSelected] = useState([]);
-    const [skills, setSkills] = useState([]);
+  const [skills, setSkills] = useState([]);
+  const [selectedSkills, setSelectedSkills] = useState({});
+  const [isRadio, setIsRadio] = useState();
 
   let navigate = useNavigate();
   const location = useLocation();
   let [open, setOpen] = useState(false);
-  function CalculateGrandTotal() {
-    const percentages = location.state?.quizData.map(data =>
-      Number(data.finalPercentage)
-    );
-    console.log(percentages, "percentages");
-    const grandTotal = percentages.reduce((acc, curr) => acc + (curr || 0), 0);
-    alert(grandTotal+"%")
-  }
-  const getSkills = () => {
 
+  // total grade function
+  function CalculateGrandTotal() {
+ const findingPercentages = location.state?.quizData.map(data => ({
+  ...data, totalGrade: (data.grade / 10) * Number(data.percent)
+ }));
+let percentages=findingPercentages.map((data)=>data.finalPercentage)
+console.log(findingPercentages, "df");
+ 
+    const grandTotal = percentages.reduce((acc, curr) => acc + (curr || 0), 0);
+    alert(grandTotal + "%");
+  }
+  const handleCheckboxChange = event => {
+    setSelectedSkills({
+      ...selectedSkills,
+      [event.target.name]: event.target.checked,
+    });
+  };
+  const getSkills = () => {
     axios
       .get("http://localhost:8000/api/admin/getskills")
       .then(res => {
         if (res.status === 200) {
           console.log(res.data.data, "skills 2.0");
-          setSkills(res.data?.data.map((skill)=>{return{label:skill?.skill,value:skill?.skill}}));
+          setSkills(
+            res.data?.data.map(skill => {
+              return {label: skill?.skill, value: skill?.skill};
+            })
+          );
         }
       })
       .catch(err => {
@@ -44,9 +54,45 @@ function CandidateView() {
       });
   };
   useEffect(() => {
-    getSkills()
-    console.log(skills, "skills 3.0")
-  }, []);
+    getSkills();
+    console.log(skills, "skills 3.0");
+    console.log(selectedSkills, "selectedSkills");
+  }, [selectedSkills]);
+
+  // HANDLE THE ONCHANGE HERE
+
+  const handleChange = e => {
+    // string passed in
+    // a string returned by default
+    console.log(e.currentTarget.value);
+    // add + to the event to make the value a number
+    setIsRadio(e.currentTarget.value);
+  };
+
+
+  // final quiz add function on candidate profile y.k
+    const saveQuiz = data => {
+      console.log(data, location.state, "quiz data for db");
+        // axios
+        //   .post("http://localhost:8000/api/admin/quizadd", {
+        //     QA: data,
+        //     candidateId: location?.state,
+        //     isInterviewed: true,
+        //   })
+        //   .then(res => {
+        //     if (res.status == 200) {
+        //       console.log(res, "quiz result");
+        //       navigate("/candidates");
+        //       toast.success("quiz added successfully..!", {
+        //         position: toast.POSITION.TOP_CENTER,
+        //       });
+        //     }
+        //   })
+        //   .catch(err => {
+        //     console.error(err);
+        //   });
+    }
+    console.log(location.state,"dfd");
   return (
     <>
       {" "}
@@ -58,7 +104,7 @@ function CandidateView() {
             <div>
               <div class="bg-white  relative shadow rounded-md py-18 w-5/6 md:w-5/6  lg:w-11/12 xl:w-full mx-auto">
                 <div class="">
-                  <h1 class="font-bold text-center capitalize text-3xl text-gray-900">
+                  {/* <h1 class="font-bold text-center capitalize text-3xl text-gray-900">
                     {location.state.firstname} {location.state.lastname}
                   </h1>
                   <div class="my-5 px-6">
@@ -70,7 +116,6 @@ function CandidateView() {
                     </p>
                   </div>
                   <div class="sm:grid sm:grid-cols-2  my-5 px-1">
-                   
                     <p class="text-gray-500 hover:text-gray-900 bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
                       Nationality
                     </p>
@@ -78,7 +123,7 @@ function CandidateView() {
                     <p class="text-gray-500 hover:text-gray-900 bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
                       Phone
                     </p>
-                  
+
                     <p class="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
                       {location.state.nationality}
                     </p>
@@ -86,29 +131,70 @@ function CandidateView() {
                     <p class="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
                       {location.state.phone}
                     </p>
-                  </div>
+                  </div> */}
 
                   <h1 className="text-center text-blue-500 border-b border-blue-500 p-3 text-3xl">
                     Candidate Interview Questions
                   </h1>
                   <div className="w-11/12 m-auto p-4 flex items-center justify-between">
-                    <div className="w-1/3">
+                    <div className="w-1/3 flex flex-col">
                       <span className="font-bold">Skills</span>
-                      <MultiSelect
-                        options={skills}
-                        value={selected}
-                        onChange={setSelected}
-                        labelledBy="Select"
-                      />
+                      <div className="w-11/12 grid grid-cols-4 flex ">
+                        {skills.map((skil, i) => (
+                          <>
+                            <label>
+                              <input
+                                type="checkbox"
+                                name={skil?.label}
+                                onChange={handleCheckboxChange}
+                              />
+                              {skil?.value}
+                            </label>
+                          </>
+                        ))}
+                      </div>
                     </div>
+
                     <div className="w-1/3 flex flex-col">
                       <span className="font-bold">Recomendation</span>
-                      <select className="border broder-gray-2 py-3 px-2  ">
+                      {/* <select className="border broder-gray-2 py-3 px-2  ">
                         <option value="">choose Recomendation</option>
                         <option value="offer">Offer</option>
                         <option value="offer">Not offer</option>
                         <option value="offer">Second Interview</option>
-                      </select>
+                      </select> */}
+                      <ul className="radios">
+                        <li>
+                          <input
+                            type="radio"
+                            id="radio1"
+                            value="offer"
+                            onChange={handleChange}
+                            checked={isRadio === "offer"}
+                          />
+                          <label htmlFor="num1">offer</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            id="radio2"
+                            value="Notoffer"
+                            onChange={handleChange}
+                            checked={isRadio === "Notoffer"}
+                          />
+                          <label htmlFor="num2">Not offer</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            id="radio3"
+                            value="SecondInterview"
+                            onChange={handleChange}
+                            checked={isRadio === "SecondInterview"}
+                          />
+                          <label htmlFor="num3">Second Interview</label>
+                        </li>
+                      </ul>
                     </div>
                   </div>
 
@@ -143,24 +229,36 @@ function CandidateView() {
                               }}
                               className="bg-blue-500 text-white rounded-md hover:bg-blue-700 ml-4 w-[10%] p-2"
                             >
-                              Grade
+                              {quiz?.grade ? quiz.grade : "Grade"}
                             </button>
                           </div>
                         </div>
                       ))
                     : "No"}
-              {  location.state?.quizData.legth>0?  <div className="flex w-full items-center justify-center p-4">
-                    <button
-                      onClick={() => {
-                        CalculateGrandTotal();
-                      }}
-                      className="bg-blue-500 p-4 text-white rounded-md hover:bg-blue-400 hover:font-semibold"
-                    >
-                      Calculate Total
-                    </button>
-                  </div>:''
-}
+                  {location.state?.quizData.length > 0 ? (
+                    <div className="flex w-full items-center justify-center p-4">
+                      <button
+                        onClick={() => {
+                          CalculateGrandTotal();
+                        }}
+                        className="bg-blue-500 p-4 text-white rounded-md hover:bg-blue-400 hover:font-semibold"
+                      >
+                        Calculate Total
+                      </button>
+                    </div>
+                  ) : (
+                    ""
+                  )}
                   {/* <GradeIng candidate={location.state} /> */}
+                  <div className="w-full py-4 flex items-center justify-center">
+                    {location.state?.quizData ? (
+                      <button className="bg-blue-500 text-white rounded-md py-4  px-4">
+                        Save Interview
+                      </button>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
