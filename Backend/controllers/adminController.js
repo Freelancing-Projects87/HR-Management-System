@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler"); ///for not using trycatch
 const Candidate = require("../models/Candidate");
 const Businesscase = require("../models/BusinessCase");
 const BusinessPipeline = require("../models/BusinessPipeline");
+const Skill=require('../models/Skills')
 const protectApi = require("../middleware/authMiddleware");
 var mongodb = require("mongodb");
 
@@ -290,6 +291,119 @@ const getAllBusinessCase = async (req, res, next) => {
   }
 };
 //  bussiness pipeline controllers start from here////////////////////
+const updateSkill = async (req, res) => {
+  try {
+    console.log(req.body, "skill from client");
+    Skill.findByIdAndUpdate(
+      mongodb.ObjectId(req.body.id),
+      {
+        skill: req.body?.skill,
+      },
+      function (err, docs) {
+        if (err) {
+          console.log(err);
+          res.status(201).json({
+            success: false,
+            message: err.toString(),
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "skill updated successfully...!",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
+
+const addskill = async (req, res) => {
+  const {skill} = req.body;
+  console.log(req.body, "skill add");
+  if (!skill) {
+    res.status(400);
+    throw new Error("Please insert all required fields");
+  }
+
+  //   create new user
+  const skillData = await Skill.create({
+    skill
+  });
+
+  if (skill) {
+    const {skill, _id} = skillData;
+
+    res.status(201).send({
+      message: "Skill Created Successfully!",
+      data: {
+       skill,
+        _id,
+      },
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid Business pipeline  Data");
+  }
+};
+const deleteSkill = async (req, res) => {
+  console.log(req.body.id, " skill delete id..........");
+  try {
+    Skill.findByIdAndRemove(
+      {_id: mongodb.ObjectId(req.body.id)},
+      function (err, docs) {
+        if (err) {
+          console.log("err", err);
+          res.status(201).json({
+            success: false,
+            message: err.toString(),
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "Skill deleted successfully...!",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
+const getSkills = async (req, res, next) => {
+  try {
+    Skill.find(async (err, data) => {
+      if (err) {
+        console.log(err);
+      }
+      if (!data) {
+        console.log("skills not found");
+        return;
+      }
+      res.status(200).json({
+        success: true,
+        data: data,
+      });
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
+// skills rest api start from here 
+//  bussiness pipeline controllers start from here////////////////////
 const updateBusinessline = async (req, res) => {
   try {
     console.log(req.body, "edit data in server");
@@ -415,13 +529,15 @@ const addQuiz = async (req, res, next) => {
   console.log(req.body, "quiz data");
   try {
     Candidate.findByIdAndUpdate(
-      {_id: new mongodb.ObjectId(req.body.candidateId)},
-
+      {_id: new mongodb.ObjectId(req.body.id)},
       {
         $set: {
           quizData: req.body.QA,
           isInterviewed: req.body.isInterviewed,
-
+          skills: req.body.skills,
+          recomendation: req.body.recomendation,
+          businessCaseId: new mongodb.ObjectId(req.body.businessCase),
+          totalScore: req.body.totalScore,
         },
       },
       function (err, docs) {
@@ -506,4 +622,8 @@ module.exports = {
   deleteBusinessCase,
   getAllBusinessCase,
   CandidateGrade,
+  addskill,
+  updateSkill,
+  deleteSkill,
+  getSkills
 };

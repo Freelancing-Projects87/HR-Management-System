@@ -15,6 +15,7 @@ const {
   getAllBusinessCase,
   deleteBusinessCase,
   CandidateGrade,
+  getSkills,updateSkill,deleteSkill,addskill
 } = require("../controllers/adminController");
 const multer = require("multer");
 const path = require("path");
@@ -54,6 +55,10 @@ router.post('/addBusinessCase',addBusinessCase);
 router.post('/updateBusinessCase',updateBusinessCase);
 router.get('/getBusinessCase',getAllBusinessCase);
 router.post('/deleteBusinessCase',deleteBusinessCase)
+router.get('/getskills',getSkills)
+router.post('/addskill',addskill)
+router.post('/updatekill',updateSkill)
+router.post('/deleteskill',deleteSkill)
 
 
 module.exports = router;

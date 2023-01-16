@@ -48,7 +48,12 @@ const Candidates = mongoose.Schema(
         answer: String,
         id: Number,
         percent: String,
-        finalPercentage:String,
+        totalGrade: String |Number,
+      },
+    ],
+    skills: [
+      {
+        skill: String,
       },
     ],
     grading: [
@@ -59,7 +64,11 @@ const Candidates = mongoose.Schema(
     ],
     isInterviewed: {
       type: Boolean,
-      required: [true, "yes interview is happend"],
+      required: [false, "yes interview is happend"],
+    },
+    totalScore: {type: Number, required: false},
+    businessCaseId: {
+      type: String,
     },
   },
   {
