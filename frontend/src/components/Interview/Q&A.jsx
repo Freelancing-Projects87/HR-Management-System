@@ -13,7 +13,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {quizMetadata} from "../../utils/questions";
 import * as XLSX from "xlsx";
 import readXlsxFile from "read-excel-file";
-import { MultiSelect } from "react-multi-select-component";
+import {MultiSelect} from "react-multi-select-component";
 
 const options = [
   {label: "Grapes 🍇", value: "grapes"},
@@ -25,9 +25,9 @@ function QuestionsAnswers() {
   let [quizData, setQuestions] = useState(quizMetadata);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   let [indexOfQuestion, setIndexes] = useState({firstIndex: 0, lastIndex: 15});
-    const [businessCases, setBusinessCases] = useState([]);
-      const [selected, setSelected] = useState([]);
-
+  const [businessCases, setBusinessCases] = useState([]);
+  const [selected, setSelected] = useState([]);
+  console.log(location.state, "you know", selected[0]?.value, "selected");
 
   const [exceldata, setData] = useState([]);
   const [gradeArray, setGradeArray] = useState([
@@ -48,7 +48,13 @@ function QuestionsAnswers() {
   const saveQuiz = data => {
     console.log(data, location.state, "quiz data for db");
     if (data[0].percent && data[quizData.length - 1].percent) {
-      navigate("/candidateView", {state: {quizData: data}});
+      navigate("/CandidsteSecondQuestion", {
+        state: {
+          quizData: data,
+          id: location.state,
+          businessCase: selected[0]?.value,
+        },
+      });
       // axios
       //   .post("http://localhost:8000/api/admin/quizadd", {
       //     QA: data,
@@ -68,14 +74,18 @@ function QuestionsAnswers() {
       //     console.error(err);
       //   });
     }
-  }
+  };
   const getBusinessCase = () => {
     axios
       .get("http://localhost:8000/api/admin/getBusinessCase")
       .then(res => {
         if (res.status === 200) {
-          console.log(res.data?.data,"business");
-          setBusinessCases(res.data?.data.map((d)=>{return{value:d._id,label:d.bcTitle}}))
+          console.log(res.data?.data, "business");
+          setBusinessCases(
+            res.data?.data.map(d => {
+              return {value: d._id, label: d.bcTitle};
+            })
+          );
         }
       })
       .catch(err => {
@@ -117,9 +127,9 @@ function QuestionsAnswers() {
     console.log(gradeArray, "gradeArray");
     console.log();
   }, [quizData]);
-  useEffect(()=>{
-getBusinessCase()
-  },[])
+  useEffect(() => {
+    getBusinessCase();
+  }, []);
   return (
     <section className="w-[98%] h-[90vh] ml-auto flex">
       <div className="right-video w-[35%] bg-gray-200 h-[90%] flex flex-col items-center justify-start">

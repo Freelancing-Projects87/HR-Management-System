@@ -76,7 +76,7 @@ function Business() {
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Intern Assigned
+                      Candidate Assigned
                     </th>
                     <th scope="col" className="relative px-6 py-3">
                       <span className="sr-only">Edit</span>
@@ -100,7 +100,7 @@ function Business() {
                           <div className="flex items-center">
                             <div className="">
                               <div className="text-sm font-medium text-gray-900">
-                                {business.neededBy.substr(0,10)}
+                                {business.neededBy.substr(0, 10)}
                               </div>
                             </div>
                           </div>
@@ -144,7 +144,7 @@ function Business() {
                           <AiOutlineDelete
                             onClick={() => {
                               setOpen(true);
-                              setDelId(business._id)
+                              setDelId(business._id);
                             }}
                             className=" cursor-pointer  text-red-500 text-xl"
                           />
@@ -152,7 +152,7 @@ function Business() {
                         <DeleteModel
                           open={open}
                           setOpen={setOpen}
-                          id={delId&&delId}
+                          id={delId && delId}
                           getData={getBusinessline}
                           to={"delete_Businessline"}
                         />

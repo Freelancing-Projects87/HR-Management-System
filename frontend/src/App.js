@@ -13,6 +13,7 @@ import CanidateTable from "./components/Candidates/CanidateTable";
 import CandidateEdit from "./components/Candidates/CandidateEdit";
 import CandidateAdd from "./components/Candidates/CandidateAdd";
 import CandidateView from "./components/Candidates/CandidateView";
+import CandidsteSecondQuestion from "./components/Candidates/CandidsteSecondQuestion";
 import PrivateRoute from "./components/PrivateRoute";
 import {useEffect, useState} from "react";
 import Business from "./components/BusinessPipeline/BussinessTable";
@@ -26,6 +27,7 @@ import GradeIng from "./components/Candidates/GradeIng";
 import AddSkill from "./components/Skills/SkillAdd"
 import EditSkill from "./components/Skills/SkillEdit";
 import Skills from "./components/Skills/Skills";
+import Metrics from "./components/Metrics";
 
 
 
@@ -59,7 +61,11 @@ function App() {
             <Route path="/candidates" element={<CanidateTable />} exact />
             <Route path="/editcandidate" element={<CandidateEdit />} exact />
             <Route path="/addcandidate" element={<CandidateAdd />} exact />
-            <Route path="/candidateView" element={<CandidateView />} />
+            <Route
+              path="/CandidsteSecondQuestion"
+              element={<CandidsteSecondQuestion />}
+            />
+            <Route path="/candidateView" element={<CandidateView/>} exact/>
             <Route path="/business" element={<Business />} exact />
             <Route path="/editBusiness" element={<BusinessEdit />} exact />
             <Route path="/addbusiness" element={<BusinessAdd />} exact />
@@ -72,6 +78,7 @@ function App() {
             <Route path="/skills" element={<Skills />} />
             <Route path="/addskill" element={<AddSkill />} />
             <Route path="/editskill" element={<EditSkill />} />
+            <Route path="/metrics" element={<Metrics/>}/>
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

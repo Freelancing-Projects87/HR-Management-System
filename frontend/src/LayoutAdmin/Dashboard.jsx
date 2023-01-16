@@ -1,6 +1,6 @@
-import { Fragment, useState, } from 'react'
-import { Dialog, Menu, Transition } from '@headlessui/react';
-import logo from "../../src/logo.png"
+import {Fragment, useState} from "react";
+import {Dialog, Menu, Transition} from "@headlessui/react";
+import logo from "../../src/logo.png";
 import {
   BellIcon,
   CalendarIcon,
@@ -10,57 +10,55 @@ import {
   InboxIcon,
   MenuAlt2Icon,
   UsersIcon,
-  XIcon
-} from '@heroicons/react/outline'
-import { SearchIcon } from '@heroicons/react/solid'
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
+  XIcon,
+} from "@heroicons/react/outline";
+import {SearchIcon} from "@heroicons/react/solid";
+import {Link} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
-]
+  {name: "Your Profile", href: "#"},
+  {name: "Settings", href: "#"},
+  {name: "Sign out", href: "#"},
+];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const [style1,setStyle1]=useState(false)
-  const [style2,setStyle2]=useState(false)
-  const [style3,setStyle3]=useState(false)
-    const [style4, setStyle4] = useState(false);
+  const [style1, setStyle1] = useState(false);
+  const [style2, setStyle2] = useState(false);
+  const [style3, setStyle3] = useState(false);
+  const [style4, setStyle4] = useState(false);
+  const [style5, setStyle5] = useState(false);
 
-  const navigate = useNavigate()
-function signOut(){
-   axios.get("http://localhost:8000/api/users/logout").then((res)=>{
-    if(res.status==200){
-     localStorage.removeItem('token')
-     navigate('/login')
-     window.location.reload()
-    }
-   })
-}
+  const navigate = useNavigate();
+  function signOut() {
+    axios.get("http://localhost:8000/api/users/logout").then(res => {
+      if (res.status == 200) {
+        localStorage.removeItem("token");
+        navigate("/login");
+        window.location.reload();
+      }
+    });
+  }
 
-
-//   const userSignout=async ()=>{
-//      dispatch({type:adminAction.signout_user_request})
-//      const res = await axios.post('/admin/signout')
-//      console.log(res)
-//        if(res.status===200){
-//           localStorage.clear()
-//          dispatch({type:adminAction.signout_user_success,payload:{message:"you are logout"}})
-//          window.location.reload()
-//        }else{
-//          dispatch({ type: adminAction.signout_user_fail,payload:{error:res.data.error}});
-//        }
-//   }
- 
+  //   const userSignout=async ()=>{
+  //      dispatch({type:adminAction.signout_user_request})
+  //      const res = await axios.post('/admin/signout')
+  //      console.log(res)
+  //        if(res.status===200){
+  //           localStorage.clear()
+  //          dispatch({type:adminAction.signout_user_success,payload:{message:"you are logout"}})
+  //          window.location.reload()
+  //        }else{
+  //          dispatch({ type: adminAction.signout_user_fail,payload:{error:res.data.error}});
+  //        }
+  //   }
 
   return (
     <>
@@ -227,6 +225,8 @@ function signOut(){
                     setStyle2(false);
                     setStyle3(false);
                     setStyle4(false);
+                     setStyle5(false);
+
                     // window.location.href = "/candidates";
                     navigate("/candidates");
                   }}
@@ -255,6 +255,7 @@ function signOut(){
                     setStyle1(false);
                     setStyle3(false);
                     setStyle4(false);
+                    setStyle5(false);
                     navigate("/business");
                   }}
                   className={classNames(
@@ -284,6 +285,7 @@ function signOut(){
                     setStyle2(false);
                     setStyle1(false);
                     setStyle4(false);
+                    setStyle5(false);
                     navigate("/businesscase");
                   }}
                   className={classNames(
@@ -310,6 +312,8 @@ function signOut(){
                     setStyle3(false);
                     setStyle2(false);
                     setStyle1(false);
+                    setStyle5(false);
+
                     navigate("/skills");
                   }}
                   className={classNames(
@@ -328,6 +332,34 @@ function signOut(){
                   />
                   <span className={`${style4 ? "text-white" : ""}`}>
                     Skills
+                  </span>
+                </p>
+                <p
+                  onClick={() => {
+                    setStyle4(false);
+                    setStyle3(false);
+                    setStyle2(false);
+                    setStyle1(false);
+                    setStyle5(true);
+
+                    navigate("/metrics");
+                  }}
+                  className={classNames(
+                    `text-gray-600 ${
+                      style5? "bg-purple-600" : ""
+                    }  cursor-pointer`,
+                    "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
+                  )}
+                >
+                  <InboxIcon
+                    className={classNames(
+                      "text-gray-400 group-hover:text-gray-500",
+                      "mr-3 flex-shrink-0 h-6 w-6"
+                    )}
+                    aria-hidden="true"
+                  />
+                  <span className={`${style5 ? "text-white" : ""}`}>
+                    Metrics
                   </span>
                 </p>
               </nav>

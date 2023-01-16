@@ -119,7 +119,7 @@ function BusinessAdd() {
                       for="small"
                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Intern Assigned
+                      Candidate Assigned
                     </label>
                     <select
                       {...register("internAssigned", {required: true})}

@@ -12,13 +12,32 @@ import {AiFillFilePdf} from "react-icons/ai";
 import {toast, ToastContainer} from "react-toastify";
 
 function CandidateView() {
+  const [selected, setSelected] = useState([]);
   const [skills, setSkills] = useState([]);
+  const [selectedSkills, setSelectedSkills] = useState({});
+  const [recomendation, setIsRadio] = useState();
+
   let navigate = useNavigate();
   const location = useLocation();
   let [open, setOpen] = useState(false);
 
   // total grade function
-
+  function CalculateGrandTotal() {
+    const findingPercentages = location.state?.quizData.map(data => ({
+      ...data,
+      totalGrade: (data.grade / 10) * Number(data.percent),
+    }));
+    let percentages = findingPercentages.map(data => data.totalGrade);
+    console.log(findingPercentages, "df", percentages);
+    const grandTotal = percentages.reduce((acc, curr) => acc + (curr || 0), 0);
+    return Math.floor(grandTotal)
+  }
+  const handleCheckboxChange = event => {
+    setSelectedSkills({
+      ...selectedSkills,
+      [event.target.name]: event.target.checked,
+    });
+  };
   const getSkills = () => {
     axios
       .get("http://localhost:8000/api/admin/getskills")
@@ -39,9 +58,62 @@ function CandidateView() {
   useEffect(() => {
     getSkills();
     console.log(skills, "skills 3.0");
-  }, []);
+    console.log(selectedSkills, "selectedSkills");
+  }, [selectedSkills]);
 
+  // HANDLE THE ONCHANGE HERE
 
+  const handleChange = e => {
+    // string passed in
+    // a string returned by default
+    console.log(e.currentTarget.value);
+    // add + to the event to make the value a number
+    setIsRadio(e.currentTarget.value);
+  };
+
+  // final quiz add function on candidate profile y.k
+  const saveQuiz = data => {
+      const quizData = location.state?.quizData.map(data => ({
+        ...data,
+        totalGrade: (data.grade / 10) * Number(data.percent),
+      }));
+    console.log(data.quizData, "quiz data for db", data);
+    console.log(
+      Object.keys(selectedSkills).map(v => ({skill: v})),
+      recomendation,
+      "other data"
+    );
+    const gradeGrand = CalculateGrandTotal();
+    console.log(gradeGrand, "see its there or not");
+    if (recomendation || selectedSkills.length > 0) {
+      axios
+        .post("http://localhost:8000/api/admin/quizadd", {
+          QA: quizData,
+          businessCase: data?.businessCase,
+          id: location.state.id,
+          isInterviewed: true,
+          skills: Object.keys(selectedSkills).map(v => ({skill: v})),
+          recomendation: recomendation,
+          totalScore: gradeGrand,
+        })
+        .then(res => {
+          if (res.status == 200) {
+            console.log(res, "quiz result");
+            navigate("/candidates");
+            toast.success("Interview added successfully..!", {
+              position: toast.POSITION.TOP_CENTER,
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    } else {
+      toast.error("please fill Skills and Recomendation", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+  };
   console.log(location.state, "dfd");
   return (
     <>
@@ -54,7 +126,7 @@ function CandidateView() {
             <div>
               <div class="bg-white  relative shadow rounded-md py-18 w-5/6 md:w-5/6  lg:w-11/12 xl:w-full mx-auto">
                 <div class="">
-                  <h1 class="font-bold text-center capitalize text-3xl text-gray-900">
+                  {/* <h1 class="font-bold text-center capitalize text-3xl text-gray-900">
                     {location.state.firstname} {location.state.lastname}
                   </h1>
                   <div class="my-5 px-6">
@@ -81,7 +153,7 @@ function CandidateView() {
                     <p class="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
                       {location.state.phone}
                     </p>
-                  </div>
+                  </div> */}
 
                   <h1 className="text-center text-blue-500 border-b border-blue-500 p-3 text-3xl">
                     Candidate Interview Questions
@@ -92,7 +164,14 @@ function CandidateView() {
                       <div className="w-11/12 grid grid-cols-4 flex ">
                         {skills.map((skil, i) => (
                           <>
-                            <label>{skil?.value}</label>
+                            <label>
+                              <input
+                                type="checkbox"
+                                name={skil?.label}
+                                onChange={handleCheckboxChange}
+                              />
+                              {skil?.value}
+                            </label>
                           </>
                         ))}
                       </div>
@@ -108,16 +187,36 @@ function CandidateView() {
                       </select> */}
                       <ul className="radios">
                         <li>
-                          <label htmlFor="num1">
-                            {location.state.recomendation}
-                          </label>
+                          <input
+                            type="radio"
+                            id="radio1"
+                            value="offer"
+                            onChange={handleChange}
+                            checked={recomendation === "offer"}
+                          />
+                          <label htmlFor="num1">offer</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            id="radio2"
+                            value="Notoffer"
+                            onChange={handleChange}
+                            checked={recomendation === "Notoffer"}
+                          />
+                          <label htmlFor="num2">Not offer</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            id="radio3"
+                            value="SecondInterview"
+                            onChange={handleChange}
+                            checked={recomendation === "SecondInterview"}
+                          />
+                          <label htmlFor="num3">Second Interview</label>
                         </li>
                       </ul>
-                    </div>
-                    <div>
-                      {" "}
-                      <span className="font-bold">Total Score</span>
-                      <h1 className="font-extrabold">{location.state.totalScore}%</h1>
                     </div>
                   </div>
 
@@ -141,25 +240,52 @@ function CandidateView() {
                               </div>
                             </div>
                             <button
-                              //   onClick={() => {
-                              //     navigate("/grading", {
-                              //       state: {
-                              //         quiz: quiz,
-                              //         _id: location.state?._id,
-                              //         stateData: location.state,
-                              //       },
-                              //     });
-                              //   }}
+                              // onClick={() => {
+                              //   navigate("/grading", {
+                              //     state: {
+                              //       quiz: quiz,
+                              //       _id: location.state?._id,
+                              //       stateData: location.state,
+                              //     },
+                              //   });
+                              // }}
                               className="bg-blue-500 text-white rounded-md hover:bg-blue-700 ml-4 w-[10%] p-2"
                             >
-                              {quiz?.totalGrade
-                                ? quiz.totalGrade + "%"
-                                : "Grade"}
+                              {quiz?.grade ? quiz.grade : "Grade"}
                             </button>
                           </div>
                         </div>
                       ))
                     : "No"}
+                  {/* {location.state?.quizData.length > 0 ? (
+                    <div className="flex w-full items-center justify-center p-4">
+                      <button
+                        onClick={() => {
+                          CalculateGrandTotal();
+                        }}
+                        className="bg-blue-500 p-4 text-white rounded-md hover:bg-blue-400 hover:font-semibold"
+                      >
+                        Calculate Total
+                      </button>
+                    </div>
+                  ) : (
+                    ""
+                  )} */}
+                  {/* <GradeIng candidate={location.state} /> */}
+                  <div className="w-full py-4 flex items-center justify-center">
+                    {location.state?.quizData ? (
+                      <button
+                        onClick={() => {
+                          saveQuiz(location.state);
+                        }}
+                        className="bg-blue-500 text-white rounded-md py-4  px-4"
+                      >
+                        Save Interview
+                      </button>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

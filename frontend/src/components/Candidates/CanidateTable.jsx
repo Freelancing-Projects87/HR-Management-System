@@ -53,6 +53,8 @@ function Candidate() {
        theme: "light",
      });
   }
+      console.log(candidateData && candidateData, "candidateData");
+
   useEffect(() => {
     getCandidates();
     console.log(candidateData && candidateData, "candidateData");
@@ -117,6 +119,19 @@ function Candidate() {
                     >
                       Phone
                     </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      skills
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      recomendation
+                    </th>
+
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -214,6 +229,28 @@ function Candidate() {
                             <div className="">
                               <div className="text-sm font-medium text-gray-900">
                                 {candidate.phone}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6  py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="">
+                              <div className="text-sm font-medium text-gray-900 w-full  ">
+                                <div className="flex items-center flex-col ">
+                                  {candidate?.skills.map(data => (
+                                    <p> {data.skill}, </p>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6  py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="">
+                              <div className="text-sm font-medium text-gray-900">
+                                {candidate.recomendation}
                               </div>
                             </div>
                           </div>
