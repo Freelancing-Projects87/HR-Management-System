@@ -6,9 +6,18 @@ import {useForm} from "react-hook-form";
 import {useLocation} from "react-router-dom";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import * as XLSX from "xlsx";
+
 
 function BusinessCaseEdit() {
+      const [excelData, setExcelData] = useState({
+        expectedResult: "",
+        approach: "",
+        context: "",
+      });
+
   let navigate = useNavigate();
+  
   const location = useLocation();
   const {
     register,
@@ -21,16 +30,16 @@ function BusinessCaseEdit() {
       type: location.state?.type,
       difficulty: location.state?.difficulty,
       expectedTime: location.state?.expectedTime,
+
     },
   });
 
   const onSubmit = data => saveBusiness(data);
 
   const saveBusiness = data => {
-    console.log(data, "data");
     data.id = location.state?._id;
-        console.log(data, "data");
-
+    data.excelData = excelData;
+    console.log(data, "data");
     axios
       .post("http://localhost:8000/api/admin/updateBusinessCase", data)
       .then(res => {
@@ -45,9 +54,41 @@ function BusinessCaseEdit() {
       .catch(err => {
         console.error(err);
       });
-  };
+  }
+      const handleFileUpload = e => {
+        e.preventDefault();
+        var files = e.target.files,
+          f = files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var data = e.target.result;
+          let readedData = XLSX.read(data, {type: "binary"});
+          const wsname = readedData.SheetNames[0];
+          const ws = readedData.Sheets[wsname];
+          /* Convert array to json*/
+          const dataParse = XLSX.utils.sheet_to_json(ws, {
+            header: 1,
+            defval: "",
+          });
+          dataParse &&
+            setExcelData({
+              context: dataParse[1][0],
+              approach: dataParse[1][1],
+              expectedResult: dataParse[1][2],
+            });
+          // dataParse&&  setExcelData({context:uploadData[0],approach:uploadData[1],expectedResult:uploadData[2]})
+          console.log(excelData, "excelData");
+          if (dataParse.length > 1) {
+            // context.value = dataParse && dataParse[1][0];
+            // approach.value = dataParse[1][1] && dataParse[1][0];
+            // er.value = dataParse && dataParse[1][2];
+          }
+        };
+        reader.readAsBinaryString(f);
+      };
   useEffect(() => {
     console.log(location.state, "location state");
+     setExcelData(location.state?.excelData)
   }, [])
   return (
     <>
@@ -131,6 +172,19 @@ function BusinessCaseEdit() {
                       </p>
                     )}
                   </div>
+                  <div className=" pt-4 w-full">
+                    <label
+                      htmlFor="requester"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Sheet....
+                    </label>
+                    <input
+                      type="file"
+                      onChange={handleFileUpload}
+                      className="w-1/2"
+                    />
+                  </div>
                   <div className=" pt-4 w-full ">
                     <label
                       for="small"
@@ -156,7 +210,47 @@ function BusinessCaseEdit() {
                       </p>
                     )}
                   </div>
-                  <div></div>
+                  <div className="w-full bg-gray-50 px-2 pb-6 rounded-md flex items-start  flex-col pt-8  space-y-2">
+                    <textarea
+                      name="context"
+                      id="context"
+                      value={excelData.context}
+                      onChange={e => {
+                        setExcelData({
+                          ...excelData,
+                          [e.target.name]: e.target.value,
+                        });
+                      }}
+                      placeholder="Context"
+                      className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
+                    ></textarea>
+                    <textarea
+                      name="approach"
+                      value={excelData.approach}
+                      onChange={e => {
+                        setExcelData({
+                          ...excelData,
+                          [e.target.name]: e.target.value,
+                        });
+                      }}
+                      placeholder="Approach"
+                      id="approach"
+                      className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
+                    ></textarea>
+                    <textarea
+                      name="expectedResult"
+                      value={excelData.expectedResult}
+                      onChange={e => {
+                        setExcelData({
+                          ...excelData,
+                          [e.target.name]: e.target.value,
+                        });
+                      }}
+                      placeholder="Expected Results"
+                      className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
+                      id="er"
+                    ></textarea>
+                  </div>
                   <div className="flex flex-col  items-center mt-4">
                     <button
                       type="submit"

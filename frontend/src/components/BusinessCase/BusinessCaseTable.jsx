@@ -10,18 +10,28 @@ import {FaPencilAlt} from "react-icons/fa";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import DeleteModel from "../ModelDelete";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import * as XLSX from "xlsx";
 
 function BusinessCaseTable() {
   const [businessData, setBusiness] = useState([]);
+      const [excelData, setExcelData] = useState({
+        bcTitle: "",
+        type: "",
+        difficulty: "",
+        expectedTime: "",
+        excelData: {approach: "", context: "", expectedResult: ""},
+      });
+
   const [popup, setPopup] = useState(true);
   let [open, setOpen] = useState(false);
   const [delId, setDelId] = useState(null);
   console.log(delId, "delId");
   const navigate = useNavigate();
   const getBusinessCase= () => {
-    axios
-      .get("http://localhost:8000/api/admin/getBusinessCase")
-      .then(res => {
+    // bcTitle;
+    axios.get("http://localhost:8000/api/admin/getBusinessCase").then(res => {
         if (res.status === 200) {
           setBusiness(res.data?.data);
         }
@@ -31,8 +41,59 @@ function BusinessCaseTable() {
       });
   };
   useEffect(() => {
-    getBusinessCase();
-  }, []);
+    getBusinessCase()
+  }, [])
+  //  to add overall business case from 
+   const saveBusiness = data => {
+    console.log(data,"data");
+    if(data.excelData){
+     axios
+       .post("http://localhost:8000/api/admin/addBusinessCase", data)
+       .then(res => {
+         if (res.status == 200) {
+           console.log(res, "hmm");
+           navigate("/businesscase");
+           toast.success("Business Case added successfully..!", {
+             position: toast.POSITION.TOP_CENTER,
+           });
+               getBusinessCase();
+         }
+       })
+       .catch(err => {
+         console.error(err);
+       });
+    }
+   };
+   //  handler for getting data from excel sheet to add in businessCase
+   const handleFileUpload = e => {
+     e.preventDefault();
+     var files = e.target.files,
+       f = files[0];
+     var reader = new FileReader();
+     reader.onload = function (e) {
+       var data = e.target.result;
+       let readedData = XLSX.read(data, {type: "binary"});
+       const wsname = readedData.SheetNames[0];
+       const ws = readedData.Sheets[wsname];
+       /* Convert array to json*/
+       const dataParse = XLSX.utils.sheet_to_json(ws, {header: 1, defval: ""});
+     
+       console.log(dataParse[1], "excelData dataParse", excelData);
+       saveBusiness({
+         bcTitle: dataParse[1][0],
+         type: dataParse[1][1],
+         difficulty: dataParse[1][2],
+         expectedTime: dataParse[1][3],
+         excelData: {
+           context: dataParse[1][4],
+           approach: dataParse[1][5],
+           expectedResult: dataParse[1][6],
+         },
+       });
+   
+     };
+     reader.readAsBinaryString(f);
+   }
   return (
     <>
       <div className="flex mb-4 ml-2 items-end justify-end w-full ">
@@ -78,8 +139,23 @@ function BusinessCaseTable() {
                     >
                       Extected time to solve
                     </th>
-                    <th scope="col" className="relative px-6 py-3">
+                    {/* <th scope="col" className="relative px-6 py-3">
                       <span className="sr-only">Edit</span>
+                    </th> */}
+                    <th scope="col" className="relative px-6 py-3">
+                      <input
+                        style={{color: "transparent"}}
+                        type="file"
+                        id="uploadoverall"
+                        onChange={handleFileUpload}
+                        className="w-1/2 hidden"
+                      />
+                      <label
+                        htmlFor="uploadoverall"
+                        className="bg-blue-600  p-2 rounded-md text-white text-sm cursor-pointer"
+                      >
+                        Upload Overall
+                      </label>
                     </th>
                   </tr>
                 </thead>
@@ -129,7 +205,7 @@ function BusinessCaseTable() {
                             onClick={() => {
                               navigate("/businesscaseEdit", {state: business});
                             }}
-                            className=" cursor-pointer   h-6 w-6  p-1 rounded-sm bg-blue-700 hover:bg-blue-500 text-white text-xl"
+                            className=" cursor-pointer relative left-48  h-6 w-6  p-1 rounded-sm bg-blue-700 hover:bg-blue-500 text-white text-xl"
                           />
                         </td>
                         {/* <td>

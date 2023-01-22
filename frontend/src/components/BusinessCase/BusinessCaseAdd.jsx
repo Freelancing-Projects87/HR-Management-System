@@ -5,9 +5,13 @@ import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import * as XLSX from "xlsx";
+
 
 function BusinessCaseAdd() {
   let navigate = useNavigate();
+    const [excelData, setExcelData] = useState({expectedResult:"",approach:"",context:""});
+
   const {
     register,
     handleSubmit,
@@ -18,23 +22,51 @@ function BusinessCaseAdd() {
   const onSubmit = data => saveBusiness(data);
 
   const saveBusiness = data => {
+    data.excelData=excelData
     console.log(data, "data");
 
-    axios
-      .post("http://localhost:8000/api/admin/addBusinessCase", data)
-      .then(res => {
-        if (res.status == 200) {
-          console.log(res, "hmm");
-          navigate("/businesscase");
-          toast.success("Business Case added successfully..!", {
-            position: toast.POSITION.TOP_CENTER,
-          });
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      });
+  axios.post("http://localhost:8000/api/admin/addBusinessCase", data).then(res => {
+      if (res.status == 200) {
+        console.log(res, "hmm");
+        navigate("/businesscase");
+        toast.success("Business Case added successfully..!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+    });
   };
+  //  handler for getting data from excel sheet to add in businessCase
+    const handleFileUpload = e => {
+      e.preventDefault();
+      var files = e.target.files,
+        f = files[0];
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var data = e.target.result;
+        let readedData = XLSX.read(data, {type: "binary"});
+        const wsname = readedData.SheetNames[0];
+        const ws = readedData.Sheets[wsname];
+        /* Convert array to json*/
+        const dataParse = XLSX.utils.sheet_to_json(ws, {header: 1, defval: ""});
+      dataParse &&
+        setExcelData({
+          context: dataParse[1][0],
+          approach:dataParse[1][1],
+          expectedResult:dataParse[1][2]
+        });
+      // dataParse&&  setExcelData({context:uploadData[0],approach:uploadData[1],expectedResult:uploadData[2]})
+        console.log(excelData, "excelData");
+        if (dataParse.length > 1) {
+          // context.value = dataParse && dataParse[1][0];
+          // approach.value = dataParse[1][1] && dataParse[1][0];
+          // er.value = dataParse && dataParse[1][2];
+        }
+      };
+      reader.readAsBinaryString(f);
+    }
 
   return (
     <>
@@ -71,6 +103,7 @@ function BusinessCaseAdd() {
                       </p>
                     )}
                   </div>
+
                   <div className=" pt-4 w-full ">
                     <label
                       htmlFor="neededby"
@@ -92,6 +125,7 @@ function BusinessCaseAdd() {
                       </p>
                     )}
                   </div>
+
                   <div className=" pt-4 w-full ">
                     <label
                       for="small"
@@ -118,6 +152,19 @@ function BusinessCaseAdd() {
                       </p>
                     )}
                   </div>
+                  <div className=" pt-4 w-full">
+                    <label
+                      htmlFor="requester"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Sheet....
+                    </label>
+                    <input
+                      type="file"
+                      onChange={handleFileUpload}
+                      className="w-1/2"
+                    />
+                  </div>
                   <div className=" pt-4 w-full ">
                     <label
                       for="small"
@@ -132,7 +179,9 @@ function BusinessCaseAdd() {
                       } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
                     >
                       {/* <option selected>Assigned </option>   */}
-                      <option value="Marketing Size" selected>Marketing Size</option>
+                      <option value="Marketing Size" selected>
+                        Marketing Size
+                      </option>
                       <option value="Teaser">Teaser</option>
                     </select>
                     {errors.type?.type === "required" && (
@@ -140,6 +189,48 @@ function BusinessCaseAdd() {
                         Type is required
                       </p>
                     )}
+                  </div>
+
+                  <div className="w-full bg-gray-50 px-2 pb-6 rounded-md flex items-start  flex-col pt-8  space-y-2">
+                    <textarea
+                      name="context"
+                      id="context"
+                      value={excelData.context}
+                      onChange={e => {
+                        setExcelData({
+                          ...excelData,
+                          [e.target.name]: e.target.value,
+                        });
+                      }}
+                      placeholder="Context"
+                      className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
+                    ></textarea>
+                    <textarea
+                      name="approach"
+                      value={excelData.approach}
+                      onChange={e => {
+                        setExcelData({
+                          ...excelData,
+                          [e.target.name]: e.target.value,
+                        });
+                      }}
+                      placeholder="Approach"
+                      id="approach"
+                      className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
+                    ></textarea>
+                    <textarea
+                      name="expectedResult"
+                      value={excelData.expectedResult}
+                      onChange={e => {
+                        setExcelData({
+                          ...excelData,
+                          [e.target.name]: e.target.value,
+                        });
+                      }}
+                      placeholder="Expected Results"
+                      className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
+                      id="er"
+                    ></textarea>
                   </div>
                   <div></div>
                   <div className="flex flex-col  items-center mt-4">

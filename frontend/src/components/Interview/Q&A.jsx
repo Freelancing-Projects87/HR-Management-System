@@ -27,7 +27,13 @@ function QuestionsAnswers() {
   let [indexOfQuestion, setIndexes] = useState({firstIndex: 0, lastIndex: 15});
   const [businessCases, setBusinessCases] = useState([]);
   const [selected, setSelected] = useState([]);
-  console.log(location.state, "you know", selected[0]?.value, "selected");
+  console.log(
+    location.state,
+    "you know",
+    selected[0]?.value,
+    "selected",
+    selected[0]
+  );
 
   const [exceldata, setData] = useState([]);
   const [gradeArray, setGradeArray] = useState([
@@ -83,7 +89,7 @@ function QuestionsAnswers() {
           console.log(res.data?.data, "business");
           setBusinessCases(
             res.data?.data.map(d => {
-              return {value: d._id, label: d.bcTitle};
+              return {value: d._id, label: d.bcTitle,excelData:d.excelData};
             })
           );
         }
@@ -121,7 +127,7 @@ function QuestionsAnswers() {
       console.log("dataParse", exceldata && exceldata, dataParse[1][1]);
     };
     reader.readAsBinaryString(f);
-  };
+  }
   useEffect(() => {
     console.log(quizData, "location state");
     console.log(gradeArray, "gradeArray");
@@ -139,11 +145,15 @@ function QuestionsAnswers() {
         </button>
       </div>
       <div className="left-quiz w-[65%] bg-blue-50 h-full flex items-center justify-start flex-col">
-        <div className="question w-[80%] mt-12">
-          <p className=" bg-blue-500 text-center py-2 rounded-md text-white ">
+        <div className="question w-[80%] mt-12 flex items-center justify-between">
+          <p className=" bg-blue-500 text-center py-2 rounded-md text-white w-[97%]">
             {quizData[currentQuestion]?.question}
           </p>
+          <button className="font-2xl bg-gray-300 h-full text-gray-700 font-bold w-[7%] ml-2 h-8 rounded-full">
+            {currentQuestion + 1}
+          </button>
         </div>
+
         <div className="relative quiz w-[80%]  mt-4">
           <button className="absolute top-1/3 -left-12">
             <FaArrowAltCircleLeft
@@ -162,17 +172,17 @@ function QuestionsAnswers() {
                   {indexOfQuestion.lastIndex == i ? (
                     <>
                       <div className="flex w-full items-center mb-1">
-                        <input
+                        {/* <input
                           type="file"
                           onChange={handleFileUpload}
                           className="w-1/2"
-                        />
+                        /> */}
                         <MultiSelect
                           options={businessCases}
                           value={selected}
                           onChange={setSelected}
                           labelledBy="Select"
-                          className="w-1/2"
+                          className="w-[100%]"
                         />
                       </div>
 
@@ -183,20 +193,23 @@ function QuestionsAnswers() {
                           <textarea
                             name="context"
                             id="context"
-                            value={exceldata[0]}
+                            value={
+                              selected[0]?.exceldata?.context&&selected[0]
+                                ?.exceldata?.context
+                            }
                             placeholder="Context"
                             className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
                           ></textarea>
                           <textarea
                             name="approach"
-                            value={exceldata[1]}
+                            value={selected[0]?.exceldata?.approach}
                             placeholder="Approach"
                             id="approach"
                             className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
                           ></textarea>
                           <textarea
                             name="expectedResults"
-                            value={exceldata[2]}
+                            value={selected[0]?.exceldata?.expectedResults}
                             placeholder="Expected Results"
                             className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
                             id="er"

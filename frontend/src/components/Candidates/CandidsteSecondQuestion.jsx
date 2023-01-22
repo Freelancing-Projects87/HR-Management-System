@@ -30,7 +30,7 @@ function CandidateView() {
     let percentages = findingPercentages.map(data => data.totalGrade);
     console.log(findingPercentages, "df", percentages);
     const grandTotal = percentages.reduce((acc, curr) => acc + (curr || 0), 0);
-    return Math.floor(grandTotal)
+    return Math.floor(grandTotal);
   }
   const handleCheckboxChange = event => {
     setSelectedSkills({
@@ -73,11 +73,18 @@ function CandidateView() {
 
   // final quiz add function on candidate profile y.k
   const saveQuiz = data => {
-      const quizData = location.state?.quizData.map(data => ({
-        ...data,
-        totalGrade: (data.grade / 10) * Number(data.percent),
-      }));
+    let totalScore = location.state?.quizData.reduce(
+      (acc, curr) => acc + (curr.grade || 0),
+      0
+    );
+    let meanScore = totalScore / location.state?.quizData.length;
+    console.log(meanScore, "meanScore");
+    const quizData = location.state?.quizData.map(data => ({
+      ...data,
+      totalGrade: (data.grade / 10) * Number(data.percent),
+    }));
     console.log(data.quizData, "quiz data for db", data);
+    console.log(quizData, "quizData");
     console.log(
       Object.keys(selectedSkills).map(v => ({skill: v})),
       recomendation,
@@ -95,6 +102,7 @@ function CandidateView() {
           skills: Object.keys(selectedSkills).map(v => ({skill: v})),
           recomendation: recomendation,
           totalScore: gradeGrand,
+          averageGrade: meanScore,
         })
         .then(res => {
           if (res.status == 200) {
