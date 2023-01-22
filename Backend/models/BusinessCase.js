@@ -14,6 +14,11 @@ const BusinessCase = mongoose.Schema(
       type: String,
       required: true,
     },
+    excelData: {
+      context: String,
+      approach: String,
+      expectedResult: String,
+    },
     expectedTime: {
       type: String,
       required: true,

@@ -38,6 +38,10 @@ const Candidates = mongoose.Schema(
       type: String,
       required: false,
     },
+    averageGrade:{  
+      type:String,
+      required:true
+    },
     cv: {
       type: String,
       required: [false, "Please add your CV"],

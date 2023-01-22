@@ -172,7 +172,7 @@ const getAllcandidate = async (req, res, next) => {
 
 //  bussiness case controllers start from here////////////////////
 const addBusinessCase = async (req, res) => {
-  const {bcTitle, difficulty, type, expectedTime} = req.body;
+  const {bcTitle, difficulty, type, expectedTime,excelData} = req.body;
   console.log(req.body, "b case");
   if (!bcTitle || !difficulty || !type || !expectedTime) {
     res.status(400);
@@ -185,10 +185,12 @@ const addBusinessCase = async (req, res) => {
     difficulty,
     type,
     expectedTime,
+    excelData
   });
 
   if (bcTitle) {
-    const {bcTitle, difficulty, type, expectedTime, _id} = businessCase;
+    const {bcTitle, difficulty, type, excelData, expectedTime, _id} =
+      businessCase;
 
     res.status(200).send({
       message: "Business Case Created Successfully!",
@@ -197,6 +199,7 @@ const addBusinessCase = async (req, res) => {
         difficulty,
         type,
         expectedTime,
+        excelData,
         _id,
       },
     });
@@ -215,6 +218,7 @@ const updateBusinessCase = async (req, res) => {
         type: req.body?.type,
         expectedTime: req.body?.expectedTime,
         difficulty: req.body?.difficulty,
+        excelData: req.body?.excelData,
       },
       function (err, docs) {
         if (err) {
@@ -538,6 +542,7 @@ const addQuiz = async (req, res, next) => {
           recomendation: req.body.recomendation,
           businessCaseId: new mongodb.ObjectId(req.body.businessCase),
           totalScore: req.body.totalScore,
+          averageGrade: req.body.averageGrade
         },
       },
       function (err, docs) {
