@@ -27,15 +27,11 @@ function QuestionsAnswers() {
   let [indexOfQuestion, setIndexes] = useState({firstIndex: 0, lastIndex: 15});
   const [businessCases, setBusinessCases] = useState([]);
   const [selected, setSelected] = useState([]);
-  console.log(
-    location.state,
-    "you know",
-    selected[0]?.value,
-    "selected",
-    selected[0]
-  );
-
-  const [exceldata, setData] = useState([]);
+  const [exceldata, setExcelData] = useState({
+    expectedResult: "",
+    approach: "",
+    context: "",
+  });
   const [gradeArray, setGradeArray] = useState([
     {value: 1, id: 1, isGradeActive: false},
     {value: 2, id: 2, isGradeActive: false},
@@ -50,17 +46,28 @@ function QuestionsAnswers() {
   ]);
   const [isGradeActive, setGradeActive] = useState(false);
   const navigate = useNavigate();
+  console.log(
+    location.state,
+    "you know",
+    selected[0]?.value,
+    "selected",
+    selected[0]?.excelData
+  );
 
   const saveQuiz = data => {
-    console.log(data, location.state, "quiz data for db");
+    console.log(data, location.state,exceldata, "quiz data for db");
     if (data[0].percent && data[quizData.length - 1].percent) {
       navigate("/CandidsteSecondQuestion", {
         state: {
           quizData: data,
           id: location.state,
           businessCase: selected[0]?.value,
+          exceldata:exceldata,
         },
       });
+
+
+
       // axios
       //   .post("http://localhost:8000/api/admin/quizadd", {
       //     QA: data,
@@ -117,7 +124,7 @@ function QuestionsAnswers() {
       let approach = document.getElementById("approach");
       let context = document.getElementById("context");
       console.log(dataParse[1]);
-      dataParse && setData(dataParse[1]);
+      dataParse && setExcelData(dataParse[1]);
       if (dataParse.length > 1) {
         // context.value = dataParse && dataParse[1][0];
         // approach.value = dataParse[1][1] && dataParse[1][0];
@@ -133,6 +140,10 @@ function QuestionsAnswers() {
     console.log(gradeArray, "gradeArray");
     console.log();
   }, [quizData]);
+  useEffect(()=>{
+  selected[0] && setExcelData(selected[0]?.excelData);
+
+  },[selected])
   useEffect(() => {
     getBusinessCase();
   }, []);
@@ -193,23 +204,38 @@ function QuestionsAnswers() {
                           <textarea
                             name="context"
                             id="context"
-                            value={
-                              selected[0]?.exceldata?.context&&selected[0]
-                                ?.exceldata?.context
-                            }
+                            value={exceldata?.context}
+                            onChange={e => {
+                              setExcelData({
+                                ...exceldata,
+                                [e.target.name]: e.target.value,
+                              });
+                            }}
                             placeholder="Context"
                             className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
                           ></textarea>
                           <textarea
                             name="approach"
-                            value={selected[0]?.exceldata?.approach}
+                            value={exceldata?.approach}
+                            onChange={e => {
+                              setExcelData({
+                                ...exceldata,
+                                [e.target.name]: e.target.value,
+                              });
+                            }}
                             placeholder="Approach"
                             id="approach"
                             className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
                           ></textarea>
                           <textarea
-                            name="expectedResults"
-                            value={selected[0]?.exceldata?.expectedResults}
+                            name="expectedResult"
+                            value={exceldata?.expectedResult}
+                            onChange={e => {
+                              setExcelData({
+                                ...exceldata,
+                                [e.target.name]: e.target.value,
+                              });
+                            }}
                             placeholder="Expected Results"
                             className="bg-white shadow-md w-full h-20 px-3 rounded-xl"
                             id="er"

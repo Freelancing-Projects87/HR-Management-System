@@ -21,7 +21,7 @@ function CandidateView() {
   const location = useLocation();
   let [open, setOpen] = useState(false);
 
-  // total grade function
+  //function to find total percentage based on added on each question
   function CalculateGrandTotal() {
     const findingPercentages = location.state?.quizData.map(data => ({
       ...data,
@@ -32,12 +32,15 @@ function CandidateView() {
     const grandTotal = percentages.reduce((acc, curr) => acc + (curr || 0), 0);
     return Math.floor(grandTotal);
   }
+
+// function to select skills for candidate
   const handleCheckboxChange = event => {
     setSelectedSkills({
       ...selectedSkills,
       [event.target.name]: event.target.checked,
     });
   };
+  // function to get skills
   const getSkills = () => {
     axios
       .get("http://localhost:8000/api/admin/getskills")
@@ -55,14 +58,12 @@ function CandidateView() {
         console.error(err);
       });
   };
+  // effect for checking selected skills
   useEffect(() => {
     getSkills();
-    console.log(skills, "skills 3.0");
-    console.log(selectedSkills, "selectedSkills");
   }, [selectedSkills]);
 
-  // HANDLE THE ONCHANGE HERE
-
+  // HANDLE THE ONCHANGE HERE for radio button to /hire/reject/second Interview
   const handleChange = e => {
     // string passed in
     // a string returned by default
@@ -71,25 +72,21 @@ function CandidateView() {
     setIsRadio(e.currentTarget.value);
   };
 
-  // final quiz add function on candidate profile y.k
+  // final quiz add function on candidate profile y.k////////////////////////////////////////////////////////////////
   const saveQuiz = data => {
-    let totalScore = location.state?.quizData.reduce(
+    // to find total grade of all question
+    let totalgrade = location.state?.quizData.reduce(
       (acc, curr) => acc + (curr.grade || 0),
       0
     );
-    let meanScore = totalScore / location.state?.quizData.length;
+//  add totalScore in percent with grade of each question for db
+    let meanScore = totalgrade / location.state?.quizData.length;
     console.log(meanScore, "meanScore");
     const quizData = location.state?.quizData.map(data => ({
       ...data,
-      totalGrade: (data.grade / 10) * Number(data.percent),
+      grade: data.grade,
+      totalScore: (data.grade / 10) * Number(data.percent),
     }));
-    console.log(data.quizData, "quiz data for db", data);
-    console.log(quizData, "quizData");
-    console.log(
-      Object.keys(selectedSkills).map(v => ({skill: v})),
-      recomendation,
-      "other data"
-    );
     const gradeGrand = CalculateGrandTotal();
     console.log(gradeGrand, "see its there or not");
     if (recomendation || selectedSkills.length > 0) {
@@ -102,7 +99,9 @@ function CandidateView() {
           skills: Object.keys(selectedSkills).map(v => ({skill: v})),
           recomendation: recomendation,
           totalScore: gradeGrand,
+          totalGrade: totalgrade,
           averageGrade: meanScore,
+          exceldata: location.state?.exceldata,
         })
         .then(res => {
           if (res.status == 200) {
@@ -122,6 +121,7 @@ function CandidateView() {
       });
     }
   };
+  ////////////////////////////////////////////////////// quiz function to save all data in db y.k
   console.log(location.state, "dfd");
   return (
     <>

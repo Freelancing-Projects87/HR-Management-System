@@ -23,8 +23,7 @@ function BusinessCaseAdd() {
 
   const saveBusiness = data => {
     data.excelData=excelData
-    console.log(data, "data");
-
+    console.log(data, "data")
   axios.post("http://localhost:8000/api/admin/addBusinessCase", data).then(res => {
       if (res.status == 200) {
         console.log(res, "hmm");

@@ -117,7 +117,9 @@ function CandidateView() {
                     <div>
                       {" "}
                       <span className="font-bold">Total Score</span>
-                      <h1 className="font-extrabold">{location.state.totalScore}%</h1>
+                      <h1 className="font-extrabold">
+                        {location.state.totalScore}
+                      </h1>
                     </div>
                   </div>
 
@@ -152,9 +154,7 @@ function CandidateView() {
                               //   }}
                               className="bg-blue-500 text-white rounded-md hover:bg-blue-700 ml-4 w-[10%] p-2"
                             >
-                              {quiz?.totalGrade
-                                ? quiz.totalGrade + "%"
-                                : "Grade"}
+                              {quiz?.grade ? quiz.grade + "" : "Grade"}
                             </button>
                           </div>
                         </div>
