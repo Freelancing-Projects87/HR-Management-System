@@ -38,21 +38,24 @@ const Candidates = mongoose.Schema(
       type: String,
       required: false,
     },
-    averageGrade:{  
-      type:String,
-      required:true
+    averageGrade: {
+      type: String,
+      required: true,
     },
     cv: {
       type: String,
       required: [false, "Please add your CV"],
     },
+    totalGrade: String || Number,
     quizData: [
       {
         question: String,
         answer: String,
         id: Number,
         percent: String,
-        totalGrade: String |Number,
+        // totalGrade: String || Number,
+        totalScore: String || Number,
+        grade: String,
       },
     ],
     skills: [
@@ -69,6 +72,11 @@ const Candidates = mongoose.Schema(
     isInterviewed: {
       type: Boolean,
       required: [false, "yes interview is happend"],
+    },
+    excelData: {
+      context: String,
+      approach: String,
+      expectedResult: String,
     },
     totalScore: {type: Number, required: false},
     businessCaseId: {

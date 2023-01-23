@@ -542,7 +542,9 @@ const addQuiz = async (req, res, next) => {
           recomendation: req.body.recomendation,
           businessCaseId: new mongodb.ObjectId(req.body.businessCase),
           totalScore: req.body.totalScore,
-          averageGrade: req.body.averageGrade
+          totalGrade: req.body.totalGrade,
+          averageGrade: req.body.averageGrade,
+          excelData: req.body.exceldata,
         },
       },
       function (err, docs) {
