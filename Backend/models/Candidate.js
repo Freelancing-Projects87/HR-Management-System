@@ -40,7 +40,11 @@ const Candidates = mongoose.Schema(
     },
     averageGrade: {
       type: String,
-      required: true,
+      required: false,
+    },
+    averageGrade2: {
+      type: String,
+      required: false,
     },
     cv: {
       type: String,
@@ -48,6 +52,17 @@ const Candidates = mongoose.Schema(
     },
     totalGrade: String || Number,
     quizData: [
+      {
+        question: String,
+        answer: String,
+        id: Number,
+        percent: String,
+        // totalGrade: String || Number,
+        totalScore: String || Number,
+        grade: String,
+      },
+    ],
+    quizData2: [
       {
         question: String,
         answer: String,
@@ -78,7 +93,13 @@ const Candidates = mongoose.Schema(
       approach: String,
       expectedResult: String,
     },
+    excelData2: {
+      context: String,
+      approach: String,
+      expectedResult: String,
+    },
     totalScore: {type: Number, required: false},
+    totalScore2: {type: Number, required: false},
     businessCaseId: {
       type: String,
     },

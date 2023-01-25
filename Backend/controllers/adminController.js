@@ -570,6 +570,81 @@ const addQuiz = async (req, res, next) => {
     });
   }
 };
+// add second interView
+const addQuiz2 = async (req, res, next) => {
+  console.log(req.body, "quiz data");
+  try {
+    Candidate.findByIdAndUpdate(
+      {_id: new mongodb.ObjectId(req.body.id)},
+      {
+        $push: {
+          quizData2: req.body.QA,
+          totalScore2: req.body.totalScore,
+          totalGrade2: req.body.totalGrade,
+          averageGrade2: req.body.averageGrade,
+        },
+      },
+      function (err, docs) {
+        if (err) {
+          console.log("err", err);
+          res.status(201).json({
+            success: false,
+            message: err.toString(),
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "Quiz Added to candidate profile successfully...!",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
+// update specific fields intead of pushing in candidate collection
+const adddFieldToCandidate = async (req, res, next) => {
+  console.log(req.body, "quiz data");
+  try {
+    Candidate.findByIdAndUpdate(
+      {_id: new mongodb.ObjectId(req.body.id)},
+      {
+        $set: {
+          isInterviewed: req.body.isInterviewed,
+          skills: req.body.skills,
+          recomendation: req.body.recomendation,
+          businessCaseId: new mongodb.ObjectId(req.body.businessCase),
+          excelData: req.body.exceldata,
+        },
+      },
+      function (err, docs) {
+        if (err) {
+          console.log("err", err);
+          res.status(201).json({
+            success: false,
+            message: err.toString(),
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "Quiz Added to candidate profile successfully...!",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
 const CandidateGrade = async (req, res, next) => {
   console.log(req.body, "quiz data");
   try {
@@ -632,5 +707,7 @@ module.exports = {
   addskill,
   updateSkill,
   deleteSkill,
-  getSkills
+  getSkills,
+  addQuiz2,
+  adddFieldToCandidate,
 };
