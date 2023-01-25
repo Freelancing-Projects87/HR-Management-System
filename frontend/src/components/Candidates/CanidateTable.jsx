@@ -38,9 +38,9 @@ function Candidate() {
       });
   };
   function checkInterviewd(candidate){
- !candidate.isInterviewed
-   ? navigate("/interview", {
-       state: candidate._id,
+ !candidate.isInterviewed || candidate.recomendation == "SecondInterview"
+   ? navigate("/interview", { 
+       state: {id: candidate._id, isSecondTime: candidate?.recomendation},
      })
    : toast.info("Already Interview Taken of This Candidate!", {
        position: "top-center",

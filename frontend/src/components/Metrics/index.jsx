@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,6 +12,7 @@ import {
 import {Line} from "react-chartjs-2";
 import {faker} from "@faker-js/faker";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 ChartJS.register(
   CategoryScale,
@@ -36,28 +37,37 @@ export const options = {
   },
 };
 
-
 export default function Metrics() {
-    const [candidates,setCandidateData]=useState([])
-    const labels = candidates?.map(candidate => candidate.firstname);
-
-    const data = {
-      labels,
-      datasets: [
-        {
-          label: "For all Candidates",
-          data: candidates.map((cand) =>cand.totalScore ),
-          borderColor: "rgb(53, 162, 235)",
-          backgroundColor: "rgba(53, 162, 235, 0.5)",
-        },
-        // {
-        //   label: "For specific Business Case",
-        //   data: labels.map(() => faker.datatype.number({min: 0, max: 100})),
-        //   borderColor: "rgb(53, 162, 235)",
-        //   backgroundColor: "rgba(53, 162, 235, 0.5)",
-        // },
-      ],
-    };
+  const [candidates, setCandidateData] = useState([]);
+  const [candidateselected,setCandidate]=useState([])
+  const labels = candidateselected?.map(candidate => candidate.firstname);
+  
+  const [businessCase, setBusinessCases] = useState([]);
+  const [bcId, selectedBC] = useState(null);
+  const businessLabel = businessCase?.map(bc => bc.bcTitle);
+  console.log(bcId, "selectedBC");
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "For all Candidates",
+        data: candidateselected?.map(cand => cand.totalScore),
+        borderColor: "rgb(53, 162, 235)",
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+      },
+    ],
+  };
+   const data2 = {
+     labels,
+     datasets: [
+       {
+         label: "For all Candidates",
+         data: candidates?.map(cand => cand.totalScore),
+         borderColor: "rgb(53, 162, 235)",
+         backgroundColor: "rgba(53, 162, 235, 0.5)",
+       },
+     ],
+   };
 
   const getCandidates = () => {
     axios
@@ -71,16 +81,63 @@ export default function Metrics() {
         console.error(err);
       });
   };
-          console.log(candidates, "candidates");
+  console.log(candidates, "candidates");
+
+  // get businessCase
+  const getBusinessCase = () => {
+    axios
+      .get("http://localhost:8000/api/admin/getBusinessCase")
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res.data?.data, "business");
+          setBusinessCases(res.data?.data.map(d => d));
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+  // function to check how much we have candidate for specific businessCase
+  function checkCandidateBC(id) {
+    let FilteredBC = candidates?.filter(
+      candidate => candidate.businessCaseId == id
+    );
+    setCandidate(FilteredBC);
+    if(!FilteredBC.length<1){
+     toast.success(
+       `you have  ${FilteredBC?.length} candidates for this businessCase`,
+       {position: "top-center", delay: 100}
+     );
+    }
+    console.log(FilteredBC, "FilteredBC");
+  }
+  console.log(businessCase, "businessCase");
+  useEffect(() => {
+    checkCandidateBC(bcId);
+     
+  }, [bcId]);
 
   useEffect(() => {
-
     getCandidates();
+    getBusinessCase();
   }, []);
+
   return (
     <>
       <div className="h-[100vh] w-[83%] ml-auto flex items-center justify-center   ">
-        <div className="w-11/12 bg-white">
+        <ToastContainer/>
+        <div className="w-11/12 bg-white relative">
+          <select
+            onChange={e => {
+              selectedBC(e.target.value);
+            }}
+            className="bg-blue-100 border-2 border-gray-200 absolute right-0"
+          >
+            <option value="">select</option>
+            {businessCase?.map(bc => (
+              <option value={bc._id}>{bc.bcTitle}</option>
+            ))}
+          </select>
           <Line options={options} data={data} />
         </div>
       </div>

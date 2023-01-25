@@ -13,7 +13,7 @@ import CanidateTable from "./components/Candidates/CanidateTable";
 import CandidateEdit from "./components/Candidates/CandidateEdit";
 import CandidateAdd from "./components/Candidates/CandidateAdd";
 import CandidateView from "./components/Candidates/CandidateView";
-import CandidsteSecondQuestion from "./components/Candidates/CandidsteSecondQuestion";
+import CandidsteSecondQuestion from "./components/Candidates/CandidateSecondQuestion";
 import PrivateRoute from "./components/PrivateRoute";
 import {useEffect, useState} from "react";
 import Business from "./components/BusinessPipeline/BussinessTable";
@@ -28,6 +28,7 @@ import AddSkill from "./components/Skills/SkillAdd"
 import EditSkill from "./components/Skills/SkillEdit";
 import Skills from "./components/Skills/Skills";
 import Metrics from "./components/Metrics";
+import Profile from "./components/Profile"
 
 
 
@@ -79,6 +80,7 @@ function App() {
             <Route path="/addskill" element={<AddSkill />} />
             <Route path="/editskill" element={<EditSkill />} />
             <Route path="/metrics" element={<Metrics/>}/>
+            <Route path="/profile" element={<Profile/>}/>
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

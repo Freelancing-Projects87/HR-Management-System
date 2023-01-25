@@ -62,7 +62,8 @@ function QuestionsAnswers() {
           quizData: data,
           id: location.state,
           businessCase: selected[0]?.value,
-          exceldata:exceldata,
+          exceldata: exceldata,
+          isSecondTime: location.state.isSecondTime,
         },
       });
 
