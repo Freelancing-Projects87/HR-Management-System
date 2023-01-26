@@ -40,6 +40,7 @@ const UserSchema = mongoose.Schema(
       default: "bio",
       maxLength: [250, "Bio must not be more than 250 characters"],
     },
+    role:{type:String,required:true}
   },
   {
     timestamps: true,

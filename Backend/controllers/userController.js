@@ -15,6 +15,12 @@ const generateToken = (id) => {
 ////RegisterUser Route controller/////////
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email,surname, password, photo, phone, bio } = req.body;
+  let role;
+  if(email=="admin@gmail.com"){
+   role="admin"
+  }else{
+    role="junior"
+  }
   if (!name || !email || !password || !surname) {
     res.status(400);
     throw new Error("Please insert all required fields");
@@ -37,7 +43,8 @@ const registerUser = asyncHandler(async (req, res) => {
     photo,
     phone,
     bio,
-    surname
+    surname,
+    role,
   });
 
   /////Generate Token/////
@@ -103,7 +110,7 @@ const loginUser = asyncHandler(async (req, res) => {
   });
 
   if (user && isPasswordCorrect) {
-    const { _id, name, email, photo, phone, bio } = user;
+    const { _id, name, email, photo, phone, bio,role } = user;
     res.status(200).json({
       message: "user LoggedIn Successfully!",
       data: {
@@ -113,7 +120,7 @@ const loginUser = asyncHandler(async (req, res) => {
         photo,
         phone,
         bio,
-        token,
+        token,role
       },
     });
   } else {
@@ -140,10 +147,11 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 ///// get User Info/////
 const getUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.body.id);
+  console.log(req.params?.id,"params");
+  const user = await User.findById(req.params.id);
   console.log(user);
   if (user) {
-    const { _id, name, email, photo, phone, bio } = user;
+    const { _id, name, email, photo, phone, bio,role } = user;
     res.status(200).json({
       message: "user Data Fetched Successfully!",
       data: {
@@ -153,6 +161,7 @@ const getUser = asyncHandler(async (req, res) => {
         photo,
         phone,
         bio,
+        role
       },
     });
   } else {
@@ -177,14 +186,15 @@ const loginStatus = asyncHandler(async (req, res) => {
 
 /////Update User Profile /////
 const updateUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.body._id);
+    let profilePhoto = `http://localhost:8000/${req.file.path.replace(/\\/g, "/")}`;
   if (user) {
     const { name, email, photo, phone, bio } = user;
     user.email = email;
     user.name = req.body.name || name;
     user.phone = req.body.phone || phone;
     user.bio = req.body.bio || bio;
-    user.photo = req.body.photo || photo;
+    user.photo = profilePhoto || photo;
     const updatedUser = await user.save();
     res.status(200).json({
       message: "User Record Updated Successfully",

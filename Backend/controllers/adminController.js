@@ -65,7 +65,7 @@ const addCandidate = async (req, res) => {
     grade,
   } = req.body;
   console.log(req.body, "add data");
-  let cv = `http://localhost:8000/cv/${req.file}`;
+  let cv = `http://localhost:8000/cv/${req.file?.filename}`;
   if (!firstname || !lastname || !email || !phone) {
     res.status(400);
     throw new Error("Please insert all required fields");
@@ -156,6 +156,7 @@ const getAllcandidate = async (req, res, next) => {
         console.log("Candidates not found");
         return;
       }
+      console.log(data, "data all candidates");
       res.status(200).json({
         success: true,
         data: data,
@@ -572,12 +573,12 @@ const addQuiz = async (req, res, next) => {
 };
 // add second interView
 const addQuiz2 = async (req, res, next) => {
-  console.log(req.body, "quiz data");
+  console.log(req.body, "quiz 2");
   try {
-    Candidate.findByIdAndUpdate(
+    Candidate.updateMany(
       {_id: new mongodb.ObjectId(req.body.id)},
       {
-        $push: {
+        $set: {
           quizData2: req.body.QA,
           totalScore2: req.body.totalScore,
           totalGrade2: req.body.totalGrade,
@@ -609,7 +610,7 @@ const addQuiz2 = async (req, res, next) => {
 };
 // update specific fields intead of pushing in candidate collection
 const adddFieldToCandidate = async (req, res, next) => {
-  console.log(req.body, "quiz data");
+  console.log(req.body, "extra fields");
   try {
     Candidate.findByIdAndUpdate(
       {_id: new mongodb.ObjectId(req.body.id)},
@@ -632,7 +633,7 @@ const adddFieldToCandidate = async (req, res, next) => {
         } else {
           res.status(200).json({
             success: true,
-            message: "Quiz Added to candidate profile successfully...!",
+            message: "Quiz fields added successfully...!",
           });
         }
       }

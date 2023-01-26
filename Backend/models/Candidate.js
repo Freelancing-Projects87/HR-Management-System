@@ -50,7 +50,8 @@ const Candidates = mongoose.Schema(
       type: String,
       required: [false, "Please add your CV"],
     },
-    totalGrade: String || Number,
+    totalGrade: Number,
+    totalGrade2: Number,
     quizData: [
       {
         question: String,

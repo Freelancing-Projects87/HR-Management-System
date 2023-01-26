@@ -8,6 +8,9 @@ const adminRoute=require('./routes/adminRoute')
 const errorHandler = require("./middleware/errorMiddleware");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
+const path = require("path");
+   const dirname = path.resolve();
+
 
 
 const app = express();
@@ -15,7 +18,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-// app.use("/cv", express.static("images"));
+   app.use("/uploads", express.static(path.join(dirname, "/uploads")));
 app.use(bodyParser.json());
 
 const corsOptions = {
