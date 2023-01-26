@@ -214,7 +214,7 @@ function BusinessCaseEdit() {
                     <textarea
                       name="context"
                       id="context"
-                      value={excelData.context}
+                      value={excelData?.context}
                       onChange={e => {
                         setExcelData({
                           ...excelData,
@@ -226,7 +226,7 @@ function BusinessCaseEdit() {
                     ></textarea>
                     <textarea
                       name="approach"
-                      value={excelData.approach}
+                      value={excelData?.approach}
                       onChange={e => {
                         setExcelData({
                           ...excelData,
@@ -239,7 +239,7 @@ function BusinessCaseEdit() {
                     ></textarea>
                     <textarea
                       name="expectedResult"
-                      value={excelData.expectedResult}
+                      value={excelData?.expectedResult}
                       onChange={e => {
                         setExcelData({
                           ...excelData,

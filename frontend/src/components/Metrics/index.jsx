@@ -133,7 +133,7 @@ export default function Metrics() {
             }}
             className="bg-blue-100 border-2 border-gray-200 absolute right-0"
           >
-            <option value="">select</option>
+            <option value="">Select business Case</option>
             {businessCase?.map(bc => (
               <option value={bc._id}>{bc.bcTitle}</option>
             ))}

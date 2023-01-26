@@ -73,11 +73,11 @@ function BusinessCaseAdd() {
       {/* bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . */}
       <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
         {/* <Header /> */}
-        <div className="  bg-blue-50 w-[70%] rounded-2xl">
-          <div className=" overflow-hidden ">
-            <div className=" m-8 mx-4 my-4 bg-white rounded-2xl">
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <p className="text-xl text-gray-600 p-4 font-bold text-center mb-2">
+        <div className="  bg-blue-50 w-[70%] rounded-2xl  ">
+          <div className=" overflow-hidden  ">
+            <div className=" m-8 mx-4  bg-white rounded-2xl ">
+              <form onSubmit={handleSubmit(onSubmit)} className="">
+                <p className="text-xl text-gray-600 pt-4 font-bold text-center mb-2">
                   Add Business Pipeline
                 </p>
                 <div className=" bg-white/40 sm:p-2 rounded-2xl grid grid-cols-2 gap-y-4 h-full   bg-gray-600 px-6 w-[87%]  mx-auto ">

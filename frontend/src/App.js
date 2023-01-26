@@ -1,4 +1,5 @@
 import Dashboard from "./LayoutAdmin/Dashboard";
+import {useEffect, useState} from "react";
 import {
   BrowserRouter,
   Routes,
@@ -15,7 +16,6 @@ import CandidateAdd from "./components/Candidates/CandidateAdd";
 import CandidateView from "./components/Candidates/CandidateView";
 import CandidsteSecondQuestion from "./components/Candidates/CandidateSecondQuestion";
 import PrivateRoute from "./components/PrivateRoute";
-import {useEffect, useState} from "react";
 import Business from "./components/BusinessPipeline/BussinessTable";
 import BusinessAdd from "./components/BusinessPipeline/BusinessAdd";
 import BusinessEdit from "./components/BusinessPipeline/BusinessEdit";
@@ -29,14 +29,17 @@ import EditSkill from "./components/Skills/SkillEdit";
 import Skills from "./components/Skills/Skills";
 import Metrics from "./components/Metrics";
 import Profile from "./components/Profile"
+import axios from "axios";
 
 
 
 import Interview from "./components/Interview/Interview";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { FaMehRollingEyes } from "react-icons/fa";
+const roles={admin:"admin",junior:"junior"}
 function App() {
+  const [role,setRole]=useState(null)
   const paths = [
     "/candidates",
     "/editcandidate",
@@ -50,12 +53,28 @@ function App() {
       }
     }
   }, [isAuthenticUser()]);
-
+   function getUser() {
+    let user=JSON.parse(localStorage.getItem('user'))
+     axios
+       .get(`http://localhost:8000/api/users/getuser/${user._id}`)
+       .then(res => {
+         if (res.status === 200) {
+           setRole(res.data.data?.role);
+           console.log(res.data?.data.role, "res.data?.role");
+         }
+       })
+       .catch(err => {
+         console.error(err);
+       });
+   }
+   useEffect(() => {
+     getUser();
+   }, []);
   return (
     <div className="App">
       <ToastContainer />
       <BrowserRouter>
-        {isAuthenticUser() ? <Dashboard /> : ""}
+        {isAuthenticUser() ? <Dashboard  role={role} /> : ""}
 
         <Routes>
           <Route element={<PrivateRoute />}>
@@ -67,10 +86,13 @@ function App() {
               element={<CandidsteSecondQuestion />}
             />
             <Route path="/candidateView" element={<CandidateView/>} exact/>
+            {role==roles.admin?<>
             <Route path="/business" element={<Business />} exact />
             <Route path="/editBusiness" element={<BusinessEdit />} exact />
             <Route path="/addbusiness" element={<BusinessAdd />} exact />
             <Route path="/businessView" element={<BusinessView />} />
+            </>
+            :''}
             <Route path="/interview" element={<Interview />} />
             <Route path="/businesscase" element={<BusinessCaseTable />} />
             <Route path="/businesscaseAdd" element={<BusinessCaseAdd />} />

@@ -16,6 +16,7 @@ import {SearchIcon} from "@heroicons/react/solid";
 import {Link} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import {useEffect} from "react";
 
 const userNavigation = [
   {name: "Your Profile", href: "#"},
@@ -27,8 +28,10 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Dashboard() {
+export default function Dashboard({role}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const roles={admin:"admin",junior:'junior'}
+  const [user,setUser]=useState({})
 
   const [style1, setStyle1] = useState(false);
   const [style2, setStyle2] = useState(false);
@@ -47,6 +50,7 @@ export default function Dashboard() {
     });
   }
 
+
   //   const userSignout=async ()=>{
   //      dispatch({type:adminAction.signout_user_request})
   //      const res = await axios.post('/admin/signout')
@@ -59,7 +63,9 @@ export default function Dashboard() {
   //          dispatch({ type: adminAction.signout_user_fail,payload:{error:res.data.error}});
   //        }
   //   }
-
+useEffect(()=>{
+ setUser(JSON.parse(localStorage.getItem("user")));
+},[localStorage.setItem])
   return (
     <>
       <div className="">
@@ -225,7 +231,7 @@ export default function Dashboard() {
                     setStyle2(false);
                     setStyle3(false);
                     setStyle4(false);
-                     setStyle5(false);
+                    setStyle5(false);
 
                     // window.location.href = "/candidates";
                     navigate("/candidates");
@@ -249,34 +255,7 @@ export default function Dashboard() {
                   </span>
                 </p>
                 {/* 2 */}
-                <p
-                  onClick={() => {
-                    setStyle2(true);
-                    setStyle1(false);
-                    setStyle3(false);
-                    setStyle4(false);
-                    setStyle5(false);
-                    navigate("/business");
-                  }}
-                  className={classNames(
-                    `text-gray-600 ${
-                      style2 ? "bg-purple-600 text-white" : ""
-                    }  cursor-pointer`,
-                    "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
-                  )}
-                >
-                  <CalendarIcon
-                    className={classNames(
-                      "text-gray-400 group-hover:text-gray-500",
-                      "mr-3 flex-shrink-0 h-6 w-6"
-                    )}
-                    aria-hidden="true"
-                  />
-                  <span className={`${style2 ? "text-white" : ""}`}>
-                    {" "}
-                    Business Pipeline
-                  </span>
-                </p>
+
                 {/* 3 */}
 
                 <p
@@ -334,6 +313,38 @@ export default function Dashboard() {
                     Skills
                   </span>
                 </p>
+                {roles.admin == role ? (
+                  <p
+                    onClick={() => {
+                      setStyle2(true);
+                      setStyle1(false);
+                      setStyle3(false);
+                      setStyle4(false);
+                      setStyle5(false);
+                      navigate("/business");
+                    }}
+                    className={classNames(
+                      `text-gray-600 ${
+                        style2 ? "bg-purple-600 text-white" : ""
+                      }  cursor-pointer`,
+                      "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
+                    )}
+                  >
+                    <CalendarIcon
+                      className={classNames(
+                        "text-gray-400 group-hover:text-gray-500",
+                        "mr-3 flex-shrink-0 h-6 w-6"
+                      )}
+                      aria-hidden="true"
+                    />
+                    <span className={`${style2 ? "text-white" : ""}`}>
+                      {" "}
+                      Business Pipeline
+                    </span>
+                  </p>
+                ) : (
+                  ""
+                )}
                 <p
                   onClick={() => {
                     setStyle4(false);
@@ -346,7 +357,7 @@ export default function Dashboard() {
                   }}
                   className={classNames(
                     `text-gray-600 ${
-                      style5? "bg-purple-600" : ""
+                      style5 ? "bg-purple-600" : ""
                     }  cursor-pointer`,
                     "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
                   )}
@@ -410,11 +421,7 @@ export default function Dashboard() {
                   <div>
                     <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                       <span className="sr-only">Open user menu</span>
-                      <img
-                        className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt=""
-                      />
+                      <img className="h-12 w-12 rounded-full" src={user?.photo} alt="" />
                     </Menu.Button>
                   </div>
                   <Transition

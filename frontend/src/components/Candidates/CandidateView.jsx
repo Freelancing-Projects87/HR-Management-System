@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState,useRef} from "react";
 import axios from "axios";
 import {useNavigate, useLocation} from "react-router-dom";
 import {useEffect} from "react";
@@ -13,9 +13,15 @@ import {toast, ToastContainer} from "react-toastify";
 
 function CandidateView() {
   const [skills, setSkills] = useState([]);
+  const [interviews, setInterviews] = useState([]);
+  let [selectedInterview, setSelectedInterview] = useState([]);
+  let [totalGrade,setGrade]=useState()
+  const [averageGrade,setAverageGrade]=useState()
+  
   let navigate = useNavigate();
   const location = useLocation();
   let [open, setOpen] = useState(false);
+  const ref = useRef(null);
 
   // total grade function
 
@@ -41,15 +47,103 @@ function CandidateView() {
     console.log(skills, "skills 3.0");
   }, []);
 
-
   console.log(location.state, "dfd");
+
+  console.log(interviews, "interviews");
+//  scrool to interview
+  const handleClick = () => {
+    ref.current?.scrollIntoView({behavior: "smooth"});
+  };
+  useEffect(() => {
+    let {quizData, quizData2} = location.state;
+    let interviews = [quizData, quizData2];
+    setInterviews(interviews);
+    let SumOfScore =
+      Number(location.state.totalGrade) +
+      Number(location.state.totalGrade2?location.state.totalGrade2:0);
+    setAverageGrade(
+      location.state.totalGrade2 ? SumOfScore / 2 : location.state.totalGrade
+    );
+  }, [location.state]);
+  console.log(averageGrade, "averageGrade");
   return (
     <>
       <ToastContainer />{" "}
+      <div className="   w-[85%] ml-auto flex items-center justify-start h-[80vh]  bg-white  mt-6">
+        <div className="w-11/12 mx-auto relative">
+          <h1 className="absolute -top-24 w-full text-center text-2xl font-semibold text-gray-600">
+            {" "}
+            <span>Average Score: {averageGrade}</span>
+          </h1>
+
+          <div className="w- grid grid-cols-2  gap-3">
+            {interviews[0]?.length > 0 ? (
+              interviews?.map((interview, i) =>
+                interview.length > 0 ? (
+                  <div
+                    onClick={() => {
+                      setSelectedInterview(interview);
+                      handleClick();
+                      setGrade(
+                        i == 0
+                          ? location.state?.totalGrade
+                          : location.state?.totalGrade2
+                      );
+                    }}
+                    className=" bg-gray-200 text-start relative space-y-2 shadow-lg h-[40vh] flex flex-col items-center justify-center font-semibold text-gray-500 text-xl border-2 hover:border-blue-200   text-center rounded-md hover:bg-gray-50  cursor-pointer"
+                  >
+                    <div className="absolute top-0 w-full h-12 bg-purple-700 text-center text-white">
+                      {i == 0 ? (
+                        <span>First Interview</span>
+                      ) : (
+                        <span>Second Interview</span>
+                      )}
+                    </div>
+                    <div className="text-start">
+                      <span className="text-gray-600 font-bold">
+                        Total Grade:{" "}
+                      </span>
+
+                      {i == 0
+                        ? location.state.totalGrade
+                        : location.state.totalGrade2}
+                    </div>
+                    <div>
+                      <span className="text-gray-600 font-bold">
+                        Total Percentage:{" "}
+                      </span>
+                      {i == 0
+                        ? location.state.totalScore + "%"
+                        : location.state.totalScore2 + "%"}
+                    </div>
+                    <div>
+                      <span className="text-gray-600 font-bold">
+                        Average grade:{" "}
+                      </span>
+                      {i == 0
+                        ? location.state.averageGrade + "%"
+                        : location.state.averageGrade2 + "%"}
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )
+              )
+            ) : (
+              <h1>This candidate have not Interviewed yet!</h1>
+            )}
+          </div>
+        </div>
+      </div>
       {/* bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . */}
-      <div className="  w-[85%] ml-auto flex items-center justify-start  bg-white ">
+      <div
+        ref={ref}
+        className={`${
+          !selectedInterview.length ? "opacity-0" : ""
+        }  w-[85%] ml-auto flex items-center justify-start  bg-white`}
+      >
         {/* <Header /> */}
-        <div className="   h-auto py-12 w-[98%]  ml-auto rounded-2xl">
+        <div className="   h-auto pt-1 w-[98%]  ml-auto rounded-2xl">
           <div class="container mx-auto  ">
             <div>
               <div class="bg-white  relative shadow rounded-md py-18 w-5/6 md:w-5/6  lg:w-11/12 xl:w-full mx-auto">
@@ -116,15 +210,13 @@ function CandidateView() {
                     </div>
                     <div>
                       {" "}
-                      <span className="font-bold">Total Score</span>
-                      <h1 className="font-extrabold">
-                        {location.state.totalScore}
-                      </h1>
+                      <span className="font-bold">Total Grade</span>
+                      <h1 className="font-extrabold">{totalGrade}</h1>
                     </div>
                   </div>
 
-                  {location.state?.quizData
-                    ? location.state?.quizData.map(quiz => (
+                  {selectedInterview
+                    ? selectedInterview.map(quiz => (
                         <div class=" w-full bg-gray-100  px-2 py-2">
                           <div className="flex w-full justify-between items-center">
                             <div className="question bg-blue-500 rounded-md text-white hover:bg-blue-700  p-2 w-full flex justify-between items-center">
