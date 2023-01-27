@@ -1,10 +1,12 @@
 const asyncHandler = require("express-async-handler"); ///for not using trycatch block////
 const Candidate = require("../models/Candidate");
+const Interview=require('../models/Interviews')
 const Businesscase = require("../models/BusinessCase");
 const BusinessPipeline = require("../models/BusinessPipeline");
 const Skill=require('../models/Skills')
 const protectApi = require("../middleware/authMiddleware");
 var mongodb = require("mongodb");
+const { default: mongoose } = require("mongoose");
 
 ////Admin Routes/////
 
@@ -529,6 +531,7 @@ const getAllBusinessPipeline = async (req, res, next) => {
     });
   }
 };
+
 // quiz controler start from here
 const addQuiz = async (req, res, next) => {
   console.log(req.body, "quiz data");
@@ -536,16 +539,16 @@ const addQuiz = async (req, res, next) => {
     Candidate.findByIdAndUpdate(
       {_id: new mongodb.ObjectId(req.body.id)},
       {
-        $set: {
+        $push: {
           quizData: req.body.QA,
-          isInterviewed: req.body.isInterviewed,
-          skills: req.body.skills,
-          recomendation: req.body.recomendation,
-          businessCaseId: new mongodb.ObjectId(req.body.businessCase),
-          totalScore: req.body.totalScore,
-          totalGrade: req.body.totalGrade,
-          averageGrade: req.body.averageGrade,
-          excelData: req.body.exceldata,
+          // isInterviewed: req.body.isInterviewed,
+          // skills: req.body.skills,
+          // recomendation: req.body.recomendation,
+          // businessCaseId: new mongodb.ObjectId(req.body.businessCase),
+          // totalScore: req.body.totalScore,
+          // totalGrade: req.body.totalGrade,
+          // averageGrade: req.body.averageGrade,
+          // excelData: req.body.exceldata,
         },
       },
       function (err, docs) {
@@ -572,41 +575,38 @@ const addQuiz = async (req, res, next) => {
   }
 };
 // add second interView
-const addQuiz2 = async (req, res, next) => {
-  console.log(req.body, "quiz 2");
-  try {
-    Candidate.updateMany(
-      {_id: new mongodb.ObjectId(req.body.id)},
-      {
-        $set: {
-          quizData2: req.body.QA,
-          totalScore2: req.body.totalScore,
-          totalGrade2: req.body.totalGrade,
-          averageGrade2: req.body.averageGrade,
-        },
-      },
-      function (err, docs) {
-        if (err) {
-          console.log("err", err);
-          res.status(201).json({
-            success: false,
-            message: err.toString(),
-          });
-        } else {
-          res.status(200).json({
-            success: true,
-            message: "Quiz Added to candidate profile successfully...!",
-          });
-        }
-      }
-    );
-  } catch (err) {
-    console.log(err);
-    res.status(201).json({
-      success: false,
-      message: err.toString(),
-    });
-  }
+const addInterview = async (req, res, next) => {
+  console.log(req.body.id.id, "interview wa honay bacho ji");
+   const {
+    QA
+   } = req.body;
+   console.log(req.body, "interview");
+   if (!QA) {
+     res.status(400);
+     throw new Error("Please add quiz");
+   }
+
+   //   create interview
+   const CandidateData = await Interview.create({
+     quizData:QA,
+     candidateId:req.body.id?.id
+   });
+
+   if (QA) {
+     const {
+       quizData,
+     } = CandidateData;
+
+     res.status(200).send({
+       message: "inteview Created Successfully!",
+       data: {
+        quizData
+       },
+     });
+   } else {
+     res.status(400);
+     throw new Error("Invalid Candidate Data");
+   }
 };
 // update specific fields intead of pushing in candidate collection
 const adddFieldToCandidate = async (req, res, next) => {
@@ -709,6 +709,6 @@ module.exports = {
   updateSkill,
   deleteSkill,
   getSkills,
-  addQuiz2,
+addInterview,
   adddFieldToCandidate,
 };
