@@ -90,9 +90,14 @@ function CandidateView() {
     const gradeGrand = CalculateGrandTotal();
     console.log(gradeGrand, "see its there or not");
     if (recomendation || selectedSkills.length > 0) {
+          let interviewDataSet = {};
+          quizData?.forEach((element, i) => {
+            interviewDataSet[i] = element;
+          });
+          console.log(interviewDataSet, "interviewDataSet");
       axios
-        .post("http://localhost:8000/api/admin/quizadd", {
-          QA: quizData,
+        .post("http://localhost:8000/api/admin/addInterview", {
+          QA: interviewDataSet,
           businessCase: data?.businessCase,
           id: location.state.id,
           isInterviewed: true,
@@ -139,9 +144,15 @@ function CandidateView() {
     const gradeGrand = CalculateGrandTotal();
     console.log("qd",quizData,"l s i",location.state.id,"grant",gradeGrand,"tg",totalgrade,"mc",meanScore,"see its there or not" );
     if (recomendation || selectedSkills.length > 0) {
+            let interviewDataSet = {};
+            quizData?.forEach((element, i) => {
+              interviewDataSet[i] = element;
+            });
+            console.log(interviewDataSet, "interviewDataSet");
+      
       axios
-        .post("http://localhost:8000/api/admin/quizadd2", {
-          QA: quizData,
+        .post("http://localhost:8000/api/admin/addInterview", {
+          QA: interviewDataSet,
           id: location.state.id,
           totalScore: gradeGrand,
           totalGrade: totalgrade,
@@ -177,6 +188,7 @@ function CandidateView() {
     const gradeGrand = CalculateGrandTotal();
     console.log(gradeGrand, "see its there or not");
     if (recomendation || selectedSkills.length > 0) {
+      
       axios
         .post("http://localhost:8000/api/admin/adddFieldToCandidate", {
           businessCase: data?.businessCase,

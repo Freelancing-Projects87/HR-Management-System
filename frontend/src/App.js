@@ -56,7 +56,7 @@ function App() {
    function getUser() {
     let user=JSON.parse(localStorage.getItem('user'))
      axios
-       .get(`http://localhost:8000/api/users/getuser/${user._id}`)
+       .get(`http://localhost:8000/api/users/getuser/${user?._id}`)
        .then(res => {
          if (res.status === 200) {
            setRole(res.data.data?.role);
