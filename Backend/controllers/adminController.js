@@ -1,12 +1,12 @@
 const asyncHandler = require("express-async-handler"); ///for not using trycatch block////
 const Candidate = require("../models/Candidate");
-const Interview=require('../models/Interviews')
+const Interview = require("../models/Interviews");
 const Businesscase = require("../models/BusinessCase");
 const BusinessPipeline = require("../models/BusinessPipeline");
-const Skill=require('../models/Skills')
+const Skill = require("../models/Skills");
 const protectApi = require("../middleware/authMiddleware");
 var mongodb = require("mongodb");
-const { default: mongoose } = require("mongoose");
+const {default: mongoose} = require("mongoose");
 
 ////Admin Routes/////
 
@@ -175,7 +175,7 @@ const getAllcandidate = async (req, res, next) => {
 
 //  bussiness case controllers start from here////////////////////
 const addBusinessCase = async (req, res) => {
-  const {bcTitle, difficulty, type, expectedTime,excelData} = req.body;
+  const {bcTitle, difficulty, type, expectedTime, excelData} = req.body;
   console.log(req.body, "b case");
   if (!bcTitle || !difficulty || !type || !expectedTime) {
     res.status(400);
@@ -188,7 +188,7 @@ const addBusinessCase = async (req, res) => {
     difficulty,
     type,
     expectedTime,
-    excelData
+    excelData,
   });
 
   if (bcTitle) {
@@ -340,7 +340,7 @@ const addskill = async (req, res) => {
 
   //   create new user
   const skillData = await Skill.create({
-    skill
+    skill,
   });
 
   if (skill) {
@@ -349,7 +349,7 @@ const addskill = async (req, res) => {
     res.status(201).send({
       message: "Skill Created Successfully!",
       data: {
-       skill,
+        skill,
         _id,
       },
     });
@@ -409,7 +409,7 @@ const getSkills = async (req, res, next) => {
     });
   }
 };
-// skills rest api start from here 
+// skills rest api start from here
 //  bussiness pipeline controllers start from here////////////////////
 const updateBusinessline = async (req, res) => {
   try {
@@ -539,9 +539,9 @@ const addQuiz = async (req, res, next) => {
     Candidate.findByIdAndUpdate(
       {_id: new mongodb.ObjectId(req.body.id)},
       {
-        $push: {
-          quizData: req.body.QA,
-          // isInterviewed: req.body.isInterviewed,
+        $set: {
+          // quizData: req.body.QA,
+          isInterviewed: req.body.isInterviewed,
           // skills: req.body.skills,
           // recomendation: req.body.recomendation,
           // businessCaseId: new mongodb.ObjectId(req.body.businessCase),
@@ -577,37 +577,65 @@ const addQuiz = async (req, res, next) => {
 // add second interView
 const addInterview = async (req, res, next) => {
   console.log(req.body.id.id, "interview wa honay bacho ji");
-   const {
-    QA
-   } = req.body;
-   console.log(req.body, "interview");
-   if (!QA) {
-     res.status(400);
-     throw new Error("Please add quiz");
-   }
+  const {QA} = req.body;
+  console.log(req.body, "interview");
+  if (!QA) {
+    res.status(400);
+    throw new Error("Please add quiz");
+  }
+  //   create interview
+  const CandidateData = await Interview.create({
+    quizData: QA,
+    candidateId: new mongodb.ObjectId(req.body.id?.id),
+    businessCaseId: new mongodb.ObjectId(req.body.businessCase),
+    totalScore: req.body.totalScore,
+    totalGrade: req.body.totalGrade,
+    averageGrade: req.body.averageGrade,
+  });
 
-   //   create interview
-   const CandidateData = await Interview.create({
-     quizData:QA,
-     candidateId:req.body.id?.id
-   });
+  if (QA) {
+    const {quizData} = CandidateData;
 
-   if (QA) {
-     const {
-       quizData,
-     } = CandidateData;
-
-     res.status(200).send({
-       message: "inteview Created Successfully!",
-       data: {
-        quizData
-       },
-     });
-   } else {
-     res.status(400);
-     throw new Error("Invalid Candidate Data");
-   }
+    res.status(200).send({
+      message: "inteview Created Successfully!",
+      data: {
+        quizData,
+      },
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid Candidate Data");
+  }
 };
+// get Candidate Interview ///////////////////////////////////
+const getCandidatesInterviews=async(req,res,next)=>{
+  console.log(req.params.id,"inter id");
+    try {
+      Interview.find(
+        {candidateId: req.params.id},
+        async (err, data) => {
+          if (err) {
+            console.log(err);
+          }
+          if (!data) {
+            console.log("Data not found");
+            return;
+          } else {
+            res.status(200).json({
+              success: true,
+              data: data,
+            });
+          }
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      res.status(201).json({
+        success: false,
+        message: err.toString(),
+      });
+    }
+}
 // update specific fields intead of pushing in candidate collection
 const adddFieldToCandidate = async (req, res, next) => {
   console.log(req.body, "extra fields");
@@ -709,6 +737,7 @@ module.exports = {
   updateSkill,
   deleteSkill,
   getSkills,
-addInterview,
+  addInterview,
+  getCandidatesInterviews,
   adddFieldToCandidate,
 };

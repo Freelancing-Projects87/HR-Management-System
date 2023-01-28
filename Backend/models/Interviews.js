@@ -6,6 +6,7 @@ const Interview = mongoose.Schema(
       type: String,
       required: false,
     },
+    totalGrade: Number,
     quizData: [
       {
         question: String,
@@ -21,9 +22,16 @@ const Interview = mongoose.Schema(
       type: Boolean,
       required: [false, "yes interview is happend"],
     },
+    excelData: {
+      context: String,
+      approach: String,
+      expectedResult: String,
+    },
     totalScore: {type: Number, required: false},
-    totalScore2: {type: Number, required: false},
     candidateId: {
+      type: String,
+    },
+    businessCaseId: {
       type: String,
     },
   },

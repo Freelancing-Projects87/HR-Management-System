@@ -17,7 +17,11 @@ const {
   deleteBusinessCase,
   CandidateGrade,
   adddFieldToCandidate,
-  getSkills,updateSkill,deleteSkill,addskill
+  getSkills,
+  updateSkill,
+  deleteSkill,
+  addskill,
+  getCandidatesInterviews,
 } = require("../controllers/adminController");
 const multer = require("multer");
 const path = require("path");
@@ -53,8 +57,8 @@ router.post("/update_Businessline", updateBusinessline);
 router.post("/delete_Businessline", deleteBusinessPipeline);
 router.get("/getBusinessline", getAllBusinessPipeline);
 router.post("/quizadd",addQuiz);
-// router.post("/quizadd2", addQuiz2);
 router.post("/addInterview", addInterview);
+router.get("/getInterviews/:id",getCandidatesInterviews)
 router.post("/adddFieldToCandidate", adddFieldToCandidate);
 router.post("/addGrades", CandidateGrade);
 router.post('/addBusinessCase',addBusinessCase);
