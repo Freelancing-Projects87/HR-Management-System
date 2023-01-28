@@ -41,6 +41,7 @@ export default function Metrics() {
   const [candidates, setCandidateData] = useState([]);
   const [candidateselected,setCandidate]=useState([])
   const labels = candidateselected?.map(candidate => candidate.firstname);
+  console.log(candidateselected);
   
   const [businessCase, setBusinessCases] = useState([]);
   const [bcId, selectedBC] = useState(null);
@@ -50,8 +51,8 @@ export default function Metrics() {
     labels,
     datasets: [
       {
-        label: "For all Candidates",
-        data: candidateselected?.map(cand => cand.totalScore),
+        label: " Candidate grade",
+        data: candidateselected?.map(cand => cand.averageGrade),
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },

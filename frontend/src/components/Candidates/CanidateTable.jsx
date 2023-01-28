@@ -176,7 +176,13 @@ function Candidate() {
                         <td className="px-6  py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="">
-                              <div className="text-sm font-medium text-gray-900">
+                              <div
+                                className={`${
+                                  candidate.recomendation == "SecondInterview"
+                                    ? ""
+                                    : "opacity-30"
+                                } text-sm font-medium text-gray-900`}
+                              >
                                 <img
                                   src={interview}
                                   className="w-10 cursor-pointer h-10 pointer"
@@ -250,8 +256,15 @@ function Candidate() {
                         <td className="px-6  py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="">
-                              <div style={{textTransform:"capitalize"}} className="text-sm font-medium text-gray-900 ">
-                                {candidate.recomendation}
+                              <div
+                                style={{textTransform: "capitalize"}}
+                                className="text-sm font-medium text-gray-900 "
+                              >
+                                {candidate.recomendation == "SecondInterview" &&
+                                  "Second Interview"}
+                                {candidate.recomendation == "Notoffer" &&
+                                  "Not Offer"}
+                                {candidate.recomendation == "offer" && "Offer"}
                               </div>
                             </div>
                           </div>

@@ -143,6 +143,7 @@ function CandidateView() {
           skills: Object.keys(selectedSkills).map(v => ({skill: v})),
           recomendation: recomendation,
           exceldata: location.state?.exceldata,
+          averageGrade: meanScore,
         })
         .then(res => {
           if (res.status == 200) {
@@ -258,6 +259,7 @@ function CandidateView() {
                         <li>
                           <input
                             type="radio"
+                        
                             id="radio3"
                             value="SecondInterview"
                             onChange={handleChange}
@@ -328,9 +330,9 @@ function CandidateView() {
                           // if (
                           //   location?.state?.isSecondTime == "SecondInterview"
                           // ) {
-                            saveInterview(location.state);
-                            secondInterviewUpdateFields(location.state);
-                          // } 
+                          saveInterview(location.state);
+                          secondInterviewUpdateFields(location.state);
+                          // }
                         }}
                         className="bg-blue-500 text-white rounded-md py-4  px-4"
                       >

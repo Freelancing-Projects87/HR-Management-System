@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect,useRef} from "react";
 import axios from "axios";
 import {useNavigate, useLocation, json} from "react-router-dom";
 import {useForm} from "react-hook-form";
@@ -7,27 +7,31 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Profile() {
   const [showForm, setShowForm] = useState(false);
+      const location = useLocation();
+
   const [photo,setPhoto]=useState(null);
-  const [user,setUser]=useState({})
-  const location = useLocation();
+    const fileref=useRef()
+
+  let [user,setUser]=useState({})
   const navigate = useNavigate();
   const onSubmit = data => UpdateProfile(data);
-  console.log(user, "user");
+  console.log(user,"user");
   const {
     register,
+    reset,
     handleSubmit,
     formState: {errors},
     watch,
-  } = useForm({defaultValues: {}});
+  
+  } = useForm({defaultValues:{name:"",phone:"",email:""}});
+  console.log(errors,"orro");
   const UpdateProfile = data => {
     console.log(data, "updated paswword you know");
     const {_id} = JSON.parse(localStorage.getItem("user"));
-    // data._id = _id;
-    // data.photo=photo
     const token = localStorage.getItem("token");
     console.log(data, "profile");
     let formData = new FormData();
-    formData.append("photo", photo);
+    formData.append("photo", photo)
     formData.append("_id", _id);
     formData.append("name", data.name);
     formData.append("email", data.email);
@@ -43,7 +47,9 @@ function Profile() {
       .then(res => {
         console.log(res, "user is updated", res);
         if (res.status === 200) {
+          toast.success("profile updated successfully!",{position:"top-center"})
           console.log(res,"res");
+          setUser(res.data?.data)
          getUser()
         }
       })
@@ -52,13 +58,14 @@ function Profile() {
       })
   };
     function getUser() {
-      let user = JSON.parse(localStorage.getItem("user"));
       axios
-        .get(`http://localhost:8000/api/users/getuser/${user._id}`)
+        .get(`http://localhost:8000/api/users/getuser/${location.state._id}`)
         .then(res => {
           if (res.status === 200) {
             localStorage.setItem("user",JSON.stringify( res.data?.data));
-            setUser(res.data.data);
+                       res?.data && reset(res?.data?.data);
+
+          setUser(res?.data?.data);
             console.log(res.data?.data.role, "res.data?.role");
           }
         })
@@ -66,36 +73,29 @@ function Profile() {
           console.error(err);
         });
     }
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem('user')))
-  }, []);
+    useEffect(() => {
+      getUser();
+    }, [location.state,reset]);
   return (
     <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
       <ToastContainer />
       <div className="h-full w-11/12">
         <div className="border-b-2 block md:flex">
-          <div className="w-full md:w-2/5 p-4 sm:p-6 lg:p-8 bg-white shadow-md">
-            <div className="flex justify-between">
+          <div className="w-full md:w-2/5 p-4 sm:p-6 lg:p-8 bg-white ">
+            {/* <div className="flex justify-between">
               <span className="text-xl font-semibold block">Profile</span>
-              {/* <button
-                onClick={() => {
-                  setShowForm(!showForm);
-                }}
-                className="-mt-2 text-md font-bold text-white bg-gray-700 rounded-full px-5 py-2 hover:bg-gray-800"
-              >
-                Edit
-              </button> */}
+             
             </div>
             <div className="text-gray-600 text-md">
-              Name: <span className="font-bold">{user.name}</span>{" "}
+              Name: <span className="font-bold">{user?.name}</span>{" "}
             </div>{" "}
             <br />
             <div className="text-gray-600 text-md">
-              Email: <span className="font-bold">{user.email}</span>
+              Email: <span className="font-bold">{user?.email}</span>
             </div>
             <br />
             <div className="text-gray-600 text-md">
-              Phone: <span className="font-bold">{user.phone}</span>
+              Phone: <span className="font-bold">{user?.phone}</span>
             </div>
             <div className="w-full p-8 mx-2 flex justify-center">
               <img
@@ -104,7 +104,7 @@ function Profile() {
                 src={user?.photo}
                 alt=""
               />
-            </div>
+            </div> */}
           </div>
 
           <div className={`w-full  md:w-3/5 p-8 bg-white lg:ml-4 shadow-md`}>
@@ -119,6 +119,10 @@ function Profile() {
                   </label>
                   <div className="flex">
                     <input
+                      // defaultValue={user?.name}
+                      onChange={e => {
+                        setUser({name: e.target.value});
+                      }}
                       id="name"
                       {...register("name", {required: true})}
                       className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
@@ -139,16 +143,13 @@ function Profile() {
                     Email
                   </label>
                   <input
+                    defaultValue={user?.email}
                     id="email"
-                    {...register("email", {required: true})}
+                    disabled
+                    {...register("email", {required: false})}
                     className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
                     type="email"
                   />
-                  {errors.email?.type === "required" && (
-                    <p role="alert" className="text-red-500">
-                      email is required
-                    </p>
-                  )}
                 </div>
                 <div className="pb-4">
                   <label
@@ -159,6 +160,7 @@ function Profile() {
                   </label>
                   <input
                     id=""
+                    defaultValue={user?.phone}
                     {...register("phone", {required: true})}
                     className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
                     type="text"
@@ -177,19 +179,26 @@ function Profile() {
                     Photo
                   </label>
                   <input
-                    id="email"
-                    {...register("photo", {required: true})}
+                    id="photo"
+                    ref={fileref}
                     onChange={e => {
                       setPhoto(e.target.files[0]);
                     }}
-                    className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
+                    className="border-1 hidden  rounded-r px-4 py-2 w-full border border-gray-500"
                     type="file"
                   />
-                  {errors.photo?.type === "required" && (
-                    <p role="alert" className="text-red-500">
-                      Photo is required
-                    </p>
-                  )}
+                  <label htmlFor="photo">
+                    <img
+                      onClick={() => {
+                        fileref.current.click();
+                      }}
+                      src={
+                       !photo? user?.photo :URL.createObjectURL(photo)
+                      }
+                      alt=""
+                      className="w-48 rounded-md h-48"
+                    />
+                  </label>
                 </div>
                 <button className="border-1 bg-blue-500 text-white hover:bg-blue-700  rounded-r px-4 py-2 w-full border border-gray-500">
                   Update

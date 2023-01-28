@@ -65,7 +65,7 @@ export default function Dashboard({role}) {
   //   }
 useEffect(()=>{
  setUser(JSON.parse(localStorage.getItem("user")));
-},[localStorage.setItem])
+},[])
   return (
     <>
       <div className="">
@@ -420,7 +420,7 @@ useEffect(()=>{
                 <Menu as="div" className="ml-3 relative">
                   <div>
                     <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                      <span className="sr-only">Open user menu</span>
+                      {/* <span className="">{user?.name}</span> */}
                       <img className="h-12 w-12 rounded-full" src={user?.photo} alt="" />
                     </Menu.Button>
                   </div>
@@ -451,12 +451,12 @@ useEffect(()=>{
                                   {userNavigation[2].name}
                                 </p>
                               </Link>
-                              <Link
-                                to="/profile"
+                              <button
+                              onClick={()=>{navigate("/profile",{state:user});}}
                                 className=" rounded-md block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
                               >
                                 <p>Profile</p>
-                              </Link>
+                              </button>
                               {/* <Link
                                 to="/profile"
                                 className=" rounded-md block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"

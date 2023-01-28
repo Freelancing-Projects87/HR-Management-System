@@ -1,4 +1,4 @@
-import React, {useState,useRef} from "react";
+import React, {useState, useRef} from "react";
 import axios from "axios";
 import {useNavigate, useLocation} from "react-router-dom";
 import {useEffect} from "react";
@@ -15,15 +15,15 @@ function CandidateView() {
   const [skills, setSkills] = useState([]);
   const [interviews, setInterviews] = useState([]);
   let [selectedInterview, setSelectedInterview] = useState([]);
+  let [averageTotalGrade, setAverageScore] = useState([]);
+  const [activeInterview, setActiveInterview] = useState(-1);
   let [totalGrade, setGrade] = useState();
   const [averageGrade, setAverageGrade] = useState();
-
+  console.log(averageGrade, "averageGrade");
   let navigate = useNavigate();
   const location = useLocation();
   let [open, setOpen] = useState(false);
   const ref = useRef(null);
-
-  // total grade function
 
   const getSkills = () => {
     axios
@@ -31,48 +31,46 @@ function CandidateView() {
       .then(res => {
         if (res.status === 200) {
           console.log(res.data.data, "skills 2.0");
-          setSkills(
-            res.data?.data.map(skill => {
-              return {label: skill?.skill, value: skill?.skill};
-            })
-          );
+          // setSkills(
+          //   res.data?.data.map(skill => {
+          //     return {label: skill?.skill, value: skill?.skill};
+          //   })
+          // );
         }
       })
       .catch(err => {
         console.error(err);
       });
   };
-  useEffect(() => {
-    getSkills();
-    console.log(skills, "skills 3.0");
-  }, []);
 
   console.log(location.state, "dfd");
 
-  console.log(interviews, "interviews");
+  console.log(interviews, "interviews", averageTotalGrade, "averageTotalGrade");
   //  scrool to interview
   const handleClick = () => {
     ref.current?.scrollIntoView({behavior: "smooth"});
   };
-  useEffect(() => {
-    let {quizData, quizData2} = location.state;
-    let interviews = [quizData, quizData2];
-    setInterviews(interviews);
-    let SumOfScore =
-      Number(location.state.totalGrade) +
-      Number(location.state.totalGrade2 ? location.state.totalGrade2 : 0);
-    setAverageGrade(
-      location.state.totalGrade2 ? SumOfScore / 2 : location.state.totalGrade
-    );
-  }, [location.state]);
-  console.log(averageGrade, "averageGrade");
-  ////////////////////////////////////////////////////// quiz function to save all data in db y.k
+
+  /////////////////////////quiz function to save all data in db y.k
   const getInterviewsOfCandidates = id => {
     axios
       .get(`http://localhost:8000/api/admin/getInterviews/${id}`)
       .then(res => {
         if (res.status === 200) {
-          console.log(res.data, "two candidates should be there?,,,,,,,");
+          setInterviews(res.data.data);
+          setAverageScore(
+            res.data?.data
+              .map(interview => interview.totalGrade)
+              .reduce((cur, prev) => cur + prev, 0) / res.data?.data.length
+          );
+          setAverageGrade(
+            Math.floor(
+              res.data?.data
+                .map(interview => Number(interview.averageGrade))
+                .reduce((cur, prev) => cur + prev, 0) / res.data?.data.length
+            )
+          );
+          console.log(res.data, "interview");
         }
       })
       .catch(err => {
@@ -81,73 +79,106 @@ function CandidateView() {
   };
   useEffect(() => {
     getInterviewsOfCandidates(location.state?._id);
-  }, []);
+    getSkills();
+    console.log(skills, "skills 3.0");
+  }, [location.state]);
+
+  useEffect(() => {
+    let {quizData, quizData2} = location.state;
+    let interviews = [quizData, quizData2];
+    // setInterviews(interviews);
+    let SumOfScore =
+      Number(location.state.totalGrade) +
+      Number(location.state.totalGrade2 ? location.state.totalGrade2 : 0);
+
+    setSkills(location.state?.skills);
+  }, [location.state]);
+  // console.log(averageGrade, "averageGrade");
   return (
     <>
       <ToastContainer />{" "}
-      <div className="   w-[85%] ml-auto flex items-center justify-start h-[80vh]  bg-white  mt-6">
+      <div className="   w-[85%] ml-auto flex items-center justify-start h-auto pt-12  bg-white  mt-6">
         <div className="w-11/12 mx-auto relative">
           <h1 className="absolute -top-24 w-full text-center text-2xl font-semibold text-gray-600">
             {" "}
-            <span>Average Score: {averageGrade}</span>
           </h1>
+          {/* <h1 class="font-bold text-center capitalize text-3xl text-gray-900">
+            {location.state.firstname} {location.state.lastname}
+          </h1> */}
+          <div className="w-full flex items-center justify-evenly">
+            <h1 class="font-bold text-center capitalize text-3xl text-gray-900">
+              Average Score:{" "}
+              <span className="text-blue-500">{averageTotalGrade}</span>
+            </h1>
+            <h1 class="font-bold text-center capitalize text-3xl text-gray-900">
+              Average Grade :{" "}
+              <span className="text-blue-500"> {averageGrade}</span>
+            </h1>
+          </div>
 
-          <div className="w- grid grid-cols-2  gap-3">
-            {interviews[0]?.length > 0 ? (
-              interviews?.map((interview, i) =>
-                interview.length > 0 ? (
-                  <div
-                    onClick={() => {
-                      setSelectedInterview(interview);
-                      handleClick();
-                      setGrade(
-                        i == 0
-                          ? location.state?.totalGrade
-                          : location.state?.totalGrade2
-                      );
-                    }}
-                    className=" bg-gray-200 text-start relative space-y-2 shadow-lg h-[40vh] flex flex-col items-center justify-center font-semibold text-gray-500 text-xl border-2 hover:border-blue-200   text-center rounded-md hover:bg-gray-50  cursor-pointer"
-                  >
-                    <div className="absolute top-0 w-full h-12 bg-purple-700 text-center text-white">
-                      {i == 0 ? (
-                        <span>First Interview</span>
-                      ) : (
-                        <span>Second Interview</span>
-                      )}
-                    </div>
-                    <div className="text-start">
-                      <span className="text-gray-600 font-bold">
-                        Total Grade:{" "}
-                      </span>
+          <div class="my-5 px-6">
+            <p class="text-gray-200 block rounded-lg text-center font-medium leading-6 px-6 py-3 bg-gray-900 hover:bg-black hover:text-white">
+              Email of Candidate is :{" "}
+              <span class="font-bold text-blue-500">
+                {location.state.email}
+              </span>
+            </p>
+          </div>
+          <div class="sm:grid sm:grid-cols-2  my-5 px-1">
+            <p class="text-gray-500 hover:text-gray-900 bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
+              Nationality
+            </p>
 
-                      {i == 0
-                        ? location.state.totalGrade
-                        : location.state.totalGrade2}
-                    </div>
-                    <div>
-                      <span className="text-gray-600 font-bold">
-                        Total Percentage:{" "}
-                      </span>
-                      {i == 0
-                        ? location.state.totalScore + "%"
-                        : location.state.totalScore2 + "%"}
-                    </div>
-                    <div>
-                      <span className="text-gray-600 font-bold">
-                        Average grade:{" "}
-                      </span>
-                      {i == 0
-                        ? location.state.averageGrade + "%"
-                        : location.state.averageGrade2 + "%"}
-                    </div>
+            <p class="text-gray-500 hover:text-gray-900 bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
+              Phone
+            </p>
+
+            <p class="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
+              {location.state.nationality}
+            </p>
+
+            <p class="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
+              {location.state.phone}
+            </p>
+          </div>
+          <div className={`w- grid grid-cols-2 gap-3 h-auto`}>
+            {
+              // interviews?.length > 0 ? (
+              interviews?.map((interview, i) => (
+                <div
+                  onClick={() => {
+                    setSelectedInterview(interview.quizData);
+                    handleClick();
+                    setGrade(interview.totalGrade);
+                    setActiveInterview(i);
+                  }}
+                  className={` bg-gray-200 text-start relative space-y-2 shadow-lg h-[40vh] flex flex-col items-center justify-center font-semibold  text-xl border-2  text-center rounded-md  cursor-pointer  ${
+                    activeInterview == i ? "bg-purple-500 text-white" : ""
+                  }`}
+                >
+                  <div className="absolute top-0 w-full h-12 bg-blue-700 text-center text-white">
+                    {<span>{i + 1} Interview</span>}
                   </div>
-                ) : (
-                  ""
-                )
-              )
-            ) : (
-              <h1>This candidate have not Interviewed yet!</h1>
-            )}
+                  <div className="text-start">
+                    <span className="  font-bold">Total Grade: </span>
+
+                    {interview.totalGrade}
+                  </div>
+                  <div>
+                    <span className=" font-bold">Total Percentage: </span>
+                    {interview.totalScore + "%"}
+                  </div>
+                  <div>
+                    <span className=" font-bold">grade: </span>
+
+                    {interview.averageGrade}
+                  </div>
+                </div>
+              ))
+              // ) : (
+              //   <h1>This candidate have not Interviewed yet!</h1>
+              // )
+            }
           </div>
         </div>
       </div>
@@ -164,35 +195,6 @@ function CandidateView() {
             <div>
               <div class="bg-white  relative shadow rounded-md py-18 w-5/6 md:w-5/6  lg:w-11/12 xl:w-full mx-auto">
                 <div class="">
-                  <h1 class="font-bold text-center capitalize text-3xl text-gray-900">
-                    {location.state.firstname} {location.state.lastname}
-                  </h1>
-                  <div class="my-5 px-6">
-                    <p class="text-gray-200 block rounded-lg text-center font-medium leading-6 px-6 py-3 bg-gray-900 hover:bg-black hover:text-white">
-                      Email of Candidate is :{" "}
-                      <span class="font-bold text-blue-500">
-                        {location.state.email}
-                      </span>
-                    </p>
-                  </div>
-                  <div class="sm:grid sm:grid-cols-2  my-5 px-1">
-                    <p class="text-gray-500 hover:text-gray-900 bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
-                      Nationality
-                    </p>
-
-                    <p class="text-gray-500 hover:text-gray-900 bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
-                      Phone
-                    </p>
-
-                    <p class="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
-                      {location.state.nationality}
-                    </p>
-
-                    <p class="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition duration-150 ease-in font-medium text-sm text-center w-full py-3">
-                      {location.state.phone}
-                    </p>
-                  </div>
-
                   <h1 className="text-center text-blue-500 border-b border-blue-500 p-3 text-3xl">
                     Candidate Interview Questions
                   </h1>
@@ -200,9 +202,9 @@ function CandidateView() {
                     <div className="w-1/3 flex flex-col">
                       <span className="font-bold">Skills</span>
                       <div className="w-11/12 grid grid-cols-4 flex ">
-                        {skills.map((skil, i) => (
+                        {skills.map((data, i) => (
                           <>
-                            <label>{skil?.value}</label>
+                            <label>{data.skill}</label>
                           </>
                         ))}
                       </div>
