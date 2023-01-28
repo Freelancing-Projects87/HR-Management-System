@@ -28,8 +28,8 @@ const UserSchema = mongoose.Schema(
     },
     photo: {
       type: String,
-      required: [true, "Please add your Profile Image"],
-      default: "https://i.ibb.co/x3qsfx1/Image.png",
+      required: false,
+      // default: "https://i.ibb.co/x3qsfx1/Image.png",
     },
     phone: {
       type: String,

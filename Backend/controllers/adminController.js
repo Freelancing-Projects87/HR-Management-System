@@ -649,6 +649,7 @@ const adddFieldToCandidate = async (req, res, next) => {
           recomendation: req.body.recomendation,
           businessCaseId: new mongodb.ObjectId(req.body.businessCase),
           excelData: req.body.exceldata,
+          averageGrade: req.body.averageGrade,
         },
       },
       function (err, docs) {

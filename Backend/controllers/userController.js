@@ -186,6 +186,7 @@ const loginStatus = asyncHandler(async (req, res) => {
 
 /////Update User Profile /////
 const updateUser = asyncHandler(async (req, res) => {
+  console.log();
   const user = await User.findById(req.body._id);
     let profilePhoto = `http://localhost:8000/${req.file.path.replace(/\\/g, "/")}`;
   if (user) {
