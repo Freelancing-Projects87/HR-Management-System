@@ -15,9 +15,9 @@ function CandidateView() {
   const [skills, setSkills] = useState([]);
   const [interviews, setInterviews] = useState([]);
   let [selectedInterview, setSelectedInterview] = useState([]);
-  let [totalGrade,setGrade]=useState()
-  const [averageGrade,setAverageGrade]=useState()
-  
+  let [totalGrade, setGrade] = useState();
+  const [averageGrade, setAverageGrade] = useState();
+
   let navigate = useNavigate();
   const location = useLocation();
   let [open, setOpen] = useState(false);
@@ -50,7 +50,7 @@ function CandidateView() {
   console.log(location.state, "dfd");
 
   console.log(interviews, "interviews");
-//  scrool to interview
+  //  scrool to interview
   const handleClick = () => {
     ref.current?.scrollIntoView({behavior: "smooth"});
   };
@@ -60,12 +60,28 @@ function CandidateView() {
     setInterviews(interviews);
     let SumOfScore =
       Number(location.state.totalGrade) +
-      Number(location.state.totalGrade2?location.state.totalGrade2:0);
+      Number(location.state.totalGrade2 ? location.state.totalGrade2 : 0);
     setAverageGrade(
       location.state.totalGrade2 ? SumOfScore / 2 : location.state.totalGrade
     );
   }, [location.state]);
   console.log(averageGrade, "averageGrade");
+  ////////////////////////////////////////////////////// quiz function to save all data in db y.k
+  const getInterviewsOfCandidates = id => {
+    axios
+      .get(`http://localhost:8000/api/admin/getInterviews/${id}`)
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res.data, "two candidates should be there?,,,,,,,");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+  useEffect(() => {
+    getInterviewsOfCandidates(location.state?._id);
+  }, []);
   return (
     <>
       <ToastContainer />{" "}

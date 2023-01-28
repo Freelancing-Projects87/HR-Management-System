@@ -25,6 +25,7 @@ function Candidate() {
 
   const navigate = useNavigate();
   const location = useLocation();
+ 
   const getCandidates = () => {
     axios
       .get("http://localhost:8000/api/admin/getCandidates")

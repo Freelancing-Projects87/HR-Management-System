@@ -73,7 +73,7 @@ function CandidateView() {
   };
 
   // final quiz add function on candidate profile y.k////////////////////////////////////////////////////////////////
-  const saveQuiz = data => {
+  const saveInterview = data => {
     // to find total grade of all question
     let totalgrade = location.state?.quizData.reduce(
       (acc, curr) => acc + (curr.grade || 0),
@@ -90,23 +90,19 @@ function CandidateView() {
     const gradeGrand = CalculateGrandTotal();
     console.log(gradeGrand, "see its there or not");
     if (recomendation || selectedSkills.length > 0) {
-          let interviewDataSet = {};
-          quizData?.forEach((element, i) => {
-            interviewDataSet[i] = element;
-          });
-          console.log(interviewDataSet, "interviewDataSet");
+
       axios
         .post("http://localhost:8000/api/admin/addInterview", {
-          QA: interviewDataSet,
+          QA: quizData,
           businessCase: data?.businessCase,
           id: location.state.id,
           isInterviewed: true,
-          skills: Object.keys(selectedSkills).map(v => ({skill: v})),
-          recomendation: recomendation,
+          // skills: Object.keys(selectedSkills).map(v => ({skill: v})),
+          // recomendation: recomendation,
           totalScore: gradeGrand,
           totalGrade: totalgrade,
           averageGrade: meanScore,
-          exceldata: location.state?.exceldata,
+          // exceldata: location.state?.exceldata,
         })
         .then(res => {
           if (res.status == 200) {
@@ -126,56 +122,7 @@ function CandidateView() {
       });
     }
   };
-  function saveQuiz2(data2) {
-    console.log(data2);
-    // to find total grade of all question
-    let totalgrade = location.state?.quizData.reduce(
-      (acc, curr) => acc + (curr.grade || 0),
-      0
-    );
-    //  add totalScore in percent with grade of each question for db
-    let meanScore = totalgrade / location.state?.quizData.length;
-    console.log(meanScore, "meanScore");
-    const quizData = location.state?.quizData.map(data2 => ({
-      ...data2,
-      grade: data2.grade,
-      totalScore: (data2.grade / 10) * Number(data2.percent),
-    }));
-    const gradeGrand = CalculateGrandTotal();
-    console.log("qd",quizData,"l s i",location.state.id,"grant",gradeGrand,"tg",totalgrade,"mc",meanScore,"see its there or not" );
-    if (recomendation || selectedSkills.length > 0) {
-            let interviewDataSet = {};
-            quizData?.forEach((element, i) => {
-              interviewDataSet[i] = element;
-            });
-            console.log(interviewDataSet, "interviewDataSet");
-      
-      axios
-        .post("http://localhost:8000/api/admin/addInterview", {
-          QA: interviewDataSet,
-          id: location.state.id,
-          totalScore: gradeGrand,
-          totalGrade: totalgrade,
-          averageGrade: meanScore,
-        })
-        .then(res => {
-          if (res.status == 200) {
-            console.log(res, "quiz result");
-            navigate("/candidates");
-            toast.success("Interview added successfully..!", {
-              position: toast.POSITION.TOP_CENTER,
-            });
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    } else {
-      toast.error("please fill Skills and Recomendation", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    }
-  }
+ 
   const secondInterviewUpdateFields = data => {
     // to find total grade of all question
     let totalgrade = location.state?.quizData.reduce(
@@ -188,7 +135,6 @@ function CandidateView() {
     const gradeGrand = CalculateGrandTotal();
     console.log(gradeGrand, "see its there or not");
     if (recomendation || selectedSkills.length > 0) {
-      
       axios
         .post("http://localhost:8000/api/admin/adddFieldToCandidate", {
           businessCase: data?.businessCase,
@@ -216,7 +162,7 @@ function CandidateView() {
       });
     }
   };
-  ////////////////////////////////////////////////////// quiz function to save all data in db y.k
+
   console.log(location.state, "dfd");
   return (
     <>
@@ -379,14 +325,12 @@ function CandidateView() {
                     {location.state?.quizData ? (
                       <button
                         onClick={() => {
-                          if (
-                            location?.state?.isSecondTime == "SecondInterview"
-                          ) {
-                            saveQuiz2(location.state);
+                          // if (
+                          //   location?.state?.isSecondTime == "SecondInterview"
+                          // ) {
+                            saveInterview(location.state);
                             secondInterviewUpdateFields(location.state);
-                          } else {
-                            saveQuiz(location.state);
-                          }
+                          // } 
                         }}
                         className="bg-blue-500 text-white rounded-md py-4  px-4"
                       >
