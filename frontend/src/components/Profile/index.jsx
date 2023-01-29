@@ -124,7 +124,7 @@ function Profile() {
                         setUser({name: e.target.value});
                       }}
                       id="name"
-                      {...register("name", {required: true})}
+                      {...register("name", {required: false})}
                       className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
                       type="text"
                     />
@@ -161,7 +161,7 @@ function Profile() {
                   <input
                     id=""
                     defaultValue={user?.phone}
-                    {...register("phone", {required: true})}
+                    {...register("phone", {required: false})}
                     className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
                     type="text"
                   />

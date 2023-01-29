@@ -52,7 +52,7 @@ export default function Metrics() {
     datasets: [
       {
         label: " Candidate grade",
-        data: candidateselected?.map(cand => cand.averageGrade),
+        data:candidateselected.length>0? candidateselected?.map(cand => cand.averageGrade):[1,2,3,4,5,6,7,8,9,10],
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },

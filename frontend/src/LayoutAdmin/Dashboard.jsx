@@ -30,8 +30,8 @@ function classNames(...classes) {
 
 export default function Dashboard({role}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const roles={admin:"admin",junior:'junior'}
-  const [user,setUser]=useState({})
+  const roles = {admin: "admin", junior: "junior"};
+  const [user, setUser] = useState({});
 
   const [style1, setStyle1] = useState(false);
   const [style2, setStyle2] = useState(false);
@@ -50,7 +50,6 @@ export default function Dashboard({role}) {
     });
   }
 
-
   //   const userSignout=async ()=>{
   //      dispatch({type:adminAction.signout_user_request})
   //      const res = await axios.post('/admin/signout')
@@ -63,9 +62,10 @@ export default function Dashboard({role}) {
   //          dispatch({ type: adminAction.signout_user_fail,payload:{error:res.data.error}});
   //        }
   //   }
-useEffect(()=>{
- setUser(JSON.parse(localStorage.getItem("user")));
-},[])
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
+  }, []);
+  useEffect(() => {}, []);
   return (
     <>
       <div className="">
@@ -421,7 +421,11 @@ useEffect(()=>{
                   <div>
                     <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                       {/* <span className="">{user?.name}</span> */}
-                      <img className="h-12 w-12 rounded-full" src={user?.photo} alt="" />
+                      <img
+                        className="h-12 w-12 rounded-full"
+                        src={user?.photo}
+                        alt=""
+                      />
                     </Menu.Button>
                   </div>
                   <Transition
@@ -452,7 +456,14 @@ useEffect(()=>{
                                 </p>
                               </Link>
                               <button
-                              onClick={()=>{navigate("/profile",{state:user});}}
+                                onClick={() => {
+                                  navigate("/profile", {state: user});
+                                  setStyle1(false);
+                                  setStyle2(false);
+                                  setStyle3(false);
+                                  setStyle4(false);
+                                  setStyle5(false);
+                                }}
                                 className=" rounded-md block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
                               >
                                 <p>Profile</p>
