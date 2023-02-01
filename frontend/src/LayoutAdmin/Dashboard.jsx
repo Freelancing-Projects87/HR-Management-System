@@ -38,6 +38,7 @@ export default function Dashboard({role}) {
   const [style3, setStyle3] = useState(false);
   const [style4, setStyle4] = useState(false);
   const [style5, setStyle5] = useState(false);
+  const [style6, setStyle6] = useState(false);
 
   const navigate = useNavigate();
   function signOut() {
@@ -232,6 +233,7 @@ export default function Dashboard({role}) {
                     setStyle3(false);
                     setStyle4(false);
                     setStyle5(false);
+                    setStyle6(false);
 
                     // window.location.href = "/candidates";
                     navigate("/candidates");
@@ -265,6 +267,8 @@ export default function Dashboard({role}) {
                     setStyle1(false);
                     setStyle4(false);
                     setStyle5(false);
+                    setStyle6(false);
+
                     navigate("/businesscase");
                   }}
                   className={classNames(
@@ -292,7 +296,7 @@ export default function Dashboard({role}) {
                     setStyle2(false);
                     setStyle1(false);
                     setStyle5(false);
-
+                    setStyle6(false);
                     navigate("/skills");
                   }}
                   className={classNames(
@@ -321,6 +325,7 @@ export default function Dashboard({role}) {
                       setStyle3(false);
                       setStyle4(false);
                       setStyle5(false);
+                      setStyle6(false);
                       navigate("/business");
                     }}
                     className={classNames(
@@ -352,7 +357,7 @@ export default function Dashboard({role}) {
                     setStyle2(false);
                     setStyle1(false);
                     setStyle5(true);
-
+                    setStyle6(false);
                     navigate("/metrics");
                   }}
                   className={classNames(
@@ -371,6 +376,34 @@ export default function Dashboard({role}) {
                   />
                   <span className={`${style5 ? "text-white" : ""}`}>
                     Metrics
+                  </span>
+                </p>
+                <p
+                  onClick={() => {
+                    setStyle4(false);
+                    setStyle3(false);
+                    setStyle2(false);
+                    setStyle1(false);
+                    setStyle5(false);
+                    setStyle6(true);
+                    navigate("/questions");
+                  }}
+                  className={classNames(
+                    `text-gray-600 ${
+                      style6 ? "bg-purple-600 text-white" : ""
+                    }  cursor-pointer`,
+                    "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
+                  )}
+                >
+                  <InboxIcon
+                    className={classNames(
+                      "text-gray-400 group-hover:text-gray-500",
+                      "mr-3 flex-shrink-0 h-6 w-6"
+                    )}
+                    aria-hidden="true"
+                  />
+                  <span className={`${style6 ? "text-white" : ""}`}>
+                    Question
                   </span>
                 </p>
               </nav>

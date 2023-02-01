@@ -30,13 +30,14 @@ import Skills from "./components/Skills/Skills";
 import Metrics from "./components/Metrics";
 import Profile from "./components/Profile"
 import axios from "axios";
-
-
-
 import Interview from "./components/Interview/Interview";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaMehRollingEyes } from "react-icons/fa";
+import Questions from "./components/Questions/Questions";
+import QuestionAdd from "./components/Questions/QuestionAdd";
+import UpdateQuestion from "./components/Questions/UpdateQuestion";
+
 const roles={admin:"admin",junior:"junior"}
 function App() {
   const [role,setRole]=useState(null)
@@ -74,7 +75,7 @@ function App() {
     <div className="App">
       <ToastContainer />
       <BrowserRouter>
-        {isAuthenticUser() ? <Dashboard  role={role} /> : ""}
+        {isAuthenticUser() ? <Dashboard role={role} /> : ""}
 
         <Routes>
           <Route element={<PrivateRoute />}>
@@ -85,14 +86,17 @@ function App() {
               path="/CandidsteSecondQuestion"
               element={<CandidsteSecondQuestion />}
             />
-            <Route path="/candidateView" element={<CandidateView/>} exact/>
-            {role==roles.admin?<>
-            <Route path="/business" element={<Business />} exact />
-            <Route path="/editBusiness" element={<BusinessEdit />} exact />
-            <Route path="/addbusiness" element={<BusinessAdd />} exact />
-            <Route path="/businessView" element={<BusinessView />} />
-            </>
-            :''}
+            <Route path="/candidateView" element={<CandidateView />} exact />
+            {role == roles.admin ? (
+              <>
+                <Route path="/business" element={<Business />} exact />
+                <Route path="/editBusiness" element={<BusinessEdit />} exact />
+                <Route path="/addbusiness" element={<BusinessAdd />} exact />
+                <Route path="/businessView" element={<BusinessView />} />
+              </>
+            ) : (
+              ""
+            )}
             <Route path="/interview" element={<Interview />} />
             <Route path="/businesscase" element={<BusinessCaseTable />} />
             <Route path="/businesscaseAdd" element={<BusinessCaseAdd />} />
@@ -101,8 +105,11 @@ function App() {
             <Route path="/skills" element={<Skills />} />
             <Route path="/addskill" element={<AddSkill />} />
             <Route path="/editskill" element={<EditSkill />} />
-            <Route path="/metrics" element={<Metrics/>}/>
-            <Route path="/profile" element={<Profile/>}/>
+            <Route path="/metrics" element={<Metrics />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/questions" element={<Questions />} />
+            <Route path="/addQuestion" element={<QuestionAdd />} />
+            <Route path="/editQuestion" element={<UpdateQuestion />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

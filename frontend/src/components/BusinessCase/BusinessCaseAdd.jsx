@@ -138,7 +138,7 @@ function BusinessCaseAdd() {
                         errors.difficulty ? " border border-red-500" : ""
                       } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
                     >
-                      {/* <option selected>Slecect</option>   */}
+                      {/* <option selected>Select</option>   */}
                       <option value="low" selected>
                         Low
                       </option>

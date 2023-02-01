@@ -6,7 +6,7 @@ import {useForm} from "react-hook-form";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function CandidateAdd() {
+function SkillAdd() {
   let navigate = useNavigate();
   const {
     register,
@@ -93,4 +93,4 @@ return (
 )
 }
 
-export default CandidateAdd;
+export default SkillAdd;
