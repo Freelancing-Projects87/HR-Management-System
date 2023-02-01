@@ -7,6 +7,7 @@ const Skill = require("../models/Skills");
 const protectApi = require("../middleware/authMiddleware");
 var mongodb = require("mongodb");
 const {default: mongoose} = require("mongoose");
+const Questions = require("../models/Questions");
 
 ////Admin Routes/////
 
@@ -298,13 +299,14 @@ const getAllBusinessCase = async (req, res, next) => {
   }
 };
 //  bussiness pipeline controllers start from here////////////////////
-const updateSkill = async (req, res) => {
+const updateQuestion = async (req, res) => {
   try {
-    console.log(req.body, "skill from client");
-    Skill.findByIdAndUpdate(
+    console.log(req.body, "edit question you know");
+    Questions.findByIdAndUpdate(
       mongodb.ObjectId(req.body.id),
       {
-        skill: req.body?.skill,
+        question:req.body.question,
+        percentage:req.body.percentage
       },
       function (err, docs) {
         if (err) {
@@ -337,7 +339,6 @@ const addskill = async (req, res) => {
     res.status(400);
     throw new Error("Please insert all required fields");
   }
-
   //   create new user
   const skillData = await Skill.create({
     skill,
@@ -409,6 +410,122 @@ const getSkills = async (req, res, next) => {
     });
   }
 };
+// question rest api////////////////////////
+//  bussiness pipeline controllers start from here////////////////////
+const updateSkill = async (req, res) => {
+  try {
+    console.log(req.body, "update question");
+    Questions.findByIdAndUpdate(
+      mongodb.ObjectId(req.body.id),
+      {
+        question: req.body?.question,
+        percentage:req.body.percentage
+      },
+      function (err, docs) {
+        if (err) {
+          console.log(err);
+          res.status(201).json({
+            success: false,
+            message: err.toString(),
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "Question updated successfully...!",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
+
+const addQuestion = async (req, res) => {
+  const  {
+        question,
+        percentage
+      }= req.body;
+  console.log(req.body, "question add");
+  if (!question ||!percentage) {
+    res.status(400);
+    throw new Error("Please insert all required fields");
+  }
+  //   create new user
+  const questionData = await Questions.create({
+    question,percentage 
+  });
+
+  if (question) {
+    const {question,percentage, _id} = questionData;
+
+    res.status(201).send({
+      message: "Question Created Successfully!",
+      data: {
+        question,percentage
+      },
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid   Data");
+  }
+};
+const deleteQuestion = async (req, res) => {
+  console.log(req.body.id, " question id..........");
+  try {
+    Questions.findByIdAndRemove(
+      {_id: mongodb.ObjectId(req.body.id)},
+      function (err, docs) {
+        if (err) {
+          console.log("err", err);
+          res.status(201).json({
+            success: false,
+            message: err.toString(),
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "Question deleted successfully...!",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
+const getQuestions = async (req, res, next) => {
+  try {
+    Questions.find(async (err, data) => {
+      if (err) {
+        console.log(err);
+      }
+      if (!data) {
+        console.log("Questions not found");
+        return;
+      }
+      res.status(200).json({
+        success: true,
+        data: data,
+      });
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(201).json({
+      success: false,
+      message: err.toString(),
+    });
+  }
+};
+// ending questions api////////////////////
 // skills rest api start from here
 //  bussiness pipeline controllers start from here////////////////////
 const updateBusinessline = async (req, res) => {
@@ -741,4 +858,8 @@ module.exports = {
   addInterview,
   getCandidatesInterviews,
   adddFieldToCandidate,
+  addQuestion,
+  updateQuestion,
+  deleteQuestion,
+  getQuestions
 };

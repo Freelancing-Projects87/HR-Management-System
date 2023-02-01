@@ -22,6 +22,8 @@ const {
   deleteSkill,
   addskill,
   getCandidatesInterviews,
+  addQuestion,
+  deleteQuestion,updateQuestion,getQuestions
 } = require("../controllers/adminController");
 const multer = require("multer");
 const path = require("path");
@@ -69,6 +71,11 @@ router.get('/getskills',getSkills)
 router.post('/addskill',addskill)
 router.post('/updatekill',updateSkill)
 router.post('/deleteskill',deleteSkill)
+router.post('/addQuestion',addQuestion);
+router.post('/updateQuestion',updateQuestion);
+router.post('/deleteQuestion',deleteQuestion);
+router.get('/getQuestions',getQuestions);
+
 
 
 module.exports = router;
