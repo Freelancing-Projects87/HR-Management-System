@@ -10,11 +10,12 @@ import {
   InboxIcon,
   MenuAlt2Icon,
   UsersIcon,
+  ChartPieIcon,
   XIcon,
 } from "@heroicons/react/outline";
-import {SearchIcon} from "@heroicons/react/solid";
+import {CalculatorIcon, SearchIcon} from "@heroicons/react/solid";
 import {Link} from "react-router-dom";
-import {useNavigate} from "react-router-dom";
+import {useNavigate,useLocation} from "react-router-dom";
 import axios from "axios";
 import {useEffect} from "react";
 
@@ -30,10 +31,51 @@ function classNames(...classes) {
 
 export default function Dashboard({role}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+   const [currentIndex,setIndex]=useState(0)
+    
+  const [sideBarData, setSideBarData] = useState([
+    {
+      icon: HomeIcon,
+      compName: "Candidates",
+      to: "/candidates",
+    },
+    {
+      icon: CalendarIcon,
+      compName: "Manage Users",
+      to: "/users",
+    },
+    {
+      icon: InboxIcon,
+      compName: "Business Case",
+      to: "/businesscase",
+    },
+    {
+      icon: InboxIcon,
+      compName: "Skills",
+      to: "/skills",
+    },
+    {
+      icon: CalendarIcon,
+      compName: "Business Pipeline",
+      to: "/business",
+    },
+
+    {
+      icon: ChartPieIcon,
+      compName: "Metrics",
+      to: "/metrics",
+    },
+    {
+      icon: CalculatorIcon,
+      compName: "Manage Questions",
+      to: "/questions",
+    },
+  ]);
   const roles = {admin: "admin", junior: "junior"};
   const [user, setUser] = useState({});
+  const location=useLocation()
 
-  const [style1, setStyle1] = useState(false);
+  const [style, setStyle] = useState(false);
   const [style2, setStyle2] = useState(false);
   const [style3, setStyle3] = useState(false);
   const [style4, setStyle4] = useState(false);
@@ -50,23 +92,17 @@ export default function Dashboard({role}) {
       }
     });
   }
-
-  //   const userSignout=async ()=>{
-  //      dispatch({type:adminAction.signout_user_request})
-  //      const res = await axios.post('/admin/signout')
-  //      console.log(res)
-  //        if(res.status===200){
-  //           localStorage.clear()
-  //          dispatch({type:adminAction.signout_user_success,payload:{message:"you are logout"}})
-  //          window.location.reload()
-  //        }else{
-  //          dispatch({ type: adminAction.signout_user_fail,payload:{error:res.data.error}});
-  //        }
-  //   }
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
+    console.log(location.state?.fromLogin,'from login');
+   
   }, []);
-  useEffect(() => {}, []);
+  useEffect(()=>{
+ if(location.state?.fromLogin){
+       setStyle(true);
+    }}
+,[location.state?.fromLogin])
+
   return (
     <>
       <div className="">
@@ -96,7 +132,7 @@ export default function Dashboard({role}) {
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full"
             >
-              <div className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 ">
+              <div className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-white">
                 <Transition.Child
                   as={Fragment}
                   enter="ease-in-out duration-300"
@@ -126,83 +162,38 @@ export default function Dashboard({role}) {
                 <div className="mt-5 flex-1 h-0 overflow-y-auto">
                   <nav className="px-2 space-y-1">
                     {/* sidebar for mobile */}
-                    <nav className="flex-1 px-2 pb-4 space-y-1">
-                      {/* 1 */}
-                      <p
-                        onClick={() => {
-                          setStyle1(true);
-                          setStyle2(false);
-                          setStyle3(false);
-                        }}
-                        className={classNames(
-                          `text-gray-600  ${
-                            style1 ? "bg-purple-600" : ""
-                          } bg-gray-100 cursor-pointer `,
-                          "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
-                        )}
-                      >
-                        <HomeIcon
+                    <nav className="flex-1 px-2 pb-4 space-y-1 ">
+                      {sideBarData?.map((data, index) => (
+                        <p
+                          onClick={() => {
+                            setStyle(true);
+                            setIndex(index);
+                            // window.location.href = "/candidates";
+                            navigate(`${data.to}`);
+                          }}
                           className={classNames(
-                            "text-gray-400 group-hover:text-gray-500",
-                            "mr-3 flex-shrink-0 h-6 w-6"
+                            `text-gray-600  ${
+                              index == currentIndex ? "bg-purple-600" : ""
+                            } cursor-pointer `,
+                            "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
                           )}
-                          aria-hidden="true"
-                        />
-                        <span className={`${style1 ? "text-white" : ""}`}>
-                          Dashboard
-                        </span>
-                      </p>
-                      {/* 2 */}
-                      <p
-                        onClick={() => {
-                          setStyle2(true);
-                          setStyle1(false);
-                          setStyle3(false);
-                        }}
-                        className={classNames(
-                          `text-gray-600 ${
-                            style2 ? "bg-purple-600 text-white" : ""
-                          }  cursor-pointer`,
-                          "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
-                        )}
-                      >
-                        <CalendarIcon
-                          className={classNames(
-                            "text-gray-400 group-hover:text-gray-500",
-                            "mr-3 flex-shrink-0 h-6 w-6"
-                          )}
-                          aria-hidden="true"
-                        />
-                        <span className={`${style2 ? "text-white" : ""}`}>
-                          {" "}
-                          Category
-                        </span>
-                      </p>
-                      {/* 3 */}
-                      <p
-                        onClick={() => {
-                          setStyle3(true);
-                          setStyle2(false);
-                          setStyle1(false);
-                        }}
-                        className={classNames(
-                          `text-gray-600 ${
-                            style3 ? "bg-purple-600" : ""
-                          }  cursor-pointer`,
-                          "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
-                        )}
-                      >
-                        <InboxIcon
-                          className={classNames(
-                            "text-gray-400 group-hover:text-gray-500",
-                            "mr-3 flex-shrink-0 h-6 w-6"
-                          )}
-                          aria-hidden="true"
-                        />
-                        <span className={`${style3 ? "text-white" : ""}`}>
-                          Products
-                        </span>
-                      </p>
+                        >
+                          <data.icon
+                            className={classNames(
+                              "text-gray-400 group-hover:text-gray-500",
+                              "mr-3 flex-shrink-0 h-6 w-6"
+                            )}
+                            aria-hidden="true"
+                          />
+                          <span
+                            className={`${
+                              index == currentIndex ? "text-white" : ""
+                            }`}
+                          >
+                            {data?.compName}
+                          </span>
+                        </p>
+                      ))}
                     </nav>
                     {/* sidebar for mobile */}
                   </nav>
@@ -225,187 +216,35 @@ export default function Dashboard({role}) {
             </div>
             <div className="mt-5 flex-grow flex flex-col">
               <nav className="flex-1 px-2 pb-4 space-y-1">
-                {/* 1 */}
-                <p
-                  onClick={() => {
-                    setStyle1(true);
-                    setStyle2(false);
-                    setStyle3(false);
-                    setStyle4(false);
-                    setStyle5(false);
-                    setStyle6(false);
-
-                    // window.location.href = "/candidates";
-                    navigate("/candidates");
-                  }}
-                  className={classNames(
-                    `text-gray-600  ${
-                      style1 ? "bg-purple-600" : ""
-                    } cursor-pointer `,
-                    "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
-                  )}
-                >
-                  <HomeIcon
-                    className={classNames(
-                      "text-gray-400 group-hover:text-gray-500",
-                      "mr-3 flex-shrink-0 h-6 w-6"
-                    )}
-                    aria-hidden="true"
-                  />
-                  <span className={`${style1 ? "text-white" : ""}`}>
-                    Candidates
-                  </span>
-                </p>
-                {/* 2 */}
-
-                {/* 3 */}
-
-                <p
-                  onClick={() => {
-                    setStyle3(true);
-                    setStyle2(false);
-                    setStyle1(false);
-                    setStyle4(false);
-                    setStyle5(false);
-                    setStyle6(false);
-
-                    navigate("/businesscase");
-                  }}
-                  className={classNames(
-                    `text-gray-600 ${
-                      style3 ? "bg-purple-600" : ""
-                    }  cursor-pointer`,
-                    "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
-                  )}
-                >
-                  <InboxIcon
-                    className={classNames(
-                      "text-gray-400 group-hover:text-gray-500",
-                      "mr-3 flex-shrink-0 h-6 w-6"
-                    )}
-                    aria-hidden="true"
-                  />
-                  <span className={`${style3 ? "text-white" : ""}`}>
-                    Business Case
-                  </span>
-                </p>
-                <p
-                  onClick={() => {
-                    setStyle4(true);
-                    setStyle3(false);
-                    setStyle2(false);
-                    setStyle1(false);
-                    setStyle5(false);
-                    setStyle6(false);
-                    navigate("/skills");
-                  }}
-                  className={classNames(
-                    `text-gray-600 ${
-                      style4 ? "bg-purple-600" : ""
-                    }  cursor-pointer`,
-                    "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
-                  )}
-                >
-                  <InboxIcon
-                    className={classNames(
-                      "text-gray-400 group-hover:text-gray-500",
-                      "mr-3 flex-shrink-0 h-6 w-6"
-                    )}
-                    aria-hidden="true"
-                  />
-                  <span className={`${style4 ? "text-white" : ""}`}>
-                    Skills
-                  </span>
-                </p>
-                {roles.admin == role ? (
+                {sideBarData?.map((data, index) => (
                   <p
                     onClick={() => {
-                      setStyle2(true);
-                      setStyle1(false);
-                      setStyle3(false);
-                      setStyle4(false);
-                      setStyle5(false);
-                      setStyle6(false);
-                      navigate("/business");
+                      setStyle(true);
+                      setIndex(index);
+                      // window.location.href = "/candidates";
+                      navigate(`${data.to}`);
                     }}
                     className={classNames(
-                      `text-gray-600 ${
-                        style2 ? "bg-purple-600 text-white" : ""
-                      }  cursor-pointer`,
+                      `text-gray-600  ${
+                        index == currentIndex ? "bg-purple-600" : ""
+                      } cursor-pointer `,
                       "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
                     )}
                   >
-                    <CalendarIcon
+                    <data.icon
                       className={classNames(
                         "text-gray-400 group-hover:text-gray-500",
                         "mr-3 flex-shrink-0 h-6 w-6"
                       )}
                       aria-hidden="true"
                     />
-                    <span className={`${style2 ? "text-white" : ""}`}>
-                      {" "}
-                      Business Pipeline
+                    <span
+                      className={`${index == currentIndex ? "text-white" : ""}`}
+                    >
+                      {data?.compName}
                     </span>
                   </p>
-                ) : (
-                  ""
-                )}
-                <p
-                  onClick={() => {
-                    setStyle4(false);
-                    setStyle3(false);
-                    setStyle2(false);
-                    setStyle1(false);
-                    setStyle5(true);
-                    setStyle6(false);
-                    navigate("/metrics");
-                  }}
-                  className={classNames(
-                    `text-gray-600 ${
-                      style5 ? "bg-purple-600" : ""
-                    }  cursor-pointer`,
-                    "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
-                  )}
-                >
-                  <InboxIcon
-                    className={classNames(
-                      "text-gray-400 group-hover:text-gray-500",
-                      "mr-3 flex-shrink-0 h-6 w-6"
-                    )}
-                    aria-hidden="true"
-                  />
-                  <span className={`${style5 ? "text-white" : ""}`}>
-                    Metrics
-                  </span>
-                </p>
-                <p
-                  onClick={() => {
-                    setStyle4(false);
-                    setStyle3(false);
-                    setStyle2(false);
-                    setStyle1(false);
-                    setStyle5(false);
-                    setStyle6(true);
-                    navigate("/questions");
-                  }}
-                  className={classNames(
-                    `text-gray-600 ${
-                      style6 ? "bg-purple-600 text-white" : ""
-                    }  cursor-pointer`,
-                    "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
-                  )}
-                >
-                  <InboxIcon
-                    className={classNames(
-                      "text-gray-400 group-hover:text-gray-500",
-                      "mr-3 flex-shrink-0 h-6 w-6"
-                    )}
-                    aria-hidden="true"
-                  />
-                  <span className={`${style6 ? "text-white" : ""}`}>
-                    Question
-                  </span>
-                </p>
+                ))}
               </nav>
             </div>
           </div>
@@ -491,7 +330,6 @@ export default function Dashboard({role}) {
                               <button
                                 onClick={() => {
                                   navigate("/profile", {state: user});
-                                  setStyle1(false);
                                   setStyle2(false);
                                   setStyle3(false);
                                   setStyle4(false);

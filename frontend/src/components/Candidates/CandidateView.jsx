@@ -169,7 +169,7 @@ function CandidateView() {
                     {interview.totalScore + "%"}
                   </div>
                   <div>
-                    <span className=" font-bold">grade: </span>
+                    <span className=" font-bold">Grade: </span>
 
                     {interview.averageGrade}
                   </div>

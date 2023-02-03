@@ -187,7 +187,7 @@ function Profile() {
                     className="border-1 hidden  rounded-r px-4 py-2 w-full border border-gray-500"
                     type="file"
                   />
-                  <label htmlFor="photo">
+                  <label htmlFor="photo" className="cursor-pointer">
                     <img
                       onClick={() => {
                         fileref.current.click();

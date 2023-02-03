@@ -31,8 +31,10 @@ const [show,setPasswordShow]=useState(false)
         if (res.status === 200) {
           localStorage.setItem("token", res?.data?.data.token);
           localStorage.setItem("user", JSON.stringify(res?.data?.data));
-                      navigate("/");
-                      window.location.reload()
+          // navigate("/");
+           navigate('/candidates',{state:{fromLogin:true}})
+
+          window.location.reload();
         }
       })
       .catch(err => {

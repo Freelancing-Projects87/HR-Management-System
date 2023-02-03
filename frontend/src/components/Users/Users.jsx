@@ -2,113 +2,66 @@ import React, {useEffect, useState} from "react";
 import {
   AiOutlineDelete,
   AiOutlinePlusSquare,
-  AiOutlineBank,
+  AiOutlineUserAdd,
   AiOutlineEdit,
+  AiOutlineInteraction,
   AiFillEye,
 } from "react-icons/ai";
-import {FaPencilAlt} from "react-icons/fa";
+import {FaPencilAlt, FaMeetup} from "react-icons/fa";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
-import DeleteModel from "../ModelDelete";
+import {useNavigate, useLocation} from "react-router-dom";
+import DeleteModel from "../ModelDelete/UserDeleteModel";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import * as XLSX from "xlsx";
+import {AiFillFilePdf, AiFillInteraction} from "react-icons/ai";
+import interview from "../../images/interview.png";
 
-function BusinessCaseTable() {
-  const [businessData, setBusiness] = useState([]);
-      const [excelData, setExcelData] = useState({
-        bcTitle: "",
-        type: "",
-        difficulty: "",
-        expectedTime: "",
-        excelData: {approach: "", context: "", expectedResult: ""},
-      });
 
+function Users() {
+  const [usersData, setUsersData] = useState([]);
   const [popup, setPopup] = useState(true);
   let [open, setOpen] = useState(false);
   const [delId, setDelId] = useState(null);
-  console.log(delId, "delId");
+
   const navigate = useNavigate();
-  const getBusinessCase= () => {
-    // bcTitle;
-    axios.get("http://localhost:8000/api/admin/getBusinessCase").then(res => {
+  const location = useLocation();
+
+  const getUsers = () => {
+    axios
+      .get("http://localhost:8000/api/users/getusers")
+      .then(res => {
         if (res.status === 200) {
-          setBusiness(res.data?.data);
+            console.log(res,"y.k");
+          setUsersData(res.data?.data);
         }
       })
       .catch(err => {
         console.error(err);
       });
   };
+  console.log(usersData && usersData, "usersData");
+
   useEffect(() => {
-    getBusinessCase()
-  }, [])
-  //  to add overall business case from 
-   const saveBusiness = data => {
-    console.log(data,"data");
-    if(data.excelData){
-     axios
-       .post("http://localhost:8000/api/admin/addBusinessCase", data)
-       .then(res => {
-         if (res.status == 200) {
-           console.log(res, "hmm");
-           navigate("/businesscase");
-           toast.success("Business Case added successfully..!", {
-             position: toast.POSITION.TOP_CENTER,
-           });
-               getBusinessCase();
-         }
-       })
-       .catch(err => {
-         console.error(err);
-       });
-    }
-   };
-   //  handler for getting data from excel sheet to add in businessCase
-   const handleFileUpload = e => {
-     e.preventDefault();
-     var files = e.target.files,
-       f = files[0];
-     var reader = new FileReader();
-     reader.onload = function (e) {
-       var data = e.target.result;
-       let readedData = XLSX.read(data, {type: "binary"});
-       const wsname = readedData.SheetNames[0];
-       const ws = readedData.Sheets[wsname];
-       /* Convert array to json*/
-       const dataParse = XLSX.utils.sheet_to_json(ws, {header: 1, defval: ""});
-     
-       console.log(dataParse[1], "excelData dataParse", excelData);
-       saveBusiness({
-         bcTitle: dataParse[1][0],
-         type: dataParse[1][1],
-         difficulty: dataParse[1][2],
-         expectedTime: dataParse[1][3],
-         excelData: {
-           context: dataParse[1][4],
-           approach: dataParse[1][5],
-           expectedResult: dataParse[1][6],
-         },
-       });
-   
-     };
-     reader.readAsBinaryString(f);
-   }
+    getUsers();
+  }, []);
+
   return (
     <>
       <div className="flex mb-4 ml-2 items-end justify-end w-full ">
+        <ToastContainer />
         <button
           onClick={() => {
-            navigate("/businesscaseAdd");
+            navigate("/adduser");
           }}
           type="button"
           className="inline-flex  relative right-12 top-2 items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
       shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          Add Business Case <AiOutlineBank className="ml-2 text-xl" />
+          Add User
+          <AiOutlineUserAdd className="ml-2 text-xl" />
         </button>
       </div>
-      <div className="flex flex-col w-[82.3%]  float-right overflow-hidden ">
+      <div className="flex flex-col w-[82.3%]  float-right ">
         <div className="-my-2 overflow-hidden sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden  border-b border-gray-200 sm:rounded-lg">
@@ -119,108 +72,101 @@ function BusinessCaseTable() {
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Bc Title
+                      Name
                     </th>
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Type
+                      Surname
                     </th>
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Difficulty
+                      Role
+                    </th>
+
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Password
                     </th>
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Extected time to solve
+                      Email
                     </th>
-                    {/* <th scope="col" className="relative px-6 py-3">
-                      <span className="sr-only">Edit</span>
-                    </th> */}
                     <th scope="col" className="relative px-6 py-3">
-                      <input
-                        style={{color: "transparent"}}
-                        type="file"
-                        id="uploadoverall"
-                        onChange={handleFileUpload}
-                        className="w-1/2 hidden"
-                      />
-                      <label
-                        htmlFor="uploadoverall"
-                        className="bg-blue-600  p-2 rounded-md text-white text-sm cursor-pointer"
-                      >
-                        Upload Overall
-                      </label>
+                      <span className="sr-only">Edit</span>
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {businessData &&
-                    businessData.map(business => (
-                      <tr key={"fdfd"} onClick={() => {}}>
+                  {usersData &&
+                    usersData?.map(user => (
+                      <tr key={user._id} onClick={() => {}}>
                         <td className="px-6  py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="">
                               <div className="text-sm font-medium text-gray-900">
-                                {business.bcTitle}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6  py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="">
-                              <div className="text-sm font-medium text-gray-900">
-                                {business.type}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6  py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="">
-                              <div className="text-sm font-medium text-gray-900">
-                                {business.difficulty}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6  py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="">
-                              <div className="text-sm font-medium text-gray-900">
-                                {business.expectedTime}
+                                {user.name}
                               </div>
                             </div>
                           </div>
                         </td>
 
+                        <td className="px-6  py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="">
+                              <div className="text-sm font-medium text-gray-900">
+                                {user.surname}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6  py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="">
+                              <div className="text-sm font-medium text-gray-900">
+                                {user.role}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6  py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="">
+                              <div className="text-sm font-medium text-gray-900">
+                                {/* {user.password} */} ...........
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6  py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="">
+                              <div className="text-sm font-medium text-gray-900">
+                                {user.email}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap  text-right text-sm font-medium">
                           <FaPencilAlt
                             onClick={() => {
-                              navigate("/businesscaseEdit", {state: business});
+                              navigate("/edituser", {state: user});
                             }}
-                            className=" cursor-pointer relative left-48  h-6 w-6  p-1 rounded-sm bg-blue-700 hover:bg-blue-500 text-white text-xl"
+                            className=" cursor-pointer   h-6 w-6  p-1 rounded-sm bg-blue-700 hover:bg-blue-500 text-white text-xl"
                           />
                         </td>
-                        {/* <td>
-                          <AiFillEye
-                            onClick={() => {
-                              navigate("/businessView", {state: business});
-                            }}
-                            className=" cursor-pointer   h-6 w-6  p-1 rounded-sm bg-gray-300 text-blue text-xl hover:bg-gray-500"
-                          />
-                        </td> */}
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <AiOutlineDelete
                             onClick={() => {
                               setOpen(true);
-                              setDelId(business._id);
+                              setDelId(user._id);
                             }}
                             className=" cursor-pointer  text-red-500 text-xl"
                           />
@@ -228,9 +174,9 @@ function BusinessCaseTable() {
                         <DeleteModel
                           open={open}
                           setOpen={setOpen}
-                          id={delId && delId}
-                          getData={getBusinessCase}
-                          to={"deleteBusinessCase"}
+                          id={delId}
+                          getData={getUsers}
+                          to={"deleteuser"}
                         />
                       </tr>
                     ))}
@@ -244,4 +190,4 @@ function BusinessCaseTable() {
   );
 }
 
-export default BusinessCaseTable;
+export default Users;

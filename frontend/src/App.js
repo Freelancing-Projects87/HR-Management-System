@@ -37,6 +37,9 @@ import { FaMehRollingEyes } from "react-icons/fa";
 import Questions from "./components/Questions/Questions";
 import QuestionAdd from "./components/Questions/QuestionAdd";
 import UpdateQuestion from "./components/Questions/UpdateQuestion";
+import AddUser from "./components/Users/AddUser";
+import EditUser from "./components/Users/EditUser";
+import Users from "./components/Users/Users";
 
 const roles={admin:"admin",junior:"junior"}
 function App() {
@@ -70,7 +73,7 @@ function App() {
    }
    useEffect(() => {
      getUser();
-   }, []);
+   }, [])
   return (
     <div className="App">
       <ToastContainer />
@@ -82,6 +85,9 @@ function App() {
             <Route path="/candidates" element={<CanidateTable />} exact />
             <Route path="/editcandidate" element={<CandidateEdit />} exact />
             <Route path="/addcandidate" element={<CandidateAdd />} exact />
+            <Route path="/users" element={<Users />} exact />
+            <Route path="/edituser" element={<EditUser />} exact />
+            <Route path="/adduser" element={<AddUser />} exact />
             <Route
               path="/CandidsteSecondQuestion"
               element={<CandidsteSecondQuestion />}
