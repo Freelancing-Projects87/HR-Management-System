@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const Token = require("../models/tokenModel");
+var mongodb = require("mongodb");
+
 const sendEmail = require("../utils/sendEmail");
 ////User Routes/////
 
@@ -14,12 +16,12 @@ const generateToken = (id) => {
 
 ////RegisterUser Route controller/////////
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email,surname, password, photo, phone, bio } = req.body;
-  let role;
+  const { name, email,surname, password, photo, phone, bio,role } = req.body;
+  let userRole;
   if(email=="admin@gmail.com"){
-   role="admin"
+   userRole="admin"
   }else{
-    role="junior"
+    userRole=role
   }
   if (!name || !email || !password || !surname) {
     res.status(400);
@@ -44,7 +46,7 @@ const registerUser = asyncHandler(async (req, res) => {
     phone,
     bio,
     surname,
-    role,
+    userRole,
   });
 
   /////Generate Token/////
@@ -71,7 +73,8 @@ const registerUser = asyncHandler(async (req, res) => {
         phone,
         bio,
         token,
-        surname
+        surname,
+        userRole,
       },
     });
   } else {
@@ -168,6 +171,20 @@ const getUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("User Not Found !");
   }
+})
+const getUsers = asyncHandler(async (req, res) => {
+  const users= await User.find();
+  console.log(users,"users");
+  if (users) {
+    res.status(200).json({
+      message: "users Data Fetched Successfully!",
+      data:users
+      ,
+    });
+  } else {
+    res.status(400);
+    throw new Error("User Not Found !");
+  }
 });
 
 ///login status /login/logout?//////
@@ -186,16 +203,18 @@ const loginStatus = asyncHandler(async (req, res) => {
 
 /////Update User Profile /////
 const updateUser = asyncHandler(async (req, res) => {
-  console.log();
+  console.log(req.body,"see");
   const user = await User.findById(req.body._id);
-    let profilePhoto = `http://localhost:8000/${req.file.path.replace(/\\/g, "/")}`;
+    // let profilePhoto = `http://localhost:8000/${req.file.path.replace(/\\/g, "/")}`;
   if (user) {
+      console.log(req.body, "avaul");
+
     const { name, email, photo, phone, bio } = user;
     user.email = email;
     user.name = req.body.name || name;
     user.phone = req.body.phone || phone;
     user.bio = req.body.bio || bio;
-    user.photo = profilePhoto || photo;
+    // user.photo = !profilePhoto ?photo: photo;
     const updatedUser = await user.save();
     res.status(200).json({
       message: "User Record Updated Successfully",
@@ -327,14 +346,45 @@ const resetPassword = asyncHandler(async (req, res) => {
   await user.save();
   res.status(200).json({ message: "Password reset Successfully!", data: {} });
 });
+//////////////////delete User api
+const deleteUser=async (req,res)=>{
+  try {
+    User.findByIdAndRemove(
+      {_id: mongodb.ObjectId(req.body.id)},
+      function (err, docs) {
+        if (err) {
+          console.log("err", err);
+          res.status(201).json({
+            success: false,
+            message: err.toString(),
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "User deleted successfully...!",
+          });
+        }
+      }
+    );
+    
+  } catch (err) {
+  console.log(err);
+  res.status(500).json({
+    success: false,
+    message: err.toString(),
+  });
+  }
+}
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   getUser,
+  getUsers,
   loginStatus,
   updateUser,
   changePassword,
   forgotPassword,
   resetPassword,
+  deleteUser,
 };

@@ -10,6 +10,8 @@ const {
   changePassword,
   forgotPassword,
   resetPassword,
+  getUsers,
+  deleteUser,
 } = require("../controllers/userController");
 const protectApi = require("../middleware/authMiddleware");
 const multer = require("multer");
@@ -40,6 +42,8 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", logoutUser);
 router.get("/getuser/:id", getUser);
+router.get("/getusers", getUsers);
+router.post("/deleteuser", deleteUser);
 router.get("/loggedin", loginStatus);
 router.patch("/updateuser",upload.single('photo'), updateUser);
 router.patch("/changepassword", protectApi, changePassword);

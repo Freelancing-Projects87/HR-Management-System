@@ -164,7 +164,7 @@ const getAllcandidate = async (req, res, next) => {
         success: true,
         data: data,
       });
-    });
+    })
   } catch (err) {
     console.log(err);
     res.status(201).json({
@@ -269,7 +269,7 @@ const deleteBusinessCase = async (req, res) => {
     );
   } catch (err) {
     console.log(err);
-    res.status(201).json({
+    res.status(500).json({
       success: false,
       message: err.toString(),
     });
