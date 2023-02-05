@@ -40,15 +40,15 @@ const upload = multer({
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/logout", logoutUser);
-router.get("/getuser/:id", getUser);
-router.get("/getusers", getUsers);
-router.post("/deleteuser", deleteUser);
-router.get("/loggedin", loginStatus);
-router.patch("/updateuser",upload.single('photo'), updateUser);
+router.get("/logout",protectApi, logoutUser);
+router.get("/getuser/:id", protectApi, getUser);
+router.get("/getusers",protectApi, getUsers);
+router.post("/deleteuser",protectApi, deleteUser);
+router.get("/loggedin",protectApi, loginStatus);
+router.patch("/updateuser",protectApi,upload.single('photo'), updateUser);
 router.patch("/changepassword", protectApi, changePassword);
-router.post("/forgotpassword", forgotPassword);
-router.put("/resetPassword/:resetToken", resetPassword);
+router.post("/forgotpassword",protectApi, forgotPassword);
+router.put("/resetPassword/:resetToken",protectApi, resetPassword);
 
 
 module.exports = router;

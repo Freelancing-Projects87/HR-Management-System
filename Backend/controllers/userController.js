@@ -17,6 +17,7 @@ const generateToken = (id) => {
 ////RegisterUser Route controller/////////
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email,surname, password, photo, phone, bio,role } = req.body;
+  console.log(req.body,"asd");
   let userRole;
   if(email=="admin@gmail.com"){
    userRole="admin"
@@ -46,7 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
     phone,
     bio,
     surname,
-    userRole,
+   role: userRole
   });
 
   /////Generate Token/////
@@ -62,7 +63,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    const { _id, name, email, photo, phone, bio } = user;
+    const { _id, name, email, photo, phone, bio, role} = user;
     res.status(201).send({
       message: "user Created Successfully!",
       data: {
@@ -74,7 +75,7 @@ const registerUser = asyncHandler(async (req, res) => {
         bio,
         token,
         surname,
-        userRole,
+        role,
       },
     });
   } else {
@@ -104,12 +105,12 @@ const loginUser = asyncHandler(async (req, res) => {
   const token = generateToken(user._id);
 
   ////send HTTP-Only cookie///
-  res.cookie("token", token, {
-    path: "/",
+  res.cookie("access_token", token, {
+    // path: "/",
     httpOnly: true,
-    expires: new Date(Date.now() + 1000 * 86400), ///1day
+    // expires: new Date(Date.now() + 1000 * 86400), ///1day
     sameSite: "none",
-    secure: true,
+    // secure: true,
   });
 
   if (user && isPasswordCorrect) {
@@ -123,7 +124,8 @@ const loginUser = asyncHandler(async (req, res) => {
         photo,
         phone,
         bio,
-        token,role
+        token,
+        role
       },
     });
   } else {
@@ -134,8 +136,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
 //// logout User////
 const logoutUser = asyncHandler(async (req, res) => {
+  console.log(req.user._id,"in login from auth ");
   ////send HTTP-Only cookie///
-  res.cookie("token", "", {
+  res.cookie("access_token", "", {
     path: "/",
     httpOnly: true,
     expires: new Date(0), ///1day
@@ -189,32 +192,48 @@ const getUsers = asyncHandler(async (req, res) => {
 
 ///login status /login/logout?//////
 const loginStatus = asyncHandler(async (req, res) => {
-  const token = req.cookies.token;
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    try {
+      // Get token from header
+      token = req.headers.authorization.split(" ")[1];
+      // Verify token
+      const decoded = jwt.verify(token, process.env.JWT_SECRECT);
+      // Get user from the token
+     let user = await User.findById(decoded.id).select("-password");
+      res.status(200).json(user)
+      console.log(user, "protected user");
+    } catch (error) {
+      console.log(error);
+      res.status(401);
+      throw new Error("Not authorized");
+    }
+  }
   if (!token) {
-    return res.json(false);
+    res.status(401);
+    throw new Error("Not authorized, no token");
   }
-  ////verified jwt token///
-  const verified = jwt.verify(token, process.env.JWT_SECRECT);
-  if (verified) {
-    return res.json(true);
-  }
-  return res.json(false);
 });
 
 /////Update User Profile /////
 const updateUser = asyncHandler(async (req, res) => {
   console.log(req.body,"see");
   const user = await User.findById(req.body._id);
-    // let profilePhoto = `http://localhost:8000/${req.file.path.replace(/\\/g, "/")}`;
+    let profilePhoto =req?.file? `http://localhost:8000/${req?.file?.path.replace(/\\/g, "/")}`:null;
   if (user) {
       console.log(req.body, "avaul");
 
-    const { name, email, photo, phone, bio } = user;
+    const { name, email, photo, phone, bio,role } = user;
     user.email = email;
     user.name = req.body.name || name;
     user.phone = req.body.phone || phone;
+        user.role = req.body.role || role;
+
     user.bio = req.body.bio || bio;
-    // user.photo = !profilePhoto ?photo: photo;
+    user.photo = profilePhoto || photo;
     const updatedUser = await user.save();
     res.status(200).json({
       message: "User Record Updated Successfully",

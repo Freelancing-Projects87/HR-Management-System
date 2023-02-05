@@ -53,7 +53,7 @@ const upload = multer({
 router.post("/addCandidate",upload.single('cv'), addCandidate);
 router.post("/update_candidate",upload.single('cv'), updateCandidate);
 router.post("/delete_candidate", deleteCandidate);
-router.get("/getCandidates", getAllcandidate);
+router.get("/getCandidates",protectApi, getAllcandidate);
 router.post("/addBusinessline",  addBusinessPipeline);
 router.post("/update_Businessline", updateBusinessline);
 router.post("/delete_Businessline", deleteBusinessPipeline);
