@@ -19,7 +19,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Business from "./components/BusinessPipeline/BussinessTable";
 import BusinessAdd from "./components/BusinessPipeline/BusinessAdd";
 import BusinessEdit from "./components/BusinessPipeline/BusinessEdit";
-import BusinessView from "./components/BusinessPipeline/BusinessView";
+// import BusinessView from "./components/BusinessPipeline/BusinessView";
 import BusinessCaseTable from "./components/BusinessCase/BusinessCaseTable";
 import BusinessCaseAdd from "./components/BusinessCase/BusinessCaseAdd";
 import BusinesscaseEdit from "./components/BusinessCase/BusinessCaseEdit";
@@ -40,8 +40,9 @@ import UpdateQuestion from "./components/Questions/UpdateQuestion";
 import AddUser from "./components/Users/AddUser";
 import EditUser from "./components/Users/EditUser";
 import Users from "./components/Users/Users";
+import axiosInstance from "./utils/axiosInstance";
 
-const roles={admin:"admin",junior:"junior"}
+const roles={admin:"admin",junior:"junior",senior:"senior"}
 function App() {
   const [role,setRole]=useState(null)
   const paths = [
@@ -59,12 +60,12 @@ function App() {
   }, [isAuthenticUser()]);
    function getUser() {
     let user=JSON.parse(localStorage.getItem('user'))
-     axios
-       .get(`http://localhost:8000/api/users/getuser/${user?._id}`)
+     axiosInstance
+       .get(`api/users/loggedin`)
        .then(res => {
          if (res.status === 200) {
-           setRole(res.data.data?.role);
-           console.log(res.data?.data.role, "res.data?.role");
+           setRole(res.data?.role);
+           console.log(res?.data, "res.data?.role");
          }
        })
        .catch(err => {
@@ -85,24 +86,30 @@ function App() {
             <Route path="/candidates" element={<CanidateTable />} exact />
             <Route path="/editcandidate" element={<CandidateEdit />} exact />
             <Route path="/addcandidate" element={<CandidateAdd />} exact />
-            <Route path="/users" element={<Users />} exact />
-            <Route path="/edituser" element={<EditUser />} exact />
-            <Route path="/adduser" element={<AddUser />} exact />
+
             <Route
               path="/CandidsteSecondQuestion"
               element={<CandidsteSecondQuestion />}
             />
             <Route path="/candidateView" element={<CandidateView />} exact />
-            {role == roles.admin ? (
-              <>
-                <Route path="/business" element={<Business />} exact />
-                <Route path="/editBusiness" element={<BusinessEdit />} exact />
-                <Route path="/addbusiness" element={<BusinessAdd />} exact />
-                <Route path="/businessView" element={<BusinessView />} />
-              </>
-            ) : (
-              ""
-            )}
+            {(role == roles.admin ||
+              role == roles.senior) ? (
+                <>
+                  <Route path="/business" element={<Business />} exact />
+                  <Route
+                    path="/editBusiness"
+                    element={<BusinessEdit />}
+                    exact
+                  />
+                  <Route path="/addbusiness" element={<BusinessAdd />} exact />
+                  {/* <Route path="/businessView" element={<BusinessView />} /> */}
+                  {/* user routes */}
+                  <Route path="/users" element={<Users />} exact />
+                  <Route path="/edituser" element={<EditUser />} exact />
+                  <Route path="/adduser" element={<AddUser />} exact />
+                </>
+              )
+              :""}
             <Route path="/interview" element={<Interview />} />
             <Route path="/businesscase" element={<BusinessCaseTable />} />
             <Route path="/businesscaseAdd" element={<BusinessCaseAdd />} />

@@ -1,16 +1,24 @@
 import React, {useState} from "react";
 import axios from "axios";
-import {useNavigate,useLocation} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {toast, ToastContainer} from "react-toastify";
-import {FaPencilAlt, FaMeetup, AiFillEye} from "react-icons/fa";
+import {
+  FaPencilAlt,
+  FaMeetup,
+  AiFillEye,
+  FaMehRollingEyes,
+} from "react-icons/fa";
 
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../../utils/axiosInstance";
+const roles = {admin: "admin", junior: "junior", senior: "senior"};
 
 function EditUser() {
   let navigate = useNavigate();
-  const location=useLocation()
+  const location = useLocation();
+  const [user, setUser] = useState(null);
   const [pdf, getPdf] = useState(null);
   const {
     register,
@@ -19,51 +27,69 @@ function EditUser() {
     watch,
   } = useForm({
     defaultValues: {
-     name:location.state?.name,
-     email:location.state.email,
-     password:".........",
-     userRole:location.state?.role,
-     surname:location.state?.surname
+      name: location.state?.name,
+      email: location.state.email,
+      password: ".........",
+      userRole: location.state?.role,
+      surname: location.state?.surname,
     },
   });
 
   const onSubmit = data => updateUser(data);
 
-   const updateUser = data => {
-     console.log(data, "updated paswword you know");
-     const {_id} = JSON.parse(localStorage.getItem("user"));
-     const token = localStorage.getItem("token");
-     console.log(data, "profile");
-     let formData = new FormData();
-     formData.append("_id", _id);
-     formData.append("name", data.name);
-     formData.append("email", data.email);
-     formData.append("role", data.userRole);
+  const updateUser = data => {
+    console.log(data, "updated paswword you know");
+    //  const {_id} = JSON.parse(localStorage.getItem("user"));
+    //  const token = localStorage.getItem("token");
+    console.log(data, "profile");
+    let formData = new FormData();
+    formData.append("_id", location.state?._id);
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("role", data.userRole);
     formData.append("photo", null);
 
-     axios
-       .patch("http://localhost:8000/api/users/updateuser", formData, {
-         headers: {
-           accept: "application/json",
-         },
-       })
-       .then(res => {
-         console.log(res, "user is updated", res);
-         if (res.status === 200) {
-           toast.success("user updated successfully!", {
-             position: "top-center",
-           });
-           navigate('/users')
-           console.log(res, "res");
-        //    setUser(res.data?.data);
-        //    getUser();
-         }
-       })
-       .catch(err => {
-         console.error(err);
-       });
-   };
+    axiosInstance
+      .patch("api/users/updateuser", formData, {
+        headers: {
+          accept: "application/json",
+        },
+      })
+      .then(res => {
+        console.log(res, "user is updated", res);
+        if (res.status === 200) {
+          toast.success("user updated successfully!", {
+            position: "top-center",
+          });
+          navigate("/users");
+          console.log(res, "res");
+          //    setUser(res.data?.data);
+          //    getUser();
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+  function getUser() {
+    axiosInstance
+      .get(`api/users/loggedin`)
+      .then(res => {
+        if (res.status === 200) {
+          // localStorage.setItem("user", JSON.stringify(res.data?.data));
 
+          setUser(res.data);
+          console.log(res.data, "res.data");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+  useEffect(() => {
+    getUser();
+  }, []);
+  console.log(location?.state, "you know");
   return (
     <>
       {" "}
@@ -164,9 +190,9 @@ function EditUser() {
                       } mt-1 px-2 block w-full   sm:w-11/12 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
                     />
                     <span
-                    //   onClick={() => {
-                    //     setPasswordShow(!show);
-                    //   }}
+                      //   onClick={() => {
+                      //     setPasswordShow(!show);
+                      //   }}
                       className={` ${
                         false ? "border border-gray-400 rounded-xl" : ""
                       } absolute  right-[11%] bottom-[12%] cursor-pointer text-xl`}
@@ -195,9 +221,20 @@ function EditUser() {
                       <option selected value="">
                         Select Role
                       </option>
-                      <option value="senior">Senior</option>
-                      <option value="junior">Junior</option>
-                      <option value="user">User</option>
+                      {user?.role == roles.admin ? (
+                        <>
+                          {" "}
+                          <option value="admin">Admin</option>
+                          <option value="senior">Senior</option>
+                          <option value="junior">Junior</option>
+                          <option value="user">User</option>
+                        </>
+                      ) : (
+                        <>
+                          <option value="junior">Junior</option>
+                          {/* <option value="user">User</option> */}
+                        </>
+                      )}
                     </select>
                     {errors.percentage?.type === "required" && (
                       <p role="alert" className="text-red-500">

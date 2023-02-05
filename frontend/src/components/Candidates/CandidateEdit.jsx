@@ -5,6 +5,7 @@ import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../../utils/axiosInstance";
 
 function CandidateEdit() {
   let navigate = useNavigate();
@@ -48,8 +49,8 @@ function CandidateEdit() {
       formData.append("phone", data.phone);
       formData.append("nationality", data.nationality);
       console.log(formData, "formData edit ");
-      axios
-        .post("http://localhost:8000/api/admin/update_candidate", formData)
+      axiosInstance
+        .post("api/admin/update_candidate", formData)
         .then(res => {
           console.log(res, "you know");
           if (res.status === 200) {

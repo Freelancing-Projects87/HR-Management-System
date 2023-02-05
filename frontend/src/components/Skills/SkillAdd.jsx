@@ -5,6 +5,7 @@ import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../../utils/axiosInstance";
 
 function SkillAdd() {
   let navigate = useNavigate();
@@ -20,8 +21,8 @@ function SkillAdd() {
   const saveSkill = data => {
     console.log(data, "data skills");
 
-    axios
-      .post("http://localhost:8000/api/admin/addskill", data)
+    axiosInstance
+      .post("api/admin/addskill", data)
       .then(res => {
         console.log(res, "your skill");
         if (res.status === 201) {

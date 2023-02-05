@@ -5,6 +5,7 @@ import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../../utils/axiosInstance";
 
 function BusinessAdd() {
   let navigate = useNavigate();
@@ -20,8 +21,8 @@ function BusinessAdd() {
   const saveBusiness = data => {
     console.log(data, "data");
 
-    axios
-      .post("http://localhost:8000/api/admin/addBusinessline", data)
+    axiosInstance
+      .post("api/admin/addBusinessline", data)
       .then(res => {
         if (res.status == 200) {
           console.log(res, "hmm");

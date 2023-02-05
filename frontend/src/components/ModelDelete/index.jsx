@@ -4,6 +4,7 @@ import {Dialog, Transition} from "@headlessui/react";
 import {CheckIcon} from "@heroicons/react/outline";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
 
 
 
@@ -11,8 +12,8 @@ function DeleteModel(props) {
   const cancelButtonRef = useRef(null);
   const navigate=useNavigate()
     const deleteCandidate = ()=> {
-    axios
-      .post(`http://localhost:8000/api/admin/${props.to}`, {
+    axiosInstance
+      .post(`api/admin/${props.to}`, {
         id: props.id,
       })
       .then(res => {

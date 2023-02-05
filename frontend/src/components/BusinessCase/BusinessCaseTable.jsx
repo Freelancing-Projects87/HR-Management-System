@@ -13,6 +13,7 @@ import DeleteModel from "../ModelDelete";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as XLSX from "xlsx";
+import axiosInstance from "../../utils/axiosInstance";
 
 function BusinessCaseTable() {
   const [businessData, setBusiness] = useState([]);
@@ -31,7 +32,7 @@ function BusinessCaseTable() {
   const navigate = useNavigate();
   const getBusinessCase= () => {
     // bcTitle;
-    axios.get("http://localhost:8000/api/admin/getBusinessCase").then(res => {
+    axiosInstance.get("api/admin/getBusinessCase").then(res => {
         if (res.status === 200) {
           setBusiness(res.data?.data);
         }
@@ -47,8 +48,8 @@ function BusinessCaseTable() {
    const saveBusiness = data => {
     console.log(data,"data");
     if(data.excelData){
-     axios
-       .post("http://localhost:8000/api/admin/addBusinessCase", data)
+     axiosInstance
+       .post("api/admin/addBusinessCase", data)
        .then(res => {
          if (res.status == 200) {
            console.log(res, "hmm");

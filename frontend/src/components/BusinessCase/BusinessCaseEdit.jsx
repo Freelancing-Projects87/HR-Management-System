@@ -7,6 +7,7 @@ import {useLocation} from "react-router-dom";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as XLSX from "xlsx";
+import axiosInstance from "../../utils/axiosInstance";
 
 
 function BusinessCaseEdit() {
@@ -40,8 +41,8 @@ function BusinessCaseEdit() {
     data.id = location.state?._id;
     data.excelData = excelData;
     console.log(data, "data");
-    axios
-      .post("http://localhost:8000/api/admin/updateBusinessCase", data)
+    axiosInstance
+      .post("api/admin/updateBusinessCase", data)
       .then(res => {
         if (res.status == 200) {
           console.log(res, "hmm");

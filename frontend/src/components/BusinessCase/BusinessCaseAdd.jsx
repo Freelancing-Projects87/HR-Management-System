@@ -6,6 +6,7 @@ import {useForm} from "react-hook-form";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as XLSX from "xlsx";
+import axiosInstance from "../../utils/axiosInstance";
 
 
 function BusinessCaseAdd() {
@@ -24,7 +25,7 @@ function BusinessCaseAdd() {
   const saveBusiness = data => {
     data.excelData=excelData
     console.log(data, "data")
-  axios.post("http://localhost:8000/api/admin/addBusinessCase", data).then(res => {
+  axiosInstance.post("api/admin/addBusinessCase", data).then(res => {
       if (res.status == 200) {
         console.log(res, "hmm");
         navigate("/businesscase");

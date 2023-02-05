@@ -10,6 +10,7 @@ import {AiFillCheckSquare} from "react-icons/ai";
 import {MultiSelect} from "react-multi-select-component";
 import {AiFillFilePdf} from "react-icons/ai";
 import {toast, ToastContainer} from "react-toastify";
+import axiosInstance from "../../utils/axiosInstance";
 
 function CandidateView() {
   const [skills, setSkills] = useState([]);
@@ -26,8 +27,8 @@ function CandidateView() {
   const ref = useRef(null);
 
   const getSkills = () => {
-    axios
-      .get("http://localhost:8000/api/admin/getskills")
+    axiosInstance
+      .get("api/admin/getskills")
       .then(res => {
         if (res.status === 200) {
           console.log(res.data.data, "skills 2.0");
@@ -53,8 +54,8 @@ function CandidateView() {
 
   /////////////////////////quiz function to save all data in db y.k
   const getInterviewsOfCandidates = id => {
-    axios
-      .get(`http://localhost:8000/api/admin/getInterviews/${id}`)
+    axiosInstance
+      .get(`api/admin/getInterviews/${id}`)
       .then(res => {
         if (res.status === 200) {
           setInterviews(res.data.data);
@@ -108,7 +109,9 @@ function CandidateView() {
           <div className="w-full flex items-center justify-evenly">
             <h1 class="font-bold text-center capitalize text-3xl text-gray-900">
               Average Score:{" "}
-              <span className="text-blue-500">{averageTotalGrade}</span>
+              <span className="text-blue-500">
+                {parseInt(averageTotalGrade)}
+              </span>
             </h1>
             <h1 class="font-bold text-center capitalize text-3xl text-gray-900">
               Average Grade :{" "}
@@ -162,16 +165,16 @@ function CandidateView() {
                   <div className="text-start">
                     <span className="  font-bold">Total Grade: </span>
 
-                    {interview.totalGrade}
+                    {parseInt(interview.totalGrade)}
                   </div>
                   <div>
                     <span className=" font-bold">Total Percentage: </span>
-                    {interview.totalScore + "%"}
+                    {parseInt(interview.totalScore) + "%"}
                   </div>
                   <div>
                     <span className=" font-bold">Grade: </span>
 
-                    {interview.averageGrade}
+                    {parseInt(interview.averageGrade)}
                   </div>
                 </div>
               ))

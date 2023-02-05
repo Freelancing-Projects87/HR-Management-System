@@ -4,9 +4,13 @@ import {useNavigate, useLocation, json} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../../utils/axiosInstance";
+import {AiOutlineUser} from "react-icons/ai";
+
 
 function Profile() {
   const [showForm, setShowForm] = useState(false);
+  const [token,setToken]=useState(null)
       const location = useLocation();
 
   const [photo,setPhoto]=useState(null);
@@ -23,22 +27,23 @@ function Profile() {
     formState: {errors},
     watch,
   
-  } = useForm({defaultValues:{name:"",phone:"",email:""}});
+  } = useForm({defaultValues:{name:user?.name,phone:user?.phone,email:user?.email}});
   console.log(errors,"orro");
   const UpdateProfile = data => {
     console.log(data, "updated paswword you know");
-    const {_id} = JSON.parse(localStorage.getItem("user"));
+    // const {_id} = JSON.parse(localStorage.getItem("user"));
     const token = localStorage.getItem("token");
     console.log(data, "profile");
     let formData = new FormData();
     formData.append("photo", photo)
-    formData.append("_id", _id);
+    formData.append("_id", user?._id);
     formData.append("name", data.name);
     formData.append("email", data.email);
     // formData.append("bio", data.bio);
     formData.append("phone", data.phone);
     console.log(formData,"formdata");
-    axios.patch("http://localhost:8000/api/users/updateuser", formData, {
+    axiosInstance
+      .patch("api/users/updateuser", formData, {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${token}`,
@@ -47,34 +52,37 @@ function Profile() {
       .then(res => {
         console.log(res, "user is updated", res);
         if (res.status === 200) {
-          toast.success("profile updated successfully!",{position:"top-center"})
-          console.log(res,"res");
-          setUser(res.data?.data)
-         getUser()
+          toast.success("profile updated successfully!", {
+            position: "top-center",
+          });
+          console.log(res, "res");
+          setUser(res.data?.data);
+          getUser();
         }
       })
       .catch(err => {
         console.error(err);
-      })
+      });
   };
     function getUser() {
-      axios
-        .get(`http://localhost:8000/api/users/getuser/${location.state._id}`)
+      axiosInstance
+        .get(`api/users/loggedin`)
         .then(res => {
           if (res.status === 200) {
-            localStorage.setItem("user",JSON.stringify( res.data?.data));
-                       res?.data && reset(res?.data?.data);
+            // localStorage.setItem("user", JSON.stringify(res.data?.data));
 
-          setUser(res?.data?.data);
-            console.log(res.data?.data.role, "res.data?.role");
+            setUser(res.data);
+            console.log(res.data, "res.data");
           }
         })
         .catch(err => {
           console.error(err);
         });
     }
-    useEffect(() => {
+    useEffect(()=>{
       getUser();
+    },[])
+    useEffect(() => {
     }, [location.state,reset]);
   return (
     <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
@@ -119,10 +127,10 @@ function Profile() {
                   </label>
                   <div className="flex">
                     <input
-                      // defaultValue={user?.name}
-                      onChange={e => {
-                        setUser({name: e.target.value});
-                      }}
+                      defaultValue={user?.name}
+                      // onChange={e => {
+                      //   setUser({name: e.target.value});
+                      // }}
                       id="name"
                       {...register("name", {required: false})}
                       className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
@@ -188,16 +196,18 @@ function Profile() {
                     type="file"
                   />
                   <label htmlFor="photo" className="cursor-pointer">
-                    <img
-                      onClick={() => {
-                        fileref.current.click();
-                      }}
-                      src={
-                       !photo? user?.photo :URL.createObjectURL(photo)
-                      }
-                      alt=""
-                      className="w-48 rounded-md h-48"
-                    />
+                    {user.photo || photo ? (
+                      <img
+                        onClick={() => {
+                          fileref.current.click();
+                        }}
+                        src={!photo ? user?.photo : URL.createObjectURL(photo)}
+                        alt=""
+                        className="w-48 rounded-md h-48"
+                      />
+                    ) : (
+                      <AiOutlineUser className="w-48 rounded-md h-48" />
+                    )}
                   </label>
                 </div>
                 <button className="border-1 bg-blue-500 text-white hover:bg-blue-700  rounded-r px-4 py-2 w-full border border-gray-500">

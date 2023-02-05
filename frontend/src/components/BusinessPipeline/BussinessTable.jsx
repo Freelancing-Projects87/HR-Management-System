@@ -10,6 +10,7 @@ import {FaPencilAlt} from "react-icons/fa";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import DeleteModel from "../ModelDelete";
+import axiosInstance from "../../utils/axiosInstance";
 
 function Business() {
   const [businessData, setBusiness] = useState([]);
@@ -19,8 +20,8 @@ function Business() {
   console.log(delId, "delId");
   const navigate = useNavigate();
   const getBusinessline = () => {
-    axios
-      .get("http://localhost:8000/api/admin/getBusinessline")
+    axiosInstance
+      .get("api/admin/getBusinessline")
       .then(res => {
         if (res.status === 200) {
           setBusiness(res.data?.data);

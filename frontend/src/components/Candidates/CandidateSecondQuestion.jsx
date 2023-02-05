@@ -10,6 +10,7 @@ import {AiFillCheckSquare} from "react-icons/ai";
 import {MultiSelect} from "react-multi-select-component";
 import {AiFillFilePdf} from "react-icons/ai";
 import {toast, ToastContainer} from "react-toastify";
+import axiosInstance from "../../utils/axiosInstance";
 
 function CandidateView() {
   const [selected, setSelected] = useState([]);
@@ -42,8 +43,8 @@ function CandidateView() {
   };
   // function to get skills
   const getSkills = () => {
-    axios
-      .get("http://localhost:8000/api/admin/getskills")
+    axiosInstance
+      .get("api/admin/getskills")
       .then(res => {
         if (res.status === 200) {
           console.log(res.data.data, "skills 2.0");
@@ -91,8 +92,8 @@ function CandidateView() {
     console.log(gradeGrand, "see its there or not");
     if (recomendation || selectedSkills.length > 0) {
 
-      axios
-        .post("http://localhost:8000/api/admin/addInterview", {
+      axiosInstance
+        .post("api/admin/addInterview", {
           QA: quizData,
           businessCase: data?.businessCase,
           id: location.state.id,
@@ -135,8 +136,8 @@ function CandidateView() {
     const gradeGrand = CalculateGrandTotal();
     console.log(gradeGrand, "see its there or not");
     if (recomendation || selectedSkills.length > 0) {
-      axios
-        .post("http://localhost:8000/api/admin/adddFieldToCandidate", {
+      axiosInstance
+        .post("api/admin/adddFieldToCandidate", {
           businessCase: data?.businessCase,
           id: location.state.id,
           isInterviewed: true,

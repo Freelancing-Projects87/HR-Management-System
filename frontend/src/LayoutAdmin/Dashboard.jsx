@@ -11,13 +11,16 @@ import {
   MenuAlt2Icon,
   UsersIcon,
   ChartPieIcon,
+  
   XIcon,
 } from "@heroicons/react/outline";
+import {AiOutlineUser} from "react-icons/ai"
 import {CalculatorIcon, SearchIcon} from "@heroicons/react/solid";
 import {Link} from "react-router-dom";
-import {useNavigate,useLocation} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 import axios from "axios";
 import {useEffect} from "react";
+import axiosInstance from "../utils/axiosInstance";
 
 const userNavigation = [
   {name: "Your Profile", href: "#"},
@@ -31,8 +34,8 @@ function classNames(...classes) {
 
 export default function Dashboard({role}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-   const [currentIndex,setIndex]=useState(0)
-    
+  const [currentIndex, setIndex] = useState(0);
+
   const [sideBarData, setSideBarData] = useState([
     {
       icon: HomeIcon,
@@ -73,7 +76,7 @@ export default function Dashboard({role}) {
   ]);
   const roles = {admin: "admin", junior: "junior"};
   const [user, setUser] = useState({});
-  const location=useLocation()
+  const location = useLocation();
 
   const [style, setStyle] = useState(false);
   const [style2, setStyle2] = useState(false);
@@ -84,7 +87,7 @@ export default function Dashboard({role}) {
 
   const navigate = useNavigate();
   function signOut() {
-    axios.get("http://localhost:8000/api/users/logout").then(res => {
+    axiosInstance.get("api/users/logout").then(res => {
       if (res.status == 200) {
         localStorage.removeItem("token");
         navigate("/login");
@@ -92,16 +95,29 @@ export default function Dashboard({role}) {
       }
     });
   }
+  function getUser() {
+    axiosInstance
+      .get(`api/users/loggedin`)
+      .then(res => {
+        if (res.status === 200) {
+          // localStorage.setItem("user", JSON.stringify(res.data?.data));
+
+          setUser(res?.data);
+          console.log(res?.data, "get user detail");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
-    console.log(location.state?.fromLogin,'from login');
-   
+    getUser();
   }, []);
-  useEffect(()=>{
- if(location.state?.fromLogin){
-       setStyle(true);
-    }}
-,[location.state?.fromLogin])
+  useEffect(() => {
+    if (location.state?.fromLogin) {
+      setStyle(true);
+    }
+  }, [location.state?.fromLogin]);
 
   return (
     <>
@@ -216,35 +232,44 @@ export default function Dashboard({role}) {
             </div>
             <div className="mt-5 flex-grow flex flex-col">
               <nav className="flex-1 px-2 pb-4 space-y-1">
-                {sideBarData?.map((data, index) => (
-                  <p
-                    onClick={() => {
-                      setStyle(true);
-                      setIndex(index);
-                      // window.location.href = "/candidates";
-                      navigate(`${data.to}`);
-                    }}
-                    className={classNames(
-                      `text-gray-600  ${
-                        index == currentIndex ? "bg-purple-600" : ""
-                      } cursor-pointer `,
-                      "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
-                    )}
-                  >
-                    <data.icon
+                {sideBarData?.map((data, index) =>
+                  (data.compName == "Business Pipeline" ||
+                    data.compName == "Manage Users") &&
+                  user?.role !== "admin" &&
+                  user?.role !== "senior" ? (
+                    ""
+                  ) : (
+                    <p
+                      onClick={() => {
+                        setStyle(true);
+                        setIndex(index);
+                        // window.location.href = "/candidates";
+                        navigate(`${data.to}`);
+                      }}
                       className={classNames(
-                        "text-gray-400 group-hover:text-gray-500",
-                        "mr-3 flex-shrink-0 h-6 w-6"
+                        `text-gray-600  ${
+                          index == currentIndex ? "bg-purple-600" : ""
+                        } cursor-pointer `,
+                        "group flex cursor-pointer items-center px-2 py-2 text-sm font-medium rounded-md"
                       )}
-                      aria-hidden="true"
-                    />
-                    <span
-                      className={`${index == currentIndex ? "text-white" : ""}`}
                     >
-                      {data?.compName}
-                    </span>
-                  </p>
-                ))}
+                      <data.icon
+                        className={classNames(
+                          "text-gray-400 group-hover:text-gray-500",
+                          "mr-3 flex-shrink-0 h-6 w-6"
+                        )}
+                        aria-hidden="true"
+                      />
+                      <span
+                        className={`${
+                          index == currentIndex ? "text-white" : ""
+                        }`}
+                      >
+                        {data?.compName}
+                      </span>
+                    </p>
+                  )
+                )}
               </nav>
             </div>
           </div>
@@ -293,11 +318,15 @@ export default function Dashboard({role}) {
                   <div>
                     <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                       {/* <span className="">{user?.name}</span> */}
-                      <img
-                        className="h-12 w-12 rounded-full"
-                        src={user?.photo}
-                        alt=""
-                      />
+                      {user?.photo ? (
+                        <img
+                          className="h-12 w-12 rounded-full"
+                          src={user?.photo}
+                          alt=""
+                        />
+                      ) : (
+                        <AiOutlineUser className="h-12 w-12 bg-gray-300 p-2 rounded-full" />
+                      )}
                     </Menu.Button>
                   </div>
                   <Transition
@@ -330,10 +359,8 @@ export default function Dashboard({role}) {
                               <button
                                 onClick={() => {
                                   navigate("/profile", {state: user});
-                                  setStyle2(false);
-                                  setStyle3(false);
-                                  setStyle4(false);
-                                  setStyle5(false);
+                                  setStyle(false);
+                                  setIndex(-1);
                                 }}
                                 className=" rounded-md block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
                               >

@@ -6,6 +6,7 @@ import {useForm} from "react-hook-form";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {FaPencilAlt, FaMeetup, AiFillEye} from "react-icons/fa";
+import axiosInstance from "../../utils/axiosInstance";
 
 
 function AddUser() {
@@ -23,8 +24,8 @@ function AddUser() {
   const SignupUser = data => {
     console.log(data, "look data");
 
-    axios
-      .post("http://localhost:8000/api/users/register", data)
+    axiosInstance
+      .post("api/users/register", data)
       .then(res => {
         // let {data} = res.data;
         console.log(res, "you know");
@@ -161,9 +162,9 @@ function AddUser() {
                       Percentage
                     </label>
                     <select
-                      {...register("userRole", {required: true})}
+                      {...register("role", {required: true})}
                       className={` ${
-                        errors.userRole ? " border border-red-500" : ""
+                        errors.role ? " border border-red-500" : ""
                       } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
                     >
                       <option selected value="">

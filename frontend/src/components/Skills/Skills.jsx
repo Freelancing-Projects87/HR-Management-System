@@ -14,6 +14,7 @@ import DeleteModel from "../ModelDelete";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {AiFillFilePdf, AiFillInteraction} from "react-icons/ai";
+import axiosInstance from "../../utils/axiosInstance";
 
 function Skills() {
   const [skills, setSkills] = useState([]);
@@ -23,8 +24,8 @@ function Skills() {
   const navigate = useNavigate();
   const location = useLocation();
   const getSkills = () => {
-    axios
-      .get("http://localhost:8000/api/admin/getskills")
+    axiosInstance
+      .get("api/admin/getskills")
       .then(res => {
         if (res.status === 200) {
           console.log(res.data, "skills");

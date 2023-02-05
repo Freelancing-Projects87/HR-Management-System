@@ -7,6 +7,7 @@ import {useNavigate, useLocation} from "react-router-dom";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Candidate from "./CanidateTable";
+import axiosInstance from "../../utils/axiosInstance";
 
 function GradeIng() {
   const [grade, setGrade] = useState(null);
@@ -18,8 +19,8 @@ function GradeIng() {
     console.log(grade);
     const FGrade = (grade / 10) * location.state?.quiz?.percent;
     //  alert(perGrade)
-    axios
-      .post("http://localhost:8000/api/admin/addGrades", {
+    axiosInstance
+      .post("api/admin/addGrades", {
         grading: {grade: grade, score: "8%"},
         candidateId: location.state?._id,
         id: location.state?.quiz?.id,

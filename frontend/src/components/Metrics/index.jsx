@@ -13,6 +13,7 @@ import {Line} from "react-chartjs-2";
 import {faker} from "@faker-js/faker";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import axiosInstance from "../../utils/axiosInstance";
 
 ChartJS.register(
   CategoryScale,
@@ -71,8 +72,8 @@ export default function Metrics() {
    };
 
   const getCandidates = () => {
-    axios
-      .get("http://localhost:8000/api/admin/getCandidates")
+    axiosInstance
+      .get("api/admin/getCandidates")
       .then(res => {
         if (res.status === 200) {
           setCandidateData(res.data?.data);

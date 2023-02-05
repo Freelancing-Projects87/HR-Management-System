@@ -15,6 +15,7 @@ import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {AiFillFilePdf, AiFillInteraction} from "react-icons/ai";
 import interview from "../../images/interview.png";
+import axiosInstance from "../../utils/axiosInstance";
 
 
 function Users() {
@@ -27,8 +28,8 @@ function Users() {
   const location = useLocation();
 
   const getUsers = () => {
-    axios
-      .get("http://localhost:8000/api/users/getusers")
+    axiosInstance
+      .get("api/users/getusers")
       .then(res => {
         if (res.status === 200) {
             console.log(res,"y.k");
@@ -49,7 +50,7 @@ function Users() {
     <>
       <div className="flex mb-4 ml-2 items-end justify-end w-full ">
         <ToastContainer />
-        <button
+        {/* <button
           onClick={() => {
             navigate("/adduser");
           }}
@@ -59,7 +60,7 @@ function Users() {
         >
           Add User
           <AiOutlineUserAdd className="ml-2 text-xl" />
-        </button>
+        </button> */}
       </div>
       <div className="flex flex-col w-[82.3%]  float-right ">
         <div className="-my-2 overflow-hidden sm:-mx-6 lg:-mx-8">

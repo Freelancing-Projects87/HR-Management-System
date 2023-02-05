@@ -5,6 +5,7 @@ import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../../utils/axiosInstance";
 
 function QuestionAdd() {
   let navigate = useNavigate();
@@ -22,8 +23,8 @@ function QuestionAdd() {
    data.percentage= Number(data.percentage)
     console.log(data,"percentage in number");
 
-    axios
-      .post("http://localhost:8000/api/admin/addQuestion", data)
+    axiosInstance
+      .post("api/admin/addQuestion", data)
       .then(res => {
         console.log(res, "your skill");
         if (res.status === 201) {

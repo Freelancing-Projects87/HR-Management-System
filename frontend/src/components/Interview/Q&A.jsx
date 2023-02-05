@@ -14,12 +14,8 @@ import {quizMetadata} from "../../utils/questions";
 import * as XLSX from "xlsx";
 import readXlsxFile from "read-excel-file";
 import {MultiSelect} from "react-multi-select-component";
+import axiosInstance from "../../utils/axiosInstance";
 
-const options = [
-  {label: "Grapes 🍇", value: "grapes"},
-  {label: "Mango 🥭", value: "mango"},
-  {label: "Strawberry 🍓", value: "strawberry", disabled: true},
-];
 function QuestionsAnswers() {
   const location = useLocation();
   let [quizData, setQuestions] = useState(quizMetadata);
@@ -46,13 +42,13 @@ function QuestionsAnswers() {
   ]);
   const [isGradeActive, setGradeActive] = useState(false);
   const navigate = useNavigate();
-  console.log(
-    location.state,
-    "you know",
-    selected[0]?.value,
-    "selected",
-    selected[0]?.excelData
-  );
+  // console.log(
+  //   location.state,
+  //   "you know",
+  //   selected[0]?.value,
+  //   "selected",
+  //   selected[0]?.excelData
+  // );
 
   const saveQuiz = data => {
     console.log(data, location.state,exceldata, "quiz data for db");
@@ -66,9 +62,6 @@ function QuestionsAnswers() {
           isSecondTime: location.state.isSecondTime,
         },
       });
-
-
-
       // axios
       //   .post("http://localhost:8000/api/admin/quizadd", {
       //     QA: data,
@@ -90,8 +83,8 @@ function QuestionsAnswers() {
     }
   };
   const getBusinessCase = () => {
-    axios
-      .get("http://localhost:8000/api/admin/getBusinessCase")
+    axiosInstance
+      .get("api/admin/getBusinessCase")
       .then(res => {
         if (res.status === 200) {
           console.log(res.data?.data, "business");

@@ -6,6 +6,7 @@ import {useForm} from "react-hook-form";
 import {useLocation} from "react-router-dom";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../../utils/axiosInstance";
 
 function BusinessEdit() {
   let navigate = useNavigate();
@@ -29,8 +30,8 @@ function BusinessEdit() {
   const saveBusiness = data => {
     console.log(data, "data");
  data.id=location.state?._id
-    axios
-      .post("http://localhost:8000/api/admin/update_Businessline", data)
+    axiosInstance
+      .post("api/admin/update_Businessline", data)
       .then(res => {
         if (res.status == 200) {
           console.log(res, "hmm");

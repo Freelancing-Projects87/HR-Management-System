@@ -22,8 +22,9 @@ function Signup() {
   console.log(watch("example")); // watch input value by passing the name of it
 
   const SignupUser = data => {
-    console.log(data,"look data");
-    
+    data.role="junior"
+        console.log(data, "look data");
+
     axios.post("http://localhost:8000/api/users/register", data)
       .then(res => {
         // let {data} = res.data;
@@ -35,7 +36,7 @@ function Signup() {
       })
       .catch(err => {
         console.error(err);
-      });
+      })
   };
 
   return (

@@ -5,6 +5,7 @@ import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../../utils/axiosInstance";
 
 function CandidateAdd() {
   let navigate = useNavigate();
@@ -27,8 +28,8 @@ function CandidateAdd() {
     console.log(data, "data skills");
     data.id = location.state._id;
 
-    axios
-      .post("http://localhost:8000/api/admin/updatekill", data)
+    axiosInstance
+      .post("api/admin/updatekill", data)
       .then(res => {
         console.log(res, "your skill");
         if (res.status === 200) {

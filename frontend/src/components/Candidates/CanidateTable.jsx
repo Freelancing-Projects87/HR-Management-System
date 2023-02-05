@@ -16,6 +16,7 @@ import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {AiFillFilePdf, AiFillInteraction} from "react-icons/ai";
 import interview from "../../images/interview.png";
+import axiosInstance from "../../utils/axiosInstance";
 
 function Candidate() {
   const [candidateData, setCandidateData] = useState([]);
@@ -27,8 +28,8 @@ function Candidate() {
   const location = useLocation();
  
   const getCandidates = () => {
-    axios
-      .get("http://localhost:8000/api/admin/getCandidates")
+    axiosInstance
+      .get("api/admin/getCandidates")
       .then(res => {
         if (res.status === 200) {
           setCandidateData(res.data?.data);
