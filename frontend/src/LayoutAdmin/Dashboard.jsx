@@ -11,10 +11,9 @@ import {
   MenuAlt2Icon,
   UsersIcon,
   ChartPieIcon,
-  
   XIcon,
 } from "@heroicons/react/outline";
-import {AiOutlineUser} from "react-icons/ai"
+import {AiOutlineUser} from "react-icons/ai";
 import {CalculatorIcon, SearchIcon} from "@heroicons/react/solid";
 import {Link} from "react-router-dom";
 import {useNavigate, useLocation} from "react-router-dom";
@@ -34,7 +33,7 @@ function classNames(...classes) {
 
 export default function Dashboard({role}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [currentIndex, setIndex] = useState(0);
+  const [currentIndex, setIndex] = useState(localStorage.getItem('currentindex'));
 
   const [sideBarData, setSideBarData] = useState([
     {
@@ -79,14 +78,10 @@ export default function Dashboard({role}) {
   const location = useLocation();
 
   const [style, setStyle] = useState(false);
-  const [style2, setStyle2] = useState(false);
-  const [style3, setStyle3] = useState(false);
-  const [style4, setStyle4] = useState(false);
-  const [style5, setStyle5] = useState(false);
-  const [style6, setStyle6] = useState(false);
 
   const navigate = useNavigate();
   function signOut() {
+        localStorage.setItem("currentindex",0);
     axiosInstance.get("api/users/logout").then(res => {
       if (res.status == 200) {
         localStorage.removeItem("token");
@@ -117,7 +112,16 @@ export default function Dashboard({role}) {
     if (location.state?.fromLogin) {
       setStyle(true);
     }
-  }, [location.state?.fromLogin]);
+    getUser();
+  }, [location.state]);
+  useEffect(() => {
+    localStorage.setItem("currentindex", currentIndex);
+  }, [currentIndex]);
+  useEffect(() => {
+        // localStorage.setItem("currentindex", 0);
+    let index = localStorage.getItem("currentindex");
+    setIndex(index);
+  }, []);
 
   return (
     <>
@@ -274,8 +278,8 @@ export default function Dashboard({role}) {
             </div>
           </div>
         </div>
-        <div className="md:pl-64 flex flex-col flex-1">
-          <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow">
+        <div className="md:pl-64 flex flex-col flex-1  ">
+          <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow ">
             <button
               type="button"
               className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
@@ -366,12 +370,17 @@ export default function Dashboard({role}) {
                               >
                                 <p>Profile</p>
                               </button>
-                              {/* <Link
-                                to="/profile"
+                              <button
+                                onClick={() => {
+                                  signOut();
+                                  navigate("/forgetpassword", {state: user});
+                                  setStyle(false);
+                                  setIndex(-1);
+                                }}
                                 className=" rounded-md block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
                               >
-                                <p>Profile</p>
-                              </Link> */}
+                                <p>Forget Password</p>
+                              </button>
                             </>
                           )}
                         </Menu.Item>

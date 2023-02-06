@@ -19,7 +19,7 @@ function Profile() {
   let [user, setUser] = useState({});
   const navigate = useNavigate();
 
-  const onSubmit3 = data => forgetPassword(data);
+  const onSubmit = data => forgetPassword(data);
 
   console.log(user, "user");
   const {
@@ -48,6 +48,7 @@ function Profile() {
           toast.success("Password updated successfully!", {
             position: "top-center",
           });
+          navigate('/login')
           console.log(res, "res");
           // setUser(res.data?.data);
           // getUser();
@@ -77,37 +78,49 @@ function Profile() {
   }, []);
   useEffect(() => {}, [location.state, reset]);
   return (
-    <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
-      <ToastContainer />
-      <div className="h-full w-11/12">
-        <div className="border-b-2 block md:flex">
-          <div className={`w-full  md:w-3/5 p-8 bg-white lg:ml-4 shadow-md`}>
-            <form onSubmit={handleSubmit(onSubmit3)}>
-              <div className="rounded  shadow p-6">
-                <div className="pb-6">
+    <div className="h-[90vh] flex items-center justify-center  bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . ">
+        <ToastContainer/>
+      {/* <Header /> */}
+      <div className="items-center justify-center bg-blue-50 rounded-2xl">
+        <div className="flex  items-center justify-center overflow-x-hidden">
+          <div className="flex-none w-96 m-16 mx-4 my-4  sm:m-12 sm:overflow-x-hidden bg-white rounded-2xl">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className=" bg-white/40 sm:p-6 rounded-2xl border broder-gray-800  bg-white px-6    h-72">
+                <div>
+                  <p className="text-2xl text-gray-800 font-bold text-center mb-2">
+                    Reset Password
+                  </p>
+                </div>
+
+                <div className="col-span-6 sm:col-span-3 pt-4 ml-6 w-full">
                   <label
-                    for="name"
-                    className="font-semibold text-gray-700 block pb-1"
+                    htmlFor="Email"
+                    className="block text-sm font-medium text-gray-700"
                   >
-                    Enter New Password
+                   Enter New Password
                   </label>
-                  <div className="flex">
-                    <input
-                      id="password"
-                      {...register("password", {required: true})}
-                      className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
-                      type="text"
-                    />
-                  </div>
+                  <input
+                    {...register("password", {required: true})}
+                    aria-invalid={errors.password ? "true" : "false"}
+                    className={` ${
+                      errors.password ? " border border-red-500" : ""
+                    } mt-1 px-2 block w-full   sm:w-11/12 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
+                  />
                   {errors.password?.type === "required" && (
                     <p role="alert" className="text-red-500">
-                      Passworsd is required
+                      password is required
                     </p>
                   )}
                 </div>
-                <button className="border-1 bg-blue-500 text-white hover:bg-blue-700  rounded-r px-4 py-2 w-full border border-gray-500">
-                  Email me to Reset
-                </button>
+
+                <div className="flex flex-col  items-center ml-4">
+                  <button
+                    type="submit"
+                    class=" text-center content-center mt-8 border broder-gray-500 bg-blue-700 text-white hover:bg-blue-400 hover:text-black font-bold py-2 px-4 rounded-full w-11/12  justify-center"
+                  >
+                     Reset your Password
+                  </button>
+                </div>
               </div>
             </form>
           </div>

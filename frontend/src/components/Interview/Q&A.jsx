@@ -18,9 +18,11 @@ import axiosInstance from "../../utils/axiosInstance";
 
 function QuestionsAnswers() {
   const location = useLocation();
+    const [questions, setQuestionsData] = useState([]);
   let [quizData, setQuestions] = useState(quizMetadata);
+console.log(quizMetadata, "quizMetadata");
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  let [indexOfQuestion, setIndexes] = useState({firstIndex: 0, lastIndex: 15});
+  let [indexOfQuestion, setIndexes] = useState({firstIndex: 0, lastIndex: quizData?.length-1});
   const [businessCases, setBusinessCases] = useState([]);
   const [selected, setSelected] = useState([]);
   const [exceldata, setExcelData] = useState({
@@ -141,6 +143,34 @@ function QuestionsAnswers() {
   useEffect(() => {
     getBusinessCase();
   }, []);
+   const getQuestions = () => {
+     axiosInstance
+       .get("api/admin/getQuestions")
+       .then(res => {
+         if (res.status === 200) {
+           console.log(res.data, "question");
+           
+           setQuestions(res.data?.data?.map((data)=>{
+               return {
+                 question: data?.question,
+                 answer: "",
+                 id: 0,
+                 percent: data?.percentage.toString(),
+                 grade: 0,
+               };
+           }));
+         }
+       })
+       .catch(err => {
+         console.error(err);
+       });
+   }
+   console.log(questions,"from backend");
+
+   useEffect(() => {
+     getQuestions();
+     console.log(questions && questions, "question you know");
+   }, []);
   return (
     <section className="w-[98%] h-[90vh] ml-auto flex">
       <div className="right-video w-[35%] bg-gray-200 h-[90%] flex flex-col items-center justify-start">
@@ -165,7 +195,7 @@ function QuestionsAnswers() {
               className="text-3xl h-10 w-10  text-blue-500 hover:bg-blue-700 rounded-full"
               onClick={() => {
                 setCurrentQuestion(current =>
-                  current == 0 ? (current = 15) : current - 1
+                  current == 0 ? (current = quizData?.length-1) : current - 1
                 );
               }}
             />
@@ -328,7 +358,7 @@ function QuestionsAnswers() {
               className="text-3xl h-10 w-10 text-blue-500 hover:bg-blue-700 rounded-full"
               onClick={() => {
                 setCurrentQuestion(current =>
-                  current == 15 ? (current = 0) : current + 1
+                  current == quizData?.length-1 ? (current = 0) : current + 1
                 );
               }}
             />

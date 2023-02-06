@@ -3,6 +3,8 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {AiFillEye} from "react-icons/ai";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function SignIn() {
   const {
@@ -36,10 +38,16 @@ function SignIn() {
           navigate("/candidates", {state: {fromLogin: true}});
 
           window.location.reload();
-        }
+        }else {
+      toast.error("wrong email or password", {
+        position: "top-center",
+      });        }
       })
       .catch(err => {
         console.error(err);
+        toast.error("wrong email or password", {
+          position: "top-right",
+        });
       });
   };
   function storetokenData(data) {
@@ -56,6 +64,7 @@ function SignIn() {
   return (
     <>
       <div className="h-[90vh] flex items-center justify-center  bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . ">
+        <ToastContainer/>
         {/* <Header /> */}
         <div className="items-center justify-center bg-blue-50 rounded-2xl">
           <div className="flex  items-center justify-center overflow-x-hidden">
@@ -75,6 +84,7 @@ function SignIn() {
                   >
                     Not signed up yet? Create a free account
                   </div>
+
                   <div className="col-span-6 sm:col-span-3 pt-4">
                     <label
                       htmlFor="Email"
@@ -127,7 +137,6 @@ function SignIn() {
                       </p>
                     )}
                   </div>
-
                   <div className="flex flex-col  items-center mt-8">
                     <button
                       type="submit"
@@ -135,6 +144,14 @@ function SignIn() {
                     >
                       Login
                     </button>
+                  </div>
+                  <div
+                    onClick={() => {
+                      navigate("/forgetpassword");
+                    }}
+                    className=" underline cursor-pointer text-center font-semibold text-xs mt-4 font-bold"
+                  >
+                    Forget Password
                   </div>
                 </div>
               </form>

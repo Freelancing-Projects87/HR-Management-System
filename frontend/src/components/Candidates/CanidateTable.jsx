@@ -64,7 +64,7 @@ function Candidate() {
 
   return (
     <>
-      <div className="flex mb-4 ml-2 items-end justify-end w-full ">
+      <div className="flex mb-4 ml-2 items-end justify-end w-full  ">
         <ToastContainer />
         <button
           onClick={() => {
@@ -74,10 +74,11 @@ function Candidate() {
           className="inline-flex  relative right-12 top-2 items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
       shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          Add New Candidate<AiOutlineUserAdd className="ml-2 text-xl" />
+          Add New Candidate
+          <AiOutlineUserAdd className="ml-2 text-xl" />
         </button>
       </div>
-      <div className="flex flex-col w-[82.3%]  float-right ">
+      <div className="flex flex-col w-[82.3%]  float-right   ">
         <div className="-my-2 overflow-hidden sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden  border-b border-gray-200 sm:rounded-lg">

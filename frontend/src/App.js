@@ -11,6 +11,7 @@ import {isAuthenticUser} from "./utils/isAuthenticated";
 import Login from "./components/Auth/SignIn";
 import Signup from "./components/Auth/Signup";
 import ResetPassword from "./components/Auth/ResetPassword";
+import ForgetPassword from "./components/Auth/ForgetPassword"
 import CanidateTable from "./components/Candidates/CanidateTable";
 import CandidateEdit from "./components/Candidates/CandidateEdit";
 import CandidateAdd from "./components/Candidates/CandidateAdd";
@@ -60,7 +61,6 @@ function App() {
     }
   }, [isAuthenticUser()]);
    function getUser() {
-    let user=JSON.parse(localStorage.getItem('user'))
      axiosInstance
        .get(`api/users/loggedin`)
        .then(res => {
@@ -88,8 +88,6 @@ function App() {
             <Route path="/editcandidate" element={<CandidateEdit />} exact />
             <Route path="/addcandidate" element={<CandidateAdd />} exact />
 
-            {/* forget password from email link user will redirec */}
-            <Route path="/resetpassword/:resetToken"  element={<ResetPassword/>}/>
             <Route
               path="/CandidsteSecondQuestion"
               element={<CandidsteSecondQuestion />}
@@ -125,6 +123,12 @@ function App() {
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgetpassword" element={<ForgetPassword />} />
+          {/* forget password from email link user will redirect */}
+          <Route
+            path="/resetpassword/:resetToken"
+            element={<ResetPassword />}
+          />
         </Routes>
       </BrowserRouter>
     </div>

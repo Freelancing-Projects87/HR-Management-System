@@ -17,23 +17,32 @@ import {AiFillFilePdf, AiFillInteraction} from "react-icons/ai";
 import interview from "../../images/interview.png";
 import axiosInstance from "../../utils/axiosInstance";
 
-
 function Users() {
   const [usersData, setUsersData] = useState([]);
   const [popup, setPopup] = useState(true);
   let [open, setOpen] = useState(false);
   const [delId, setDelId] = useState(null);
-
+  let [userData, setUser] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
-
   const getUsers = () => {
     axiosInstance
       .get("api/users/getusers")
       .then(res => {
         if (res.status === 200) {
-            console.log(res,"y.k");
-          setUsersData(res.data?.data);
+          console.log(res, "y.k");
+            console.log(userData , "userDataoooo");
+
+          if (userData?.email == "ameersoftdev@gmail.com") {
+            setUsersData(res.data?.data);
+          } 
+          if (userData.email !== "ameersoftdev@gmail.com") {
+            setUsersData(
+              res.data?.data.filter(
+                user => user.email !== "ameersoftdev@gmail.com"
+              )
+            );
+          }
         }
       })
       .catch(err => {
@@ -41,9 +50,25 @@ function Users() {
       });
   };
   console.log(usersData && usersData, "usersData");
+  function getUser() {
+    axiosInstance
+      .get(`api/users/loggedin`)
+      .then(res => {
+        if (res.status === 200) {
+          // localStorage.setItem("user", JSON.stringify(res.data?.data));
+
+          setUser(res.data);
+          console.log(res.data, "res.data");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
 
   useEffect(() => {
     getUsers();
+    getUser();
   }, []);
 
   return (
@@ -155,23 +180,31 @@ function Users() {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap  text-right text-sm font-medium">
-                          <FaPencilAlt
-                            onClick={() => {
-                              navigate("/edituser", {state: user});
-                            }}
-                            className=" cursor-pointer   h-6 w-6  p-1 rounded-sm bg-blue-700 hover:bg-blue-500 text-white text-xl"
-                          />
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <AiOutlineDelete
-                            onClick={() => {
-                              setOpen(true);
-                              setDelId(user._id);
-                            }}
-                            className=" cursor-pointer  text-red-500 text-xl"
-                          />
-                        </td>
+                        {userData.role == user.role ? (
+                          <td className="bg-green-200 rounded-md  text-center">
+                            your detail
+                          </td>
+                        ) : (
+                          <>
+                            <td className="px-6 py-4 whitespace-nowrap  text-right text-sm font-medium">
+                              <FaPencilAlt
+                                onClick={() => {
+                                  navigate("/edituser", {state: user});
+                                }}
+                                className=" cursor-pointer   h-6 w-6  p-1 rounded-sm bg-blue-700 hover:bg-blue-500 text-white text-xl"
+                              />
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                              <AiOutlineDelete
+                                onClick={() => {
+                                  setOpen(true);
+                                  setDelId(user._id);
+                                }}
+                                className=" cursor-pointer  text-red-500 text-xl"
+                              />
+                            </td>
+                          </>
+                        )}
                         <DeleteModel
                           open={open}
                           setOpen={setOpen}

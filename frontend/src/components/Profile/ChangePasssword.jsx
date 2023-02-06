@@ -6,7 +6,6 @@ import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "../../utils/axiosInstance";
 import {AiOutlineUser} from "react-icons/ai";
-import ChangePasssword from "./ChangePasssword";
 
 function Profile() {
   const [showForm, setShowForm] = useState(false);
@@ -85,6 +84,9 @@ function Profile() {
           toast.success("password updated successfully!", {
             position: "top-center",
           });
+          localStorage.removeItem("token")
+          navigate('/login')
+          window.location.reload()
           console.log(res, "res");
           // setUser(res.data?.data);
           // getUser();
@@ -140,36 +142,25 @@ function Profile() {
   }, []);
   useEffect(() => {}, [location.state, reset]);
   return (
-    <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
-      <ToastContainer />
-      <div className="h-full w-11/12">
-        <div className="border-b-2 block md:flex">
-                    <ChangePasssword/>
           <div className={`w-full  md:w-3/5 p-8 bg-white lg:ml-4 shadow-md`}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit2)}>
               <div className="rounded  shadow p-6">
                 <div className="pb-6">
                   <label
                     for="name"
                     className="font-semibold text-gray-700 block pb-1"
-                  >
-                    Name
-                  </label>
+                  >Old Password</label>
                   <div className="flex">
                     <input
-                      defaultValue={user?.name}
-                      // onChange={e => {
-                      //   setUser({name: e.target.value});
-                      // }}
                       id="name"
-                      {...register("name", {required: false})}
+                      {...register("oldPassword", {required: true})}
                       className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
                       type="text"
                     />
                   </div>
-                  {errors.name?.type === "required" && (
+                  {errors.oldPassword?.type === "required" && (
                     <p role="alert" className="text-red-500">
-                      Name is required
+                      oldPassword is required
                     </p>
                   )}
                 </div>
@@ -178,79 +169,26 @@ function Profile() {
                     for="about"
                     className="font-semibold text-gray-700 py-2 block px-4 "
                   >
-                    Email
+                    new Password
                   </label>
                   <input
-                    defaultValue={user?.email}
-                    id="email"
-                    disabled
-                    {...register("email", {required: false})}
-                    className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
-                    type="email"
-                  />
-                </div>
-                <div className="pb-4">
-                  <label
-                    for="about"
-                    className="font-semibold text-gray-700 py-2 block px-4 "
-                  >
-                    Phone
-                  </label>
-                  <input
-                    id=""
-                    defaultValue={user?.phone}
-                    {...register("phone", {required: false})}
+                    {...register("password", {required: true})}
                     className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
                     type="text"
                   />
-                  {errors.phone?.type === "required" && (
+                  {errors.password?.type === "required" && (
                     <p role="alert" className="text-red-500">
-                      phone is required
+                      new paswword is required
                     </p>
                   )}
                 </div>
-                <div className="pb-4">
-                  <label
-                    for="about"
-                    className="font-semibold text-gray-700 py-2 block px-4 "
-                  >
-                    Photo
-                  </label>
-                  <input
-                    id="photo"
-                    ref={fileref}
-                    onChange={e => {
-                      setPhoto(e.target.files[0]);
-                    }}
-                    className="border-1 hidden  rounded-r px-4 py-2 w-full border border-gray-500"
-                    type="file"
-                  />
-                  <label htmlFor="photo" className="cursor-pointer">
-                    {user.photo || photo ? (
-                      <img
-                        onClick={() => {
-                          fileref.current.click();
-                        }}
-                        src={!photo ? user?.photo : URL.createObjectURL(photo)}
-                        alt=""
-                        className="w-48 rounded-md h-48"
-                      />
-                    ) : (
-                      <AiOutlineUser className="w-48 rounded-md h-48" />
-                    )}
-                  </label>
-                </div>
+
                 <button className="border-1 bg-blue-500 text-white hover:bg-blue-700  rounded-r px-4 py-2 w-full border border-gray-500">
-                  Update
+                  Change Password
                 </button>
               </div>
             </form>
-          </div>
-      
-      
-        </div>
-      </div>
-    </div>
+          </div> 
   );
 }
 

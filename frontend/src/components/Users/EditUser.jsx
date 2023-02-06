@@ -101,7 +101,7 @@ function EditUser() {
           <div className=" overflow-hidden ">
             <div className=" m-8 mx-4 my-4 bg-white rounded-2xl">
               <form onSubmit={handleSubmit(onSubmit)}>
-                <div className=" bg-white/40 sm:p-6 rounded-2xl  bg-gray-100 px-6 w-11/12 mx-auto  ">
+                <div className=" bg-white/40 sm:p-6 rounded-2xl  px-6 w-11/12 mx-auto  ">
                   <p className="text-2xl text-gray-800 font-bold text-center mb-2">
                     Edit User
                   </p>
