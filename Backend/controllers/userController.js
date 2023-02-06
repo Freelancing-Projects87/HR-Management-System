@@ -34,8 +34,8 @@ const registerUser = asyncHandler(async (req, res) => {
   }
   const isUserExist = await User.findOne({ email });
   if (isUserExist) {
-    res.status(400);
-    throw new Error("Email Address Already Exists, Please insert new one");
+    res.status(400).json("Email Address Already Exists, Please insert new one");
+    // throw new Error("Email Address Already Exists, Please insert new one");
   }
 
   //   create new user
@@ -87,16 +87,17 @@ const registerUser = asyncHandler(async (req, res) => {
 ///Login User controller/////////
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  console.log(req.body,"lo");
   if (!email || !password) {
     res.status(400);
-    throw new Error("email and password can't be empty");
+    // throw new Error("email and password can't be empty");
   }
   const user = await User.findOne({ email });
 
   //// User doesn't exist///
   if (!user) {
     res.status(400);
-    throw new Error("User doesn't exist, Please Sign Up");
+    // throw new Error("User doesn't exist, Please Sign Up");
   }
 
   /// user exists/////
@@ -133,6 +134,38 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error("Invalid Email or Password");
   }
 });
+///Token controller for user/////////
+const storetokenData = asyncHandler(async (req, res) => {
+  console.log(req.body,"ko");
+var date = new Date();
+
+ 
+  try {
+     if (!req.body.token) {
+       res.status(400);
+       throw new Error("user data is required");
+     }
+   const tokenData = await new Token({
+     userId: req.body._id,
+     token: req.body.token,
+     createdAt: Date.now(),
+     expiresAt: date.setDate(date.getDate() + 1), //// 1 expiry time
+   }).save();
+     console.log(tokenData,"tokenData");
+      if (tokenData) {
+        res.status(200).json({
+          message: "token data added sucessfully!",
+          data: {
+           tokenData
+          },
+        });
+      } 
+  } catch (error) {
+    console.log(error);
+  }
+  
+});
+
 
 //// logout User////
 const logoutUser = asyncHandler(async (req, res) => {
@@ -254,7 +287,8 @@ const updateUser = asyncHandler(async (req, res) => {
 
 ////////changing old password into new///
 const changePassword = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  console.log(req.body,"reset pass");
+  const user = await User.findById(req.body._id);
   const { oldPassword, password } = req.body;
   if (!user) {
     res.status(404);
@@ -286,11 +320,12 @@ const changePassword = asyncHandler(async (req, res) => {
 ////forgot the password router/////
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
+  console.log(req.body,"for forget password ");
   /// CHECK IF EMAIL EXISTS IN DATABASE////
   const user = await User.findOne({ email });
   if (!user) {
-    res.status(404);
-    throw new Error("User doesn't exist!");
+    res.status(404).json("user doesn't exist!");
+    // throw new Error("User doesn't exist!");
   }
 
   ////delete token if it exists in database///
@@ -323,7 +358,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   <p>This reset link is only valid for 30 minutes</P>
   <a href=${resetUrl} clicktracking=off>${resetUrl} </a>
   <p> Regards,</p>
-  <p>Fida Hussain</p>
+  <p>Ameer minaie</p>
   `;
 
   const subject = "Password Reset Request";
@@ -356,8 +391,8 @@ const resetPassword = asyncHandler(async (req, res) => {
     expiresAt: { $gt: Date.now() },
   });
   if (!isTokenExist) {
-    res.status(404);
-    throw new Error("Invalid or expired token");
+    res.status(404).json("token not found");
+    // throw new Error("Invalid or expired token");
   }
   ///Find the user with id stored into token model///
   const user = await User.findOne({ _id: isTokenExist.userId });
@@ -394,6 +429,7 @@ const deleteUser=async (req,res)=>{
   });
   }
 }
+
 module.exports = {
   registerUser,
   loginUser,
@@ -406,4 +442,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   deleteUser,
+  storetokenData,
 };

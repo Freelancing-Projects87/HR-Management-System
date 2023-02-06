@@ -12,6 +12,7 @@ const {
   resetPassword,
   getUsers,
   deleteUser,
+  storetokenData,
 } = require("../controllers/userController");
 const protectApi = require("../middleware/authMiddleware");
 const multer = require("multer");
@@ -40,6 +41,7 @@ const upload = multer({
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.post('/storetoken_data',storetokenData)
 router.get("/logout",protectApi, logoutUser);
 router.get("/getuser/:id", protectApi, getUser);
 router.get("/getusers",protectApi, getUsers);
