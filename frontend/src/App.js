@@ -10,6 +10,7 @@ import {
 import {isAuthenticUser} from "./utils/isAuthenticated";
 import Login from "./components/Auth/SignIn";
 import Signup from "./components/Auth/Signup";
+import ResetPassword from "./components/Auth/ResetPassword";
 import CanidateTable from "./components/Candidates/CanidateTable";
 import CandidateEdit from "./components/Candidates/CandidateEdit";
 import CandidateAdd from "./components/Candidates/CandidateAdd";
@@ -87,29 +88,27 @@ function App() {
             <Route path="/editcandidate" element={<CandidateEdit />} exact />
             <Route path="/addcandidate" element={<CandidateAdd />} exact />
 
+            {/* forget password from email link user will redirec */}
+            <Route path="/resetpassword/:resetToken"  element={<ResetPassword/>}/>
             <Route
               path="/CandidsteSecondQuestion"
               element={<CandidsteSecondQuestion />}
             />
             <Route path="/candidateView" element={<CandidateView />} exact />
-            {(role == roles.admin ||
-              role == roles.senior) ? (
-                <>
-                  <Route path="/business" element={<Business />} exact />
-                  <Route
-                    path="/editBusiness"
-                    element={<BusinessEdit />}
-                    exact
-                  />
-                  <Route path="/addbusiness" element={<BusinessAdd />} exact />
-                  {/* <Route path="/businessView" element={<BusinessView />} /> */}
-                  {/* user routes */}
-                  <Route path="/users" element={<Users />} exact />
-                  <Route path="/edituser" element={<EditUser />} exact />
-                  <Route path="/adduser" element={<AddUser />} exact />
-                </>
-              )
-              :""}
+            {role == roles.admin || role == roles.senior ? (
+              <>
+                <Route path="/business" element={<Business />} exact />
+                <Route path="/editBusiness" element={<BusinessEdit />} exact />
+                <Route path="/addbusiness" element={<BusinessAdd />} exact />
+                {/* <Route path="/businessView" element={<BusinessView />} /> */}
+                {/* user routes */}
+                <Route path="/users" element={<Users />} exact />
+                <Route path="/edituser" element={<EditUser />} exact />
+                <Route path="/adduser" element={<AddUser />} exact />
+              </>
+            ) : (
+              ""
+            )}
             <Route path="/interview" element={<Interview />} />
             <Route path="/businesscase" element={<BusinessCaseTable />} />
             <Route path="/businesscaseAdd" element={<BusinessCaseAdd />} />

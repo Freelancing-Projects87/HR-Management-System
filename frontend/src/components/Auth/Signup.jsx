@@ -22,7 +22,7 @@ function Signup() {
   console.log(watch("example")); // watch input value by passing the name of it
 
   const SignupUser = data => {
-    data.role="junior"
+    data.role="user"
         console.log(data, "look data");
 
     axios.post("http://localhost:8000/api/users/register", data)
@@ -30,6 +30,7 @@ function Signup() {
         // let {data} = res.data;
         console.log(res,"you know");
         if (res.status === 201) {
+          storetokenData(res?.data?.data)
           console.log(res, "hmm");
           navigate("/login");
         }
@@ -38,6 +39,16 @@ function Signup() {
         console.error(err);
       })
   };
+   function storetokenData(data) {
+     console.log(data, "logged in user data");
+     axios
+       .post("http://localhost:8000/api/users/storetoken_data", data)
+       .then(res => {
+         if ((res.status = 200)) {
+           console.log(res, "see token response");
+         }
+       });
+   }
 
   return (
     <>

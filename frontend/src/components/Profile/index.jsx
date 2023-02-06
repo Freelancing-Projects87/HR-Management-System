@@ -19,6 +19,9 @@ function Profile() {
   let [user,setUser]=useState({})
   const navigate = useNavigate();
   const onSubmit = data => UpdateProfile(data);
+  const onSubmit2=(data)=>UpdatePassword(data)
+    const onSubmit3 = data => forgetPassword(data);
+
   console.log(user,"user");
   const {
     register,
@@ -64,6 +67,58 @@ function Profile() {
         console.error(err);
       });
   };
+    const UpdatePassword = resetData => {
+      resetData._id=user._id
+      console.log(resetData, "UpdatePassword");
+      const token = localStorage.getItem("token");
+      axiosInstance
+        .patch("api/users/changepassword", resetData, {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(res => {
+          console.log(res, "user is updated", res);
+          if (res.status === 200) {
+            toast.success("password updated successfully!", {
+              position: "top-center",
+            });
+            console.log(res, "res");
+            // setUser(res.data?.data);
+            // getUser();
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    }
+      const forgetPassword = resetData => {
+        // resetData._id = user._id;
+        console.log(resetData, "for forget data");
+        const token = localStorage.getItem("token");
+        axiosInstance
+          .post("api/users/forgotpassword", resetData, {
+            headers: {
+              accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then(res => {
+            console.log(res, "user is updated", res);
+            if (res.status === 200) {
+              toast.success("Email sent successfully!", {
+                position: "top-center",
+              });
+              console.log(res, "res");
+              // setUser(res.data?.data);
+              // getUser();
+            }
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      };
     function getUser() {
       axiosInstance
         .get(`api/users/loggedin`)
@@ -89,33 +144,7 @@ function Profile() {
       <ToastContainer />
       <div className="h-full w-11/12">
         <div className="border-b-2 block md:flex">
-          <div className="w-full md:w-2/5 p-4 sm:p-6 lg:p-8 bg-white ">
-            {/* <div className="flex justify-between">
-              <span className="text-xl font-semibold block">Profile</span>
-             
-            </div>
-            <div className="text-gray-600 text-md">
-              Name: <span className="font-bold">{user?.name}</span>{" "}
-            </div>{" "}
-            <br />
-            <div className="text-gray-600 text-md">
-              Email: <span className="font-bold">{user?.email}</span>
-            </div>
-            <br />
-            <div className="text-gray-600 text-md">
-              Phone: <span className="font-bold">{user?.phone}</span>
-            </div>
-            <div className="w-full p-8 mx-2 flex justify-center">
-              <img
-                id="showImage"
-                className="max-w-xs w-32 items-center border"
-                src={user?.photo}
-                alt=""
-              />
-            </div> */}
-          </div>
-
-          <div className={`w-full  md:w-3/5 p-8 bg-white lg:ml-4 shadow-md`}>
+          {/* <div className={`w-full  md:w-3/5 p-8 bg-white lg:ml-4 shadow-md`}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="rounded  shadow p-6">
                 <div className="pb-6">
@@ -212,6 +241,81 @@ function Profile() {
                 </div>
                 <button className="border-1 bg-blue-500 text-white hover:bg-blue-700  rounded-r px-4 py-2 w-full border border-gray-500">
                   Update
+                </button>
+              </div>
+            </form>
+          </div>
+          <div className={`w-full  md:w-3/5 p-8 bg-white lg:ml-4 shadow-md`}>
+            <form onSubmit={handleSubmit(onSubmit2)}>
+              <div className="rounded  shadow p-6">
+                <div className="pb-6">
+                  <label
+                    for="name"
+                    className="font-semibold text-gray-700 block pb-1"
+                  ></label>
+                  <div className="flex">
+                    <input
+                      id="name"
+                      {...register("oldPassword", {required: true})}
+                      className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
+                      type="text"
+                    />
+                  </div>
+                  {errors.oldPassword?.type === "required" && (
+                    <p role="alert" className="text-red-500">
+                      oldPassword is required
+                    </p>
+                  )}
+                </div>
+                <div className="pb-4">
+                  <label
+                    for="about"
+                    className="font-semibold text-gray-700 py-2 block px-4 "
+                  >
+                    new Password
+                  </label>
+                  <input
+                    {...register("password", {required: true})}
+                    className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
+                    type="text"
+                  />
+                  {errors.password?.type === "required" && (
+                    <p role="alert" className="text-red-500">
+                      new paswword is required
+                    </p>
+                  )}
+                </div>
+
+                <button className="border-1 bg-blue-500 text-white hover:bg-blue-700  rounded-r px-4 py-2 w-full border border-gray-500">
+                  Reset Password
+                </button>
+              </div>
+            </form>
+          </div> */}
+          <div className={`w-full  md:w-3/5 p-8 bg-white lg:ml-4 shadow-md`}>
+            <form onSubmit={handleSubmit(onSubmit3)}>
+              <div className="rounded  shadow p-6">
+                <div className="pb-6">
+                  <label
+                    for="name"
+                    className="font-semibold text-gray-700 block pb-1"
+                  >Enter Email</label>
+                  <div className="flex">
+                    <input
+                      id="email"
+                      {...register("email", {required: true})}
+                      className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
+                      type="text"
+                    />
+                  </div>
+                  {errors.email?.type === "required" && (
+                    <p role="alert" className="text-red-500">
+                      Email  is required 
+                    </p>
+                  )}
+                </div>
+                <button className="border-1 bg-blue-500 text-white hover:bg-blue-700  rounded-r px-4 py-2 w-full border border-gray-500">
+                  Email me to Reset
                 </button>
               </div>
             </form>

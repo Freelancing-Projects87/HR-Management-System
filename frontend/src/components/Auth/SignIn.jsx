@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
-import {AiFillEye} from "react-icons/ai"
+import {AiFillEye} from "react-icons/ai";
 
 function SignIn() {
   const {
@@ -15,11 +15,11 @@ function SignIn() {
     localStorage.getItem("fromsubs")
   );
   const [isFromLogin, setValue2] = useState(localStorage.getItem("fromlogin"));
-const [show,setPasswordShow]=useState(false)
+  const [show, setPasswordShow] = useState(false);
   const onSubmit = data => LoginUser(data);
   let navigate = useNavigate();
   const LoginUser = data => {
-   console.log(data);
+    console.log(data);
     axios
       .post("http://localhost:8000/api/users/login", data, {
         headers: {
@@ -27,12 +27,13 @@ const [show,setPasswordShow]=useState(false)
         },
       })
       .then(res => {
-        console.log(res,"data of loged in user");
+        console.log(res, "data of loged in user");
         if (res.status === 200) {
           localStorage.setItem("token", res?.data?.data.token);
+          // storetokenData(res.data?.data);
           // localStorage.setItem("user", JSON.stringify(res?.data?.data));
           // navigate("/");
-           navigate('/candidates',{state:{fromLogin:true}})
+          navigate("/candidates", {state: {fromLogin: true}});
 
           window.location.reload();
         }
@@ -41,6 +42,16 @@ const [show,setPasswordShow]=useState(false)
         console.error(err);
       });
   };
+  function storetokenData(data) {
+    console.log(data,"logged in user data");
+    axios
+      .post("http://localhost:8000/api/users/storetoken_data", data)
+      .then(res => {
+        if ((res.status = 200)) {
+          console.log(res, "see token response");
+        }
+      });
+  }
 
   return (
     <>
@@ -103,7 +114,9 @@ const [show,setPasswordShow]=useState(false)
                       onClick={() => {
                         setPasswordShow(!show);
                       }}
-                      className={` ${show?"border border-gray-400 rounded-xl":""} absolute  right-[11%] bottom-[12%] cursor-pointer text-xl`}
+                      className={` ${
+                        show ? "border border-gray-400 rounded-xl" : ""
+                      } absolute  right-[11%] bottom-[12%] cursor-pointer text-xl`}
                     >
                       <AiFillEye />
                     </span>
