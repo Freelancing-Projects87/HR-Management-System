@@ -49,8 +49,8 @@ router.post("/deleteuser",protectApi, deleteUser);
 router.get("/loggedin",protectApi, loginStatus);
 router.patch("/updateuser",protectApi,upload.single('photo'), updateUser);
 router.patch("/changepassword", protectApi, changePassword);
-router.post("/forgotpassword",protectApi, forgotPassword);
-router.put("/resetPassword/:resetToken",protectApi, resetPassword);
+router.post("/forgotpassword", forgotPassword);
+router.put("/resetPassword/:resetToken", resetPassword);
 
 
 module.exports = router;

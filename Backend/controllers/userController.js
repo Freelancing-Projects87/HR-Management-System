@@ -130,8 +130,8 @@ const loginUser = asyncHandler(async (req, res) => {
       },
     });
   } else {
-    res.status(400);
-    throw new Error("Invalid Email or Password");
+    res.status(400).json({message: "Invalid Email or Password"});
+    // throw new Error("Invalid Email or Password");
   }
 });
 ///Token controller for user/////////
@@ -390,7 +390,9 @@ const resetPassword = asyncHandler(async (req, res) => {
     token: hashedToken,
     expiresAt: { $gt: Date.now() },
   });
+  
   if (!isTokenExist) {
+    console.log('token exist');
     res.status(404).json("token not found");
     // throw new Error("Invalid or expired token");
   }
