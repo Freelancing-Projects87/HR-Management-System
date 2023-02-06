@@ -232,7 +232,7 @@ function EditUser() {
                       ) : (
                         <>
                           <option value="junior">Junior</option>
-                          {/* <option value="user">User</option> */}
+                          <option value="user">User</option>
                         </>
                       )}
                     </select>
