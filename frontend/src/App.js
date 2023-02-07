@@ -74,8 +74,10 @@ function App() {
        });
    }
    useEffect(() => {
-     getUser();
+     getUser(); 
+     localStorage.setItem("currentindex","0");
    }, [])
+  
   return (
     <div className="App">
       <ToastContainer />
@@ -84,7 +86,7 @@ function App() {
 
         <Routes>
           <Route element={<PrivateRoute />}>
-            <Route path="/candidates" element={<CanidateTable />} exact />
+            <Route path="/" element={<CanidateTable />} exact />
             <Route path="/editcandidate" element={<CandidateEdit />} exact />
             <Route path="/addcandidate" element={<CandidateAdd />} exact />
 

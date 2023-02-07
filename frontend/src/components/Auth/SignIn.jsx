@@ -35,8 +35,7 @@ function SignIn() {
           // storetokenData(res.data?.data);
           // localStorage.setItem("user", JSON.stringify(res?.data?.data));
           // navigate("/");
-          navigate("/candidates", {state: {fromLogin: true}});
-
+          navigate("/", {state: {fromLogin: true}});
           window.location.reload();
         }else {
       toast.error("wrong email or password", {

@@ -55,7 +55,7 @@ function CandidateEdit() {
           console.log(res, "you know");
           if (res.status === 200) {
             console.log(res, "hmm");
-            navigate("/candidates", {state: {sucess: false}});
+            navigate("/", {state: {sucess: false}});
             toast.success("Candidate edited successfully..!", {
               position: toast.POSITION.TOP_CENTER,
             });

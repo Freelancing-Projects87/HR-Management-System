@@ -35,6 +35,8 @@ function classNames(...classes) {
 
 export default function Dashboard({role}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [Logo, setWebLogo] = useState("");
+
   const [currentIndex, setIndex] = useState(
     localStorage.getItem("currentindex")
   );
@@ -45,7 +47,7 @@ export default function Dashboard({role}) {
     {
       icon: HomeIcon,
       compName: "Candidates",
-      to: "/candidates",
+      to: "/",
     },
     {
       icon: CalendarIcon,
@@ -111,15 +113,28 @@ export default function Dashboard({role}) {
         console.error(err);
       });
   }
+  function getLogo() {
+    axiosInstance
+      .get(`api/users/getweblogo`)
+      .then(res => {
+        if (res.status === 200) {
+          // setUser(res?.data);
+          setWebLogo(res?.data.data[0].webLogo);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
   // update Logo
   const UpdateProfile = data => {
     console.log(data, "profile");
     let formData = new FormData();
     formData.append("webLogo", photo);
-    formData.append("_id", user?._id);
+    // formData.append("_id", user?._id);
     console.log(formData, "formdata");
     axiosInstance
-      .patch("api/users/updatlogo", formData)
+      .patch("api/users/updatelogo", formData)
       .then(res => {
         console.log(res, "user is updated", res);
         if (res.status === 200) {
@@ -127,8 +142,9 @@ export default function Dashboard({role}) {
             position: "top-center",
           });
           console.log(res, "res");
-          setUser(res.data?.data);
+          // setUser(res.data?.data);
           getUser();
+          getLogo();
         }
       })
       .catch(err => {
@@ -137,6 +153,7 @@ export default function Dashboard({role}) {
   };
   useEffect(() => {
     getUser();
+    getLogo();
   }, []);
   useEffect(() => {
     if (location.state?.fromLogin) {
@@ -148,13 +165,12 @@ export default function Dashboard({role}) {
     localStorage.setItem("currentindex", currentIndex);
   }, [currentIndex]);
   useEffect(() => {
-    // localStorage.setItem("currentindex", 0);
     let index = localStorage.getItem("currentindex");
     setIndex(index);
   }, []);
-  useEffect(()=>{
-UpdateProfile()
-  },[photo])
+  useEffect(() => {
+    UpdateProfile();
+  }, [photo]);
 
   return (
     <>
@@ -269,21 +285,20 @@ UpdateProfile()
           <div className="flex flex-col flex-grow border-r border-gray-200 pt-5  overflow-y-auto">
             {/* here you can edit sidebar */}
             <div className="flex items-center justify-center flex-shrink-0 px-4">
-              {user?.role == roles.admin ? (
-                <label
-                  htmlFor="logo"
-                  className="cursor-pointer flex items-center flex-col w-full"
-                >
-                  {user?.webLogo || photo ? (
-                    <img
-                      src={!photo ? user?.webLogo : URL.createObjectURL(photo)}
-                      alt=""
-                      className="w-1/2 rounded-md h-12"
-                    />
-                  ) : (
-                    <img className="h-12 w-1/2" src={logo} alt="Interviewer" />
-                  )}
-                  {/* {photo ? (
+              <label
+                htmlFor="logo"
+                className="cursor-pointer flex items-center flex-col w-full"
+              >
+                {Logo || photo ? (
+                  <img
+                    src={!photo ? Logo : URL.createObjectURL(photo)}
+                    alt=""
+                    className={`w-1/2 ${user.role==roles.admin?"cursor-pointer":""} rounded-md h-12`}
+                  />
+                ) : (
+                  <img className="h-12 w-1/2" src={logo} alt="Interviewer" />
+                )}
+                {/* {photo ? (
                   <button
                     className="w-full h-10 mt-2 text-center bg-purple-600 rounded-md text-white"
                     onClick={() => {
@@ -295,10 +310,7 @@ UpdateProfile()
                 ) : (
                   ""
                 )} */}
-                </label>
-              ) : (
-                <img className="h-12 w-1/2" src={user?.webLogo?user?.webLogo:logo} alt="Interviewer" />
-              )}
+              </label>
             </div>
             <div className="mt-5 flex-grow flex flex-col">
               <nav className="flex-1 px-2 pb-4 space-y-1">
@@ -341,14 +353,18 @@ UpdateProfile()
                   )
                 )}
                 {/* will point to image when click then give upload option */}
-                <input
-                  id="logo"
-                  onChange={e => {
-                    setPhoto(e.target.files[0]);
-                  }}
-                  className="border-1 hidden  rounded-r px-4 py-2 w-full border border-gray-500"
-                  type="file"
-                />
+                {user?.role == roles.admin ? (
+                  <input
+                    id="logo"
+                    onChange={e => {
+                      setPhoto(e.target.files[0]);
+                    }}
+                    className="border-1 hidden  rounded-r px-4 py-2 w-full border border-gray-500"
+                    type="file"
+                  />
+                ) : (
+                  ""
+                )}
               </nav>
             </div>
           </div>

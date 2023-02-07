@@ -5,6 +5,7 @@ import {useEffect} from "react";
 import {useForm} from "react-hook-form";
   import {toast, ToastContainer} from "react-toastify";
   import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../../utils/axiosInstance";
 
 
 function CandidateAdd() {
@@ -38,13 +39,13 @@ function CandidateAdd() {
     formData.append("nationality", data.nationality);
     console.log(formData, "formData");
 
-    axios
-      .post("http://localhost:8000/api/admin/addCandidate", formData)
+    axiosInstance
+      .post("api/admin/addCandidate", formData)
       .then(res => {
         console.log(res, "you know");
         if (res.status === 201) {
           console.log(res, "hmm");
-          navigate("/candidates", {state: {sucess: true}});
+          navigate("/", {state: {sucess: true}});
             toast.success("Candidate added successfully...!", {
               position: toast.POSITION.TOP_CENTER,
             });
@@ -63,6 +64,7 @@ function CandidateAdd() {
   }
   useEffect(() => {
     getCountries();
+    navigate("/")
   }, []);
 
   return (
@@ -70,7 +72,7 @@ function CandidateAdd() {
       {" "}
       {/* bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . */}
       <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
-        <ToastContainer/>
+        <ToastContainer />
         {/* <Header /> */}
         <div className="  bg-blue-50 w-[70%] rounded-2xl">
           <div className=" overflow-hidden ">
@@ -154,7 +156,9 @@ function CandidateAdd() {
                         errors.nationality ? " border border-red-500" : ""
                       } mt-1 px-2 block w-full   sm:w-11/12 sm:px-6 py-2 border   border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm `}
                     >
-                      <option selected>Choose a country</option>
+                      <option selected value="">
+                        Choose a country
+                      </option>
                       {countries?.map(country => (
                         <>
                           <option
@@ -165,6 +169,11 @@ function CandidateAdd() {
                           </option>
                         </>
                       ))}
+                      {errors.nationality?.type == "required" && (
+                        <p role="alert" className="text-red-500">
+                          email is required
+                        </p>
+                      )}
                       {/* 
                       <option value="US">United States</option>
                       <option value="CA">Canada</option>
@@ -239,7 +248,10 @@ function CandidateAdd() {
                       name="cv"
                       id="password"
                       {...register("cv", {required: true})}
-                      onChange={(e)=>{getPdf(e.target.files[0])}}
+                      onChange={e => {
+                        getPdf(e.target.files[0]);
+                      }}
+                      value={""}
                       aria-invalid={errors.password ? "true" : "false"}
                       className={` ${
                         errors.cv ? " border border-red-500" : ""
