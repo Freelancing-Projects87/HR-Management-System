@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler"); ///for not using trycatch block////
 const User = require("../models/UserModel");
+const WebLogo = require("../models/webLogo");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
@@ -218,7 +219,7 @@ const getUsers = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("User Not Found !");
   }
-});
+})
 
 ///login status /login/logout?//////
 const loginStatus = asyncHandler(async (req, res) => {
@@ -287,19 +288,18 @@ const updateUser = asyncHandler(async (req, res) => {
 });
 const updateLogo = asyncHandler(async (req, res) => {
   console.log(req.body, "see");
-  const user = await User.findById(req.body._id);
+  const isLogoExist = await WebLogo.find();
+  console.log(isLogoExist,"seeee");
   let profilePhoto = req?.file
     ? `http://localhost:8000/${req?.file?.path.replace(/\\/g, "/")}`
     : null;
-  if (user) {
+  if (profilePhoto) {
     console.log(req.body, "avaul");
-
-    const {webLogo} = user;
-
-    // user.photo = profilePhoto || photo;
-    user.webLogo = profilePhoto?profilePhoto: webLogo;
-
-    const updatedUser = await user.save();
+    // const weblogo = isLogoExist[0].webLogo;
+    // // user.photo = profilePhoto || photo;
+    let webLogo = profilePhoto;
+if(isLogoExist?.length>0){
+    let updatedUser = await  WebLogo.updateOne({webLogo: webLogo})
     res.status(200).json({
       message: "Logo updated Successfully",
       data: {
@@ -307,9 +307,33 @@ const updateLogo = asyncHandler(async (req, res) => {
         webLogo: updatedUser?.webLogo,
       },
     });
+}else{
+  let updatedUser= WebLogo.create({webLogo: webLogo})
+    res.status(200).json({
+      message: "Logo updated Successfully",
+      data: {
+        _id: updatedUser._id,
+        webLogo: updatedUser?.webLogo,
+      },
+    });
+}
   } else {
-    res.status(404).json("user not Found");
+    res.status(404).json("Please select logo");
     // throw new Error("user not Found");
+  }
+});
+// get weblogo/////////////////////
+const getWebLogo = asyncHandler(async (req, res) => {
+  const webLogo = await WebLogo.find();
+  console.log(webLogo, "logos");
+  if (webLogo) {
+    res.status(200).json({
+      message: "webLogo Data Fetched Successfully!",
+      data: webLogo,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Logo Not Found !");
   }
 });
 
@@ -473,4 +497,5 @@ module.exports = {
   deleteUser,
   storetokenData,
   updateLogo,
+  getWebLogo,
 };
