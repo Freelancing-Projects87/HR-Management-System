@@ -13,6 +13,7 @@ const {
   getUsers,
   deleteUser,
   storetokenData,
+  updateLogo,
 } = require("../controllers/userController");
 const protectApi = require("../middleware/authMiddleware");
 const multer = require("multer");
@@ -48,6 +49,8 @@ router.get("/getusers",protectApi, getUsers);
 router.post("/deleteuser",protectApi, deleteUser);
 router.get("/loggedin",protectApi, loginStatus);
 router.patch("/updateuser",protectApi,upload.single('photo'), updateUser);
+router.patch("/updatlogo", protectApi, upload.single('webLogo'), updateLogo);
+
 router.patch("/changepassword", protectApi, changePassword);
 router.post("/forgotpassword", forgotPassword);
 router.put("/resetPassword/:resetToken", resetPassword);

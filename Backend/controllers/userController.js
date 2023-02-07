@@ -10,29 +10,31 @@ const sendEmail = require("../utils/sendEmail");
 ////User Routes/////
 
 ////JWT SignIn/////
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRECT, { expiresIn: "1d" });
+const generateToken = id => {
+  return jwt.sign({id}, process.env.JWT_SECRECT, {expiresIn: "1d"});
 };
 
 ////RegisterUser Route controller/////////
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email,surname, password, photo, phone, bio,role } = req.body;
-  console.log(req.body,"asd");
+  const {name, email, surname, password, photo, phone, bio, role} = req.body;
+  console.log(req.body, "asd");
   let userRole;
-  if(email=="admin@gmail.com"){
-   userRole="admin"
-  }else{
-    userRole=role
+  if (email == "admin@gmail.com") {
+    userRole = "admin";
+  } else {
+    userRole = role;
   }
   if (!name || !email || !password || !surname) {
-    res.status(400);
-    throw new Error("Please insert all required fields");
+    res.status(400).json({message: "Please insert all required fields"});
+    // throw new Error("Please insert all required fields");
   }
   if (password.length < 6) {
-    res.status(400);
-    throw new Error("Password must be upto 6 letter characters ");
+    res
+      .status(400)
+      .json({message: "Password must be upto 6 letter characters "});
+    // throw new Error("Password must be upto 6 letter characters ");
   }
-  const isUserExist = await User.findOne({ email });
+  const isUserExist = await User.findOne({email});
   if (isUserExist) {
     res.status(400).json("Email Address Already Exists, Please insert new one");
     // throw new Error("Email Address Already Exists, Please insert new one");
@@ -47,7 +49,7 @@ const registerUser = asyncHandler(async (req, res) => {
     phone,
     bio,
     surname,
-   role: userRole
+    role: userRole,
   });
 
   /////Generate Token/////
@@ -63,7 +65,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    const { _id, name, email, photo, phone, bio, role} = user;
+    const {_id, name, email, photo, phone, bio, role} = user;
     res.status(201).send({
       message: "user Created Successfully!",
       data: {
@@ -79,20 +81,20 @@ const registerUser = asyncHandler(async (req, res) => {
       },
     });
   } else {
-    res.status(400);
-    throw new Error("Invalid User Data");
+    res.status(400).json({message: "Invalid User Data"});
+    // throw new Error("Invalid User Data");
   }
-})
+});
 
 ///Login User controller/////////
 const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-  console.log(req.body,"lo");
+  const {email, password} = req.body;
+  console.log(req.body, "lo");
   if (!email || !password) {
     res.status(400);
     // throw new Error("email and password can't be empty");
   }
-  const user = await User.findOne({ email });
+  const user = await User.findOne({email});
 
   //// User doesn't exist///
   if (!user) {
@@ -115,7 +117,7 @@ const loginUser = asyncHandler(async (req, res) => {
   });
 
   if (user && isPasswordCorrect) {
-    const { _id, name, email, photo, phone, bio,role } = user;
+    const {_id, name, email, photo, phone, bio, role} = user;
     res.status(200).json({
       message: "user LoggedIn Successfully!",
       data: {
@@ -126,7 +128,7 @@ const loginUser = asyncHandler(async (req, res) => {
         phone,
         bio,
         token,
-        role
+        role,
       },
     });
   } else {
@@ -136,40 +138,36 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 ///Token controller for user/////////
 const storetokenData = asyncHandler(async (req, res) => {
-  console.log(req.body,"ko");
-var date = new Date();
-
- 
+  console.log(req.body, "ko");
+  var date = new Date();
   try {
-     if (!req.body.token) {
-       res.status(400);
-       throw new Error("user data is required");
-     }
-   const tokenData = await new Token({
-     userId: req.body._id,
-     token: req.body.token,
-     createdAt: Date.now(),
-     expiresAt: date.setDate(date.getDate() + 1), //// 1 expiry time
-   }).save();
-     console.log(tokenData,"tokenData");
-      if (tokenData) {
-        res.status(200).json({
-          message: "token data added sucessfully!",
-          data: {
-           tokenData
-          },
-        });
-      } 
+    if (!req.body.token) {
+      res.status(400);
+      throw new Error("user data is required");
+    }
+    const tokenData = await new Token({
+      userId: req.body._id,
+      token: req.body.token,
+      createdAt: Date.now(),
+      expiresAt: date.setDate(date.getDate() + 1), //// 1 expiry time
+    }).save();
+    console.log(tokenData, "tokenData");
+    if (tokenData) {
+      res.status(200).json({
+        message: "token data added sucessfully!",
+        data: {
+          tokenData,
+        },
+      });
+    }
   } catch (error) {
     console.log(error);
   }
-  
 });
-
 
 //// logout User////
 const logoutUser = asyncHandler(async (req, res) => {
-  console.log(req.user._id,"in login from auth ");
+  console.log(req.user._id, "in login from auth ");
   ////send HTTP-Only cookie///
   res.cookie("access_token", "", {
     path: "/",
@@ -186,11 +184,11 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 ///// get User Info/////
 const getUser = asyncHandler(async (req, res) => {
-  console.log(req.params?.id,"params");
+  console.log(req.params?.id, "params");
   const user = await User.findById(req.params.id);
   console.log(user);
   if (user) {
-    const { _id, name, email, photo, phone, bio,role } = user;
+    const {_id, name, email, photo, phone, bio, role} = user;
     res.status(200).json({
       message: "user Data Fetched Successfully!",
       data: {
@@ -200,22 +198,21 @@ const getUser = asyncHandler(async (req, res) => {
         photo,
         phone,
         bio,
-        role
+        role,
       },
     });
   } else {
     res.status(400);
     throw new Error("User Not Found !");
   }
-})
+});
 const getUsers = asyncHandler(async (req, res) => {
-  const users= await User.find();
-  console.log(users,"users");
+  const users = await User.find();
+  console.log(users, "users");
   if (users) {
     res.status(200).json({
       message: "users Data Fetched Successfully!",
-      data:users
-      ,
+      data: users,
     });
   } else {
     res.status(400);
@@ -236,8 +233,8 @@ const loginStatus = asyncHandler(async (req, res) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRECT);
       // Get user from the token
-     let user = await User.findById(decoded.id).select("-password");
-      res.status(200).json(user)
+      let user = await User.findById(decoded.id).select("-password");
+      res.status(200).json(user);
       console.log(user, "protected user");
     } catch (error) {
       console.log(error);
@@ -253,20 +250,23 @@ const loginStatus = asyncHandler(async (req, res) => {
 
 /////Update User Profile /////
 const updateUser = asyncHandler(async (req, res) => {
-  console.log(req.body,"see");
+  console.log(req.body, "see");
   const user = await User.findById(req.body._id);
-    let profilePhoto =req?.file? `http://localhost:8000/${req?.file?.path.replace(/\\/g, "/")}`:null;
+  let profilePhoto = req?.file
+    ? `http://localhost:8000/${req?.file?.path.replace(/\\/g, "/")}`
+    : null;
   if (user) {
-      console.log(req.body, "avaul");
+    console.log(req.body, "avaul");
 
-    const { name, email, photo, phone, bio,role } = user;
+    const {name, email, photo, phone, bio, role} = user;
     user.email = email;
     user.name = req.body.name || name;
     user.phone = req.body.phone || phone;
-        user.role = req.body.role || role;
-
+    user.role = req.body.role || role;
     user.bio = req.body.bio || bio;
     user.photo = profilePhoto || photo;
+    // user.webLogo = profilePhoto||null;
+    
     const updatedUser = await user.save();
     res.status(200).json({
       message: "User Record Updated Successfully",
@@ -277,6 +277,7 @@ const updateUser = asyncHandler(async (req, res) => {
         phone: updatedUser.phone,
         bio: updatedUser.bio,
         photo: updatedUser.photo,
+        webLogo:updatedUser?.webLogo
       },
     });
   } else {
@@ -284,12 +285,39 @@ const updateUser = asyncHandler(async (req, res) => {
     throw new Error("user not Found");
   }
 });
+const updateLogo = asyncHandler(async (req, res) => {
+  console.log(req.body, "see");
+  const user = await User.findById(req.body._id);
+  let profilePhoto = req?.file
+    ? `http://localhost:8000/${req?.file?.path.replace(/\\/g, "/")}`
+    : null;
+  if (user) {
+    console.log(req.body, "avaul");
+
+    const {webLogo} = user;
+
+    // user.photo = profilePhoto || photo;
+    user.webLogo = profilePhoto?profilePhoto: webLogo;
+
+    const updatedUser = await user.save();
+    res.status(200).json({
+      message: "Logo updated Successfully",
+      data: {
+        _id: updatedUser._id,
+        webLogo: updatedUser?.webLogo,
+      },
+    });
+  } else {
+    res.status(404).json("user not Found");
+    // throw new Error("user not Found");
+  }
+});
 
 ////////changing old password into new///
 const changePassword = asyncHandler(async (req, res) => {
-  console.log(req.body,"reset pass");
+  console.log(req.body, "reset pass");
   const user = await User.findById(req.body._id);
-  const { oldPassword, password } = req.body;
+  const {oldPassword, password} = req.body;
   if (!user) {
     res.status(404);
     throw new Error("User not found, please signup!");
@@ -312,24 +340,24 @@ const changePassword = asyncHandler(async (req, res) => {
       data: [],
     });
   } else {
-    res.status(400);
-    throw new Error("Old Password doesn't match");
+    res.status(400).json({message: "Old Password doesn't match"});
+    // throw new Error("Old Password doesn't match");
   }
 });
 
 ////forgot the password router/////
 const forgotPassword = asyncHandler(async (req, res) => {
-  const { email } = req.body;
-  console.log(req.body,"for forget password ");
+  const {email} = req.body;
+  console.log(req.body, "for forget password ");
   /// CHECK IF EMAIL EXISTS IN DATABASE////
-  const user = await User.findOne({ email });
+  const user = await User.findOne({email});
   if (!user) {
     res.status(404).json("user doesn't exist!");
     // throw new Error("User doesn't exist!");
   }
 
   ////delete token if it exists in database///
-  let isTokenExist = await Token.findOne({ userId: user._id });
+  let isTokenExist = await Token.findOne({userId: user._id});
   if (isTokenExist) {
     await isTokenExist.deleteOne();
   }
@@ -378,8 +406,8 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
 ////reset password router////
 const resetPassword = asyncHandler(async (req, res) => {
-  const { password } = req.body;
-  const { resetToken } = req.params;
+  const {password} = req.body;
+  const {resetToken} = req.params;
 
   ///hashedToken and then compare with stored token into db ////
   let hashedToken = crypto
@@ -388,22 +416,22 @@ const resetPassword = asyncHandler(async (req, res) => {
     .digest("hex");
   const isTokenExist = await Token.findOne({
     token: hashedToken,
-    expiresAt: { $gt: Date.now() },
+    expiresAt: {$gt: Date.now()},
   });
-  
+
   if (!isTokenExist) {
-    console.log('token exist');
+    console.log("token exist");
     res.status(404).json("token not found");
     // throw new Error("Invalid or expired token");
   }
   ///Find the user with id stored into token model///
-  const user = await User.findOne({ _id: isTokenExist.userId });
+  const user = await User.findOne({_id: isTokenExist.userId});
   user.password = password;
   await user.save();
-  res.status(200).json({ message: "Password reset Successfully!", data: {} });
+  res.status(200).json({message: "Password reset Successfully!", data: {}});
 });
 //////////////////delete User api
-const deleteUser=async (req,res)=>{
+const deleteUser = async (req, res) => {
   try {
     User.findByIdAndRemove(
       {_id: mongodb.ObjectId(req.body.id)},
@@ -422,15 +450,14 @@ const deleteUser=async (req,res)=>{
         }
       }
     );
-    
   } catch (err) {
-  console.log(err);
-  res.status(500).json({
-    success: false,
-    message: err.toString(),
-  });
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: err.toString(),
+    });
   }
-}
+};
 
 module.exports = {
   registerUser,
@@ -445,4 +472,5 @@ module.exports = {
   resetPassword,
   deleteUser,
   storetokenData,
+  updateLogo,
 };
