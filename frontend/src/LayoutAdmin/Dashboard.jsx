@@ -1,5 +1,7 @@
 import {Fragment, useState} from "react";
 import {Dialog, Menu, Transition} from "@headlessui/react";
+import {toast, ToastContainer} from "react-toastify";
+
 import logo from "../../src/logo.png";
 import {
   BellIcon,
@@ -33,7 +35,11 @@ function classNames(...classes) {
 
 export default function Dashboard({role}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [currentIndex, setIndex] = useState(localStorage.getItem('currentindex'));
+  const [currentIndex, setIndex] = useState(
+    localStorage.getItem("currentindex")
+  );
+  const [photo, setPhoto] = useState(null);
+  const onSubmit = data => UpdateProfile(data);
 
   const [sideBarData, setSideBarData] = useState([
     {
@@ -81,7 +87,7 @@ export default function Dashboard({role}) {
 
   const navigate = useNavigate();
   function signOut() {
-        localStorage.setItem("currentindex",0);
+    localStorage.setItem("currentindex", 0);
     axiosInstance.get("api/users/logout").then(res => {
       if (res.status == 200) {
         localStorage.removeItem("token");
@@ -105,6 +111,30 @@ export default function Dashboard({role}) {
         console.error(err);
       });
   }
+  // update Logo
+  const UpdateProfile = data => {
+    console.log(data, "profile");
+    let formData = new FormData();
+    formData.append("webLogo", photo);
+    formData.append("_id", user?._id);
+    console.log(formData, "formdata");
+    axiosInstance
+      .patch("api/users/updatlogo", formData)
+      .then(res => {
+        console.log(res, "user is updated", res);
+        if (res.status === 200) {
+          toast.success("Logo Updated successfully!", {
+            position: "top-center",
+          });
+          console.log(res, "res");
+          setUser(res.data?.data);
+          getUser();
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
   useEffect(() => {
     getUser();
   }, []);
@@ -118,10 +148,13 @@ export default function Dashboard({role}) {
     localStorage.setItem("currentindex", currentIndex);
   }, [currentIndex]);
   useEffect(() => {
-        // localStorage.setItem("currentindex", 0);
+    // localStorage.setItem("currentindex", 0);
     let index = localStorage.getItem("currentindex");
     setIndex(index);
   }, []);
+  useEffect(()=>{
+UpdateProfile()
+  },[photo])
 
   return (
     <>
@@ -177,7 +210,11 @@ export default function Dashboard({role}) {
                   </div>
                 </Transition.Child>
                 <div className="flex-shrink-0 flex items-center px-4">
-                  <img className="h-8 w-auto" src={logo} alt="Interviewer" />
+                  <img
+                    className="h-8 w-auto"
+                    src={user?.webLogo ? user.webLogo : logo}
+                    alt="Interviewer"
+                  />
                 </div>
                 <div className="mt-5 flex-1 h-0 overflow-y-auto">
                   <nav className="px-2 space-y-1">
@@ -232,7 +269,36 @@ export default function Dashboard({role}) {
           <div className="flex flex-col flex-grow border-r border-gray-200 pt-5  overflow-y-auto">
             {/* here you can edit sidebar */}
             <div className="flex items-center justify-center flex-shrink-0 px-4">
-              <img className="h-10 w-14 w-auto" src={logo} alt="Workflow" />
+              {user?.role == roles.admin ? (
+                <label
+                  htmlFor="logo"
+                  className="cursor-pointer flex items-center flex-col w-full"
+                >
+                  {user?.webLogo || photo ? (
+                    <img
+                      src={!photo ? user?.webLogo : URL.createObjectURL(photo)}
+                      alt=""
+                      className="w-1/2 rounded-md h-12"
+                    />
+                  ) : (
+                    <img className="h-12 w-1/2" src={logo} alt="Interviewer" />
+                  )}
+                  {/* {photo ? (
+                  <button
+                    className="w-full h-10 mt-2 text-center bg-purple-600 rounded-md text-white"
+                    onClick={() => {
+                      UpdateProfile();
+                    }}
+                  >
+                    Change Logo
+                  </button>
+                ) : (
+                  ""
+                )} */}
+                </label>
+              ) : (
+                <img className="h-12 w-1/2" src={user?.webLogo?user?.webLogo:logo} alt="Interviewer" />
+              )}
             </div>
             <div className="mt-5 flex-grow flex flex-col">
               <nav className="flex-1 px-2 pb-4 space-y-1">
@@ -274,6 +340,15 @@ export default function Dashboard({role}) {
                     </p>
                   )
                 )}
+                {/* will point to image when click then give upload option */}
+                <input
+                  id="logo"
+                  onChange={e => {
+                    setPhoto(e.target.files[0]);
+                  }}
+                  className="border-1 hidden  rounded-r px-4 py-2 w-full border border-gray-500"
+                  type="file"
+                />
               </nav>
             </div>
           </div>

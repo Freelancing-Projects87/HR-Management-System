@@ -12,7 +12,6 @@ function Profile() {
   const [showForm, setShowForm] = useState(false);
   const [token, setToken] = useState(null);
   const location = useLocation();
-
   const [photo, setPhoto] = useState(null);
   const fileref = useRef();
 
@@ -31,7 +30,7 @@ function Profile() {
     watch,
   } = useForm({
     defaultValues: {name: user?.name, phone: user?.phone, email: user?.email},
-  });
+  })
   console.log(errors, "orro");
   const UpdateProfile = data => {
     console.log(data, "updated paswword you know");
@@ -67,7 +66,7 @@ function Profile() {
       .catch(err => {
         console.error(err);
       });
-  };
+  }
   const UpdatePassword = resetData => {
     resetData._id = user._id;
     console.log(resetData, "UpdatePassword");
@@ -228,9 +227,9 @@ function Profile() {
                   <label htmlFor="photo" className="cursor-pointer">
                     {user.photo || photo ? (
                       <img
-                        onClick={() => {
-                          fileref.current.click();
-                        }}
+                        // onClick={() => {
+                        //   fileref.current.click();
+                        // }}
                         src={!photo ? user?.photo : URL.createObjectURL(photo)}
                         alt=""
                         className="w-48 rounded-md h-48"

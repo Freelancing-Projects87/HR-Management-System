@@ -80,6 +80,7 @@ function Profile() {
       })
       .then(res => {
         console.log(res, "user is updated", res);
+
         if (res.status === 200) {
           toast.success("password updated successfully!", {
             position: "top-center",
@@ -93,6 +94,7 @@ function Profile() {
         }
       })
       .catch(err => {
+        toast.error("Old Password doesn't match",{position:"top-center"});
         console.error(err);
       });
   };
