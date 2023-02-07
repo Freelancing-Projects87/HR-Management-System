@@ -91,7 +91,7 @@ function Profile() {
       })
       .catch(err => {
         console.error(err);
-      });
+      })
   };
   const forgetPassword = resetData => {
     // resetData._id = user._id;
@@ -175,7 +175,7 @@ function Profile() {
                 <div className="pb-4">
                   <label
                     for="about"
-                    className="font-semibold text-gray-700 py-2 block px-4 "
+                    className="font-semibold text-gray-700 py-2 block  "
                   >
                     Email
                   </label>
@@ -191,7 +191,7 @@ function Profile() {
                 <div className="pb-4">
                   <label
                     for="about"
-                    className="font-semibold text-gray-700 py-2 block px-4 "
+                    className="font-semibold text-gray-700 py-2 block  "
                   >
                     Phone
                   </label>
@@ -199,7 +199,7 @@ function Profile() {
                     id=""
                     defaultValue={user?.phone}
                     {...register("phone", {required: false})}
-                    className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
+                    className="border-1  rounded-r  py-2 w-full border border-gray-500"
                     type="text"
                   />
                   {errors.phone?.type === "required" && (
@@ -211,9 +211,9 @@ function Profile() {
                 <div className="pb-4">
                   <label
                     for="about"
-                    className="font-semibold text-gray-700 py-2 block px-4 "
+                    className="font-semibold text-gray-700 py-2 block  "
                   >
-                    Photo
+                    Choose Profile Photo
                   </label>
                   <input
                     id="photo"

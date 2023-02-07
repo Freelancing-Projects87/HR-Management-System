@@ -210,7 +210,7 @@ function EditUser() {
                       htmlFor="firstname"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Percentage
+                      Select Role
                     </label>
                     <select
                       {...register("userRole", {required: true})}

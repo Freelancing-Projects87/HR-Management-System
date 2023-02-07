@@ -108,7 +108,7 @@ function CandidateView() {
         .then(res => {
           if (res.status == 200) {
             console.log(res, "quiz result");
-            navigate("/candidates");
+            navigate("/");
             toast.success("Interview added successfully..!", {
               position: toast.POSITION.TOP_CENTER,
             });

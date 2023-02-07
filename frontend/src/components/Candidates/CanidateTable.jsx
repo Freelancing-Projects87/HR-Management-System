@@ -78,7 +78,7 @@ function Candidate() {
           <AiOutlineUserAdd className="ml-2 text-xl" />
         </button>
       </div>
-      <div className="flex flex-col w-[82.3%]  float-right   ">
+      <div className="flex flex-col w-[82.3%]  float-right ">
         <div className="-my-2 overflow-hidden sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden  border-b border-gray-200 sm:rounded-lg">
@@ -87,7 +87,7 @@ function Candidate() {
                   <tr>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Interview
                     </th>
@@ -135,12 +135,12 @@ function Candidate() {
                       recomendation
                     </th>
 
-                    <th
+                    {/* <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Cv
-                    </th>
+                    </th> */}
 
                     {/* <th
                     scope="col"
@@ -175,12 +175,13 @@ function Candidate() {
                   {candidateData &&
                     candidateData.map(candidate => (
                       <tr key={candidate._id} onClick={() => {}}>
-                        <td className="px-6  py-4 whitespace-nowrap">
+                        <td className="px-2  py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="">
                               <div
                                 className={`${
-                                  candidate.recomendation == "SecondInterview"
+                                  candidate?.recomendation ==
+                                    "SecondInterview"  ||!candidate.recomendation
                                     ? ""
                                     : "opacity-30"
                                 } text-sm font-medium text-gray-900`}

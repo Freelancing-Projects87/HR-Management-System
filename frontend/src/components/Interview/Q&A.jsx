@@ -19,10 +19,13 @@ import axiosInstance from "../../utils/axiosInstance";
 function QuestionsAnswers() {
   const location = useLocation();
     const [questions, setQuestionsData] = useState([]);
-  let [quizData, setQuestions] = useState(quizMetadata);
-console.log(quizMetadata, "quizMetadata");
+  let [quizData, setQuestions] = useState([]);
+console.log(quizData, "quizMetadata");
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  let [indexOfQuestion, setIndexes] = useState({firstIndex: 0, lastIndex: quizData?.length-1});
+  let [indexOfQuestion, setIndexes] = useState({
+    firstIndex: 0,
+    lastIndex: quizData?.length-1,
+  });
   const [businessCases, setBusinessCases] = useState([]);
   const [selected, setSelected] = useState([]);
   const [exceldata, setExcelData] = useState({
@@ -150,16 +153,29 @@ console.log(quizMetadata, "quizMetadata");
          if (res.status === 200) {
            console.log(res.data, "question");
            
-           setQuestions(res.data?.data?.map((data)=>{
+           setQuestions(res.data?.data?.map((data,i)=>{
                return {
                  question: data?.question,
                  answer: "",
-                 id: 0,
+                 id: i,
                  percent: data?.percentage.toString(),
                  grade: 0,
                };
-           }));
+           }))
+           
+          
+           setQuestions(data => [
+   ...data,
+   {
+     question: "Business Case",
+     answer: "",
+     id: data?.length,
+     percent: "50%",
+     grade: 0,
+   },
+ ])
          }
+
        })
        .catch(err => {
          console.error(err);
@@ -169,8 +185,21 @@ console.log(quizMetadata, "quizMetadata");
 
    useEffect(() => {
      getQuestions();
+     
      console.log(questions && questions, "question you know");
    }, []);
+   useEffect(()=>{
+//  setQuestions(data => [
+//    ...data,
+//    {
+//      question: "Business Case",
+//      answer: "",
+//      id: quizData?.length,
+//      percent: "50%",
+//      grade: 0,
+//    },
+//  ])
+   },[])
   return (
     <section className="w-[98%] h-[90vh] ml-auto flex">
       <div className="right-video w-[35%] bg-gray-200 h-[90%] flex flex-col items-center justify-start">
@@ -195,7 +224,7 @@ console.log(quizMetadata, "quizMetadata");
               className="text-3xl h-10 w-10  text-blue-500 hover:bg-blue-700 rounded-full"
               onClick={() => {
                 setCurrentQuestion(current =>
-                  current == 0 ? (current = quizData?.length-1) : current - 1
+                  current == 0 ? (current = quizData?.length - 1) : current - 1
                 );
               }}
             />
@@ -204,7 +233,8 @@ console.log(quizMetadata, "quizMetadata");
             <div className="quiz w-[100%]  ">
               {currentQuestion == i ? (
                 <>
-                  {indexOfQuestion.lastIndex == i ? (
+                  {console.log(i, "inside map")}
+                  {quizData?.length-1 == i ? (
                     <>
                       <div className="flex w-full items-center mb-1">
                         {/* <input
@@ -358,7 +388,7 @@ console.log(quizMetadata, "quizMetadata");
               className="text-3xl h-10 w-10 text-blue-500 hover:bg-blue-700 rounded-full"
               onClick={() => {
                 setCurrentQuestion(current =>
-                  current == quizData?.length-1 ? (current = 0) : current + 1
+                  current == quizData?.length - 1 ? (current = 0) : current + 1
                 );
               }}
             />
@@ -379,7 +409,7 @@ console.log(quizMetadata, "quizMetadata");
               ""
             )}
           </div>
-          {currentQuestion == indexOfQuestion.lastIndex ? (
+          {currentQuestion == quizData?.length-1 ? (
             <button
               onClick={() => {
                 saveQuiz(quizData);

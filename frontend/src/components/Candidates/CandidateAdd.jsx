@@ -64,7 +64,7 @@ function CandidateAdd() {
   }
   useEffect(() => {
     getCountries();
-    navigate("/")
+    // navigate("/")
   }, []);
 
   return (
@@ -246,12 +246,10 @@ function CandidateAdd() {
                       type="file"
                       placeholder=""
                       name="cv"
-                      id="password"
                       {...register("cv", {required: true})}
                       onChange={e => {
                         getPdf(e.target.files[0]);
                       }}
-                      value={""}
                       aria-invalid={errors.password ? "true" : "false"}
                       className={` ${
                         errors.cv ? " border border-red-500" : ""

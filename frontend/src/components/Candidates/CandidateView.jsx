@@ -18,6 +18,8 @@ function CandidateView() {
   let [selectedInterview, setSelectedInterview] = useState([]);
   let [averageTotalGrade, setAverageScore] = useState([]);
   const [activeInterview, setActiveInterview] = useState(-1);
+  const [selectedIndex,setSelectedIndex]=useState(0);
+  const [openQuestion, setToggleQuestion] = useState(false);
   let [totalGrade, setGrade] = useState();
   const [averageGrade, setAverageGrade] = useState();
   console.log(averageGrade, "averageGrade");
@@ -94,7 +96,7 @@ function CandidateView() {
 
     setSkills(location.state?.skills);
   }, [location.state]);
-  // console.log(averageGrade, "averageGrade");
+  console.log(selectedInterview, "selectedInterview");
   return (
     <>
       <ToastContainer />{" "}
@@ -193,7 +195,7 @@ function CandidateView() {
         }  w-[85%] ml-auto flex items-center justify-start  bg-white`}
       >
         {/* <Header /> */}
-        <div className="   h-auto pt-1 w-[98%]  ml-auto rounded-2xl">
+        <div className="   h-auto pt-1 w-[98%]  ml-auto rounded-2xl py-12">
           <div class="container mx-auto  ">
             <div>
               <div class="bg-white  relative shadow rounded-md py-18 w-5/6 md:w-5/6  lg:w-11/12 xl:w-full mx-auto">
@@ -237,24 +239,40 @@ function CandidateView() {
                   </div>
 
                   {selectedInterview
-                    ? selectedInterview.map(quiz => (
+                    ? selectedInterview.map((quiz, index) => (
                         <div class=" w-full bg-gray-100  px-2 py-2">
-                          <div className="flex w-full justify-between items-center">
-                            <div className="question bg-blue-500 rounded-md text-white hover:bg-blue-700  p-2 w-full flex justify-between items-center">
-                              <div>{quiz.question}</div>
-                              <div className="flex">
-                                <span className="lml-4">
-                                  {quiz.finalPercentage
-                                    ? quiz.finalPercentage + "%"
-                                    : ""}
-                                </span>{" "}
-                                {quiz.finalPercentage ? (
-                                  <AiFillCheckSquare className="w-8 h-8 text-blue-100" />
-                                ) : (
-                                  ""
-                                )}
+                          <div className="flex w-full justify-between items-center ">
+                            <div className="flex items-center justify-center flex-col w-full">
+                              <div
+                                onClick={() => {
+                                  setSelectedIndex(index);
+                                  setToggleQuestion(!openQuestion);
+                                }}
+                                className="question bg-blue-500 cursor-pointer rounded-md text-white hover:bg-blue-700  p-2 w-full flex justify-between items-center"
+                              >
+                                <div>{quiz.question}</div>
+                                <div className="flex">
+                                  <span className="lml-4">
+                                    {quiz.finalPercentage
+                                      ? quiz.finalPercentage + "%"
+                                      : ""}
+                                  </span>{" "}
+                                  {quiz.finalPercentage ? (
+                                    <AiFillCheckSquare className="w-8 h-8 text-blue-100" />
+                                  ) : (
+                                    ""
+                                  )}
+                                </div>
                               </div>
+                              {selectedIndex == index && openQuestion ? (
+                                <div className="question h-auto cursor-pointer  py-4 bg-gray-300  text-black hover:bg-gray-400  p-2 w-full flex justify-between items-center">
+                                  {quiz.answer}
+                                </div>
+                              ) : (
+                                ""
+                              )}
                             </div>
+
                             <button
                               //   onClick={() => {
                               //     navigate("/grading", {

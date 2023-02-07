@@ -6,12 +6,16 @@ import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "../../utils/axiosInstance";
 import {AiOutlineUser} from "react-icons/ai";
+import {AiFillEye} from "react-icons/ai";
 
 function Profile() {
   const [showForm, setShowForm] = useState(false);
   const [token, setToken] = useState(null);
-  const location = useLocation();
+  const [show, setPasswordShow] = useState(false);
+  const [show2, setPasswordShow2] = useState(false);
+    const [show3, setPasswordShow3] = useState(false);
 
+  const location = useLocation();
   const [photo, setPhoto] = useState(null);
   const fileref = useRef();
 
@@ -71,6 +75,9 @@ function Profile() {
     resetData._id = user._id;
     console.log(resetData, "UpdatePassword");
     const token = localStorage.getItem("token");
+    if (resetData?.confirm_password !== resetData?.password) {
+     return toast.error('password not matched',{position:"top-center"})
+    }
     axiosInstance
       .patch("api/users/changepassword", resetData, {
         headers: {
@@ -85,16 +92,16 @@ function Profile() {
           toast.success("password updated successfully!", {
             position: "top-center",
           });
-          localStorage.removeItem("token")
-          navigate('/login')
-          window.location.reload()
+          localStorage.removeItem("token");
+          navigate("/login");
+          window.location.reload();
           console.log(res, "res");
           // setUser(res.data?.data);
           // getUser();
         }
       })
       .catch(err => {
-        toast.error("Old Password doesn't match",{position:"top-center"});
+        toast.error("Old Password doesn't match", {position: "top-center"});
         console.error(err);
       });
   };
@@ -144,53 +151,98 @@ function Profile() {
   }, []);
   useEffect(() => {}, [location.state, reset]);
   return (
-          <div className={`w-full  md:w-3/5 p-8 bg-white lg:ml-4 shadow-md`}>
-            <form onSubmit={handleSubmit(onSubmit2)}>
-              <div className="rounded  shadow p-6">
-                <div className="pb-6">
-                  <label
-                    for="name"
-                    className="font-semibold text-gray-700 block pb-1"
-                  >Old Password</label>
-                  <div className="flex">
-                    <input
-                      id="name"
-                      {...register("oldPassword", {required: true})}
-                      className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
-                      type="text"
-                    />
-                  </div>
-                  {errors.oldPassword?.type === "required" && (
-                    <p role="alert" className="text-red-500">
-                      oldPassword is required
-                    </p>
-                  )}
-                </div>
-                <div className="pb-4">
-                  <label
-                    for="about"
-                    className="font-semibold text-gray-700 py-2 block px-4 "
-                  >
-                    new Password
-                  </label>
-                  <input
-                    {...register("password", {required: true})}
-                    className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
-                    type="text"
-                  />
-                  {errors.password?.type === "required" && (
-                    <p role="alert" className="text-red-500">
-                      new paswword is required
-                    </p>
-                  )}
-                </div>
+    <div className={`w-full  md:w-3/5 p-8 bg-white lg:ml-4 shadow-md`}>
+      <form onSubmit={handleSubmit(onSubmit2)}>
+        <div className="rounded  shadow p-6">
+          <div className="pb-6 relative">
+            <label
+              for="name"
+              className="font-semibold text-gray-700 block pb-1"
+            >
+              Old Password
+            </label>
+            <div className="flex">
+              <input
+                id="name"
+                {...register("oldPassword", {required: true})}
+                className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
+                type={show3?"text":"password"}
+              />
+            </div>
+            <span
+              onClick={() => {
+                setPasswordShow3(!show3);
+              }}
+              className={` ${
+                show3 ? "border border-gray-400 rounded-xl" : ""
+              } absolute  right-[1%] bottom-[30%] cursor-pointer text-xl`}
+            >
+              <AiFillEye />
+            </span>
+            {errors.oldPassword?.type === "required" && (
+              <p role="alert" className="text-red-500">
+                oldPassword is required
+              </p>
+            )}
+          </div>
+          <div className="pb-6 relative">
+            <label
+              for="about"
+              className="font-semibold text-gray-700 py-2 block  "
+            >
+              New Password
+            </label>
+            <input
+              {...register("password", {required: true})}
+              className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
+              type={`${show ? "text" : "password"}`}
+            />
+            <span
+              onClick={() => {
+                setPasswordShow(!show);
+              }}
+              className={` ${
+                show ? "border border-gray-400 rounded-xl" : ""
+              } absolute  right-[1%] bottom-[30%] cursor-pointer text-xl`}
+            >
+              <AiFillEye />
+            </span>
+            {errors.password?.type === "required" && (
+              <p role="alert" className="text-red-500">
+                New paswword is required
+              </p>
+            )}
+          </div>
+          <div className="pb-6 relative">
+            <label
+              for="about"
+              className="font-semibold text-gray-700 py-2 block  "
+            >
+              Confirm Password
+            </label>
+            <input
+              {...register("confirm_password", {required: true})}
+              type={`${show2 ? "text" : "password"}`}
+              className="border-1  rounded-r px-4 py-2 w-full border border-gray-500"
+            />
+            <span
+              onClick={() => {
+                setPasswordShow2(!show2);
+              }}
+              className={` ${
+                show2 ? "border border-gray-400 rounded-xl" : ""
+              } absolute  right-[1%] bottom-[30%] cursor-pointer text-xl`}
+            >
+              <AiFillEye />
+            </span>
+          </div>
 
-                <button className="border-1 bg-blue-500 text-white hover:bg-blue-700  rounded-r px-4 py-2 w-full border border-gray-500">
-                  Change Password
-                </button>
-              </div>
-            </form>
-          </div> 
+          <button className="border-1 bg-blue-500 text-white hover:bg-blue-700  rounded-r px-4 py-2 w-full border border-gray-500">
+            Change Password
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 
