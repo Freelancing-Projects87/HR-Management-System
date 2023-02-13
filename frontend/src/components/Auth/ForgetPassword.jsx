@@ -4,8 +4,8 @@ import {useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {AiFillEye} from "react-icons/ai";
 import {toast, ToastContainer} from "react-toastify";
-import axiosInstance from "../../utils/axiosInstance";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../../utils/axiosInstance";
 function SignIn() {
   const {
     register,

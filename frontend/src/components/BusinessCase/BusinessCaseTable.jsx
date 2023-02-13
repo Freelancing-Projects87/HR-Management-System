@@ -97,7 +97,26 @@ function BusinessCaseTable() {
    }
   return (
     <>
-      <div className="flex mb-4 ml-2 items-end justify-end w-full ">
+      <div className="flex ml-auto items-end justify-between w-[79.3%] mb-8 ">
+        <button
+          scope="col"
+          className="inline-flex  relative right-12 top-2 items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
+      shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          <input
+            style={{color: "transparent"}}
+            type="file"
+            id="uploadoverall"
+            onChange={handleFileUpload}
+            className="w-1/2 hidden"
+          />
+          <label
+            htmlFor="uploadoverall"
+            className="   rounded-md text-white text-sm cursor-pointer"
+          >
+            Upload Overall
+          </label>
+        </button>
         <button
           onClick={() => {
             navigate("/businesscaseAdd");
@@ -143,7 +162,7 @@ function BusinessCaseTable() {
                     {/* <th scope="col" className="relative px-6 py-3">
                       <span className="sr-only">Edit</span>
                     </th> */}
-                    <th scope="col" className="relative px-6 py-3">
+                    {/* <th scope="col" className="relative px-6 py-3">
                       <input
                         style={{color: "transparent"}}
                         type="file"
@@ -157,7 +176,7 @@ function BusinessCaseTable() {
                       >
                         Upload Overall
                       </label>
-                    </th>
+                    </th> */}
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
