@@ -87,7 +87,7 @@ function Users() {
           <AiOutlineUserAdd className="ml-2 text-xl" />
         </button> */}
       </div>
-      <div className="flex flex-col w-[82.3%]  float-right ">
+      <div className="flex flex-col w-[82.3%]  float-right  fixed left-[17%]  ">
         <div className="-my-2 overflow-hidden sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden  border-b border-gray-200 sm:rounded-lg">
@@ -155,7 +155,7 @@ function Users() {
                             </div>
                           </div>
                         </td>
-                      
+
                         <td className="px-6  py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="">

@@ -79,7 +79,7 @@ function App() {
    }, [])
   
   return (
-    <div className="App">
+    <div className="App  ">
       <ToastContainer />
       <BrowserRouter>
         {isAuthenticUser() ? <Dashboard role={role} /> : ""}
