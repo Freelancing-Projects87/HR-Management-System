@@ -139,11 +139,11 @@ function Profile() {
   }, []);
   useEffect(() => {}, [location.state, reset]);
   return (
-    <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
+    <div className="h-[90vh]  table_resp  flex items-center justify-center  bg-white ">
       <ToastContainer />
       <div className="h-full w-11/12">
         <div className="border-b-2 block md:flex">
-                    <ChangePasssword/>
+          <ChangePasssword />
           <div className={`w-full  md:w-3/5 p-8 bg-white lg:ml-4 shadow-md`}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="rounded  shadow p-6">
@@ -245,8 +245,6 @@ function Profile() {
               </div>
             </form>
           </div>
-      
-      
         </div>
       </div>
     </div>

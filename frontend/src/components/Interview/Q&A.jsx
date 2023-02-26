@@ -18,14 +18,10 @@ import axiosInstance from "../../utils/axiosInstance";
 
 function QuestionsAnswers() {
   const location = useLocation();
-    const [questions, setQuestionsData] = useState([]);
+  const [questions, setQuestionsData] = useState([]);
   let [quizData, setQuestions] = useState([]);
-console.log(quizData, "quizMetadata");
+  console.log(quizData, "quizMetadata");
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  let [indexOfQuestion, setIndexes] = useState({
-    firstIndex: 0,
-    lastIndex: quizData?.length-1,
-  });
   const [businessCases, setBusinessCases] = useState([]);
   const [selected, setSelected] = useState([]);
   const [exceldata, setExcelData] = useState({
@@ -56,7 +52,7 @@ console.log(quizData, "quizMetadata");
   // );
 
   const saveQuiz = data => {
-    console.log(data, location.state,exceldata, "quiz data for db");
+    console.log(data, location.state, exceldata, "quiz data for db");
     if (data[0].percent && data[quizData.length - 1].percent) {
       navigate("/CandidsteSecondQuestion", {
         state: {
@@ -95,7 +91,7 @@ console.log(quizData, "quizMetadata");
           console.log(res.data?.data, "business");
           setBusinessCases(
             res.data?.data.map(d => {
-              return {value: d._id, label: d.bcTitle,excelData:d.excelData};
+              return {value: d._id, label: d.bcTitle, excelData: d.excelData};
             })
           );
         }
@@ -133,73 +129,72 @@ console.log(quizData, "quizMetadata");
       console.log("dataParse", exceldata && exceldata, dataParse[1][1]);
     };
     reader.readAsBinaryString(f);
-  }
+  };
   useEffect(() => {
     console.log(quizData, "location state");
     console.log(gradeArray, "gradeArray");
     console.log();
   }, [quizData]);
-  useEffect(()=>{
-  selected[0] && setExcelData(selected[0]?.excelData);
-
-  },[selected])
+  useEffect(() => {
+    selected[0] && setExcelData(selected[0]?.excelData);
+  }, [selected]);
   useEffect(() => {
     getBusinessCase();
   }, []);
-   const getQuestions = () => {
-     axiosInstance
-       .get("api/admin/getQuestions")
-       .then(res => {
-         if (res.status === 200) {
-           console.log(res.data, "question");
-           
-           setQuestions(res.data?.data?.map((data,i)=>{
-               return {
-                 question: data?.question,
-                 answer: "",
-                 id: i,
-                 percent: data?.percentage.toString(),
-                 grade: 0,
-               };
-           }))
-           
-          
-           setQuestions(data => [
-   ...data,
-   {
-     question: "Business Case",
-     answer: "",
-     id: data?.length,
-     percent: "50%",
-     grade: 0,
-   },
- ])
-         }
+  const getQuestions = () => {
+    axiosInstance
+      .get("api/admin/getQuestions")
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res.data, "question");
 
-       })
-       .catch(err => {
-         console.error(err);
-       });
-   }
-   console.log(questions,"from backend");
+          setQuestions(
+            res.data?.data?.map((data, i) => {
+              return {
+                question: data?.question,
+                answer: "",
+                id: i,
+                percent: data?.percentage.toString(),
+                grade: 0,
+              };
+            })
+          );
 
-   useEffect(() => {
-     getQuestions();
-     
-     console.log(questions && questions, "question you know");
-   }, []);
-   useEffect(()=>{
-//  setQuestions(data => [
-//    ...data,
-//    {
-//      question: "Business Case",
-//      answer: "",
-//      id: quizData?.length,
-//      percent: "50%",
-//      grade: 0,
-//    },
-//  ])
-   },[])
+          setQuestions(data => [
+            ...data,
+            {
+              question: "Business Case",
+              answer: "",
+              id: data?.length,
+              percent: "50%",
+              grade: 0,
+            },
+          ]);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+  console.log(questions, "from backend");
+
+  useEffect(() => {
+    getQuestions();
+
+    console.log(questions && questions, "question you know");
+  }, []);
+  useEffect(() => {
+    //  setQuestions(data => [
+    //    ...data,
+    //    {
+    //      question: "Business Case",
+    //      answer: "",
+    //      id: quizData?.length,
+    //      percent: "50%",
+    //      grade: 0,
+    //    },
+    //  ])
+  }, []);
   return (
     <section className="w-[98%] h-[90vh] ml-auto flex">
       <div className="right-video w-[35%] bg-gray-200 h-[90%] flex flex-col items-center justify-start">
@@ -210,12 +205,12 @@ console.log(quizData, "quizMetadata");
       </div>
       <div className="left-quiz w-[65%] bg-blue-50 h-full flex items-center justify-start flex-col">
         <div className="question w-[80%] mt-12 flex items-center justify-between">
+          <button className="font-2xl bg-gray-300 h-full text-gray-700 font-bold w-[7%] mr-2 h-8 rounded-full  hover:bg-blue-500 hover:text-white">
+            {currentQuestion + 1}
+          </button>
           <p className=" bg-blue-500 text-center py-2 rounded-md text-white w-[97%]">
             {quizData[currentQuestion]?.question}
           </p>
-          <button className="font-2xl bg-gray-300 h-full text-gray-700 font-bold w-[7%] ml-2 h-8 rounded-full">
-            {currentQuestion + 1}
-          </button>
         </div>
 
         <div className="relative quiz w-[80%]  mt-4">
@@ -234,7 +229,7 @@ console.log(quizData, "quizMetadata");
               {currentQuestion == i ? (
                 <>
                   {console.log(i, "inside map")}
-                  {quizData?.length-1 == i ? (
+                  {quizData?.length - 1 == i ? (
                     <>
                       <div className="flex w-full items-center mb-1">
                         {/* <input
@@ -409,7 +404,7 @@ console.log(quizData, "quizMetadata");
               ""
             )}
           </div>
-          {currentQuestion == quizData?.length-1 ? (
+          {currentQuestion == quizData?.length - 1 ? (
             <button
               onClick={() => {
                 saveQuiz(quizData);

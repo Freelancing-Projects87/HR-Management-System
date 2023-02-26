@@ -57,7 +57,7 @@ function Skills() {
           Add New Skill
         </button>
       </div>
-      <div className="flex flex-col w-[82.3%]  float-right fixed left-[17%]  ">
+      <div className="flex flex-col  table_resp  ">
         <div className="-my-2 overflow-hidden sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden  border-b border-gray-200 sm:rounded-lg">

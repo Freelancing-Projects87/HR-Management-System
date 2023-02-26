@@ -11,10 +11,10 @@ import QuizHeader from "./QuizHeader";
 
 function Interview() {
   return (
-    <div className="h-[90vh] w-[85%] ml-auto   bg-white ">
+    <div className="h-[90vh]  table_resp   bg-white ">
       <div className="main-body">
-     <QuizHeader/>
-      <QuestionsAnswers/>
+        <QuizHeader />
+        <QuestionsAnswers />
       </div>
     </div>
   );

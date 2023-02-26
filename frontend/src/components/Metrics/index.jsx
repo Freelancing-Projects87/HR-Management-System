@@ -27,6 +27,7 @@ ChartJS.register(
 
 export const options = {
   responsive: true,
+
   plugins: {
     legend: {
       position: "top",
@@ -34,6 +35,12 @@ export const options = {
     title: {
       display: true,
       text: "Metrics for all Candidates",
+    },
+  },
+  scales: {
+    y: {
+      min: 0,
+      max: 10,
     },
   },
 };
@@ -53,7 +60,7 @@ export default function Metrics() {
     datasets: [
       {
         label: " Candidate grade",
-        data:candidateselected.length>0? candidateselected?.map(cand => cand.averageGrade):[1,2,3,4,5,6,7,8,9,10],
+        data:candidateselected.length>0&&candidateselected?.map(cand => cand.averageGrade),
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
@@ -126,9 +133,9 @@ export default function Metrics() {
 
   return (
     <>
-      <div className="h-[100vh] w-[83%] ml-auto flex items-center justify-center   ">
-        <ToastContainer/>
-        <div className="w-11/12 bg-white relative">
+      <div className="h-[100vh]  table_resp  flex    ">
+        <ToastContainer />
+        <div className="w-11/12 mt-6 bg-white relative">
           <select
             onChange={e => {
               selectedBC(e.target.value);

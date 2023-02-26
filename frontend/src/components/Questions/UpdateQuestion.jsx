@@ -49,7 +49,7 @@ function QuestionAdd() {
     <>
       {" "}
       {/* bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 . */}
-      <div className="h-[90vh] w-[85%] ml-auto flex items-center justify-center  bg-white ">
+      <div className="h-[90vh]  table_resp  flex items-center justify-center  bg-white ">
         <ToastContainer />
         {/* <Header /> */}
         <div className="  bg-blue-50 w-[70%] rounded-2xl">

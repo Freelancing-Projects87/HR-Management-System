@@ -36,10 +36,12 @@ function classNames(...classes) {
 export default function Dashboard({role}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [Logo, setWebLogo] = useState("");
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [dropdownStatus, setDropdown] = useState(localStorage.getItem('dropdown'));
   const [currentIndex, setIndex] = useState(
     localStorage.getItem("currentindex")
   );
+  console.log(isOpen,"is open");
   const [photo, setPhoto] = useState(null);
   const onSubmit = data => UpdateProfile(data);
 
@@ -171,7 +173,10 @@ export default function Dashboard({role}) {
   useEffect(() => {
     UpdateProfile();
   }, [photo]);
+ 
+useEffect(()=>{
 
+},[])
   return (
     <>
       <div className="">
@@ -286,7 +291,7 @@ export default function Dashboard({role}) {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-        <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 ">
+        <div className="hidden md:flex md:w-[16.5%] md:flex-col md:fixed md:inset-y-0 ">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex flex-col flex-grow border-r border-gray-200 pt-5  overflow-y-auto">
             {/* here you can edit sidebar */}
@@ -418,7 +423,11 @@ export default function Dashboard({role}) {
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="ml-3 relative">
-                  <div>
+                  <div
+                    onClick={() => {
+                      setIsOpen(!isOpen);
+                    }}
+                  >
                     <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                       {/* <span className="">{user?.name}</span> */}
                       {user?.photo ? (
@@ -432,61 +441,37 @@ export default function Dashboard({role}) {
                       )}
                     </Menu.Button>
                   </div>
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      {
-                        // userNavigation.map((item) => (
-                        <Menu.Item>
-                          {({active}) => (
-                            <>
-                              <Link
-                                to="#"
-                                className="rounded-md block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
-                              >
-                                <p
-                                  onClick={() => {
-                                    signOut();
-                                  }}
-                                >
-                                  {userNavigation[2].name}
-                                </p>
-                              </Link>
-                              <button
-                                onClick={() => {
-                                  navigate("/profile", {state: user});
-                                  setStyle(false);
-                                  setIndex(-1);
-                                }}
-                                className=" rounded-md block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
-                              >
-                                <p>Profile</p>
-                              </button>
-                              <button
-                                onClick={() => {
-                                  signOut();
-                                  navigate("/forgetpassword", {state: user});
-                                  setStyle(false);
-                                  setIndex(-1);
-                                }}
-                                className=" rounded-md block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
-                              >
-                                <p>Forget Password</p>
-                              </button>
-                            </>
-                          )}
-                        </Menu.Item>
-                        // ))
-                      }
-                    </Menu.Items>
-                  </Transition>
+
+                  <div className={`${isOpen?'':'hidden'} flex flex-col items-start text-start origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none`}>
+                      {/* <Menu.Item> */}
+                        <>
+                          <Link
+                            to="#"
+                            className="rounded-md block px-4 py-2 w-full text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
+                          >
+                            <p
+                              onClick={() => {
+                                signOut();
+                              }}
+                            >
+                              {userNavigation[2].name}
+                            </p>
+                          </Link>
+                          <button
+                            onClick={() => {
+                              navigate("/profile", {state: user});
+                              setStyle(false);
+                              setIndex(-1);
+                              setIsOpen(false)
+                            }}
+                            className=" rounded-md block px-4 py-2  text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
+                          >
+                            <p>Profile</p>
+                          </button>
+                        </>
+                      {/* </Menu.Item> */}
+                 
+                  </div>
                 </Menu>
               </div>
             </div>

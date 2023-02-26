@@ -25,6 +25,7 @@
     "react-toastify": "^9.1.1",
     "read-excel-file": "^5.5.3",
     "toastify": "^2.0.1",
+    "Utils": "^1.0.39",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },

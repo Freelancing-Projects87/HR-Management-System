@@ -6,7 +6,7 @@ import {
   AiOutlineEdit,
   AiFillEye,
 } from "react-icons/ai";
-import {FaPencilAlt} from "react-icons/fa";
+import {FaPencilAlt,FaFileExcel} from "react-icons/fa";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import DeleteModel from "../ModelDelete";
@@ -100,7 +100,7 @@ function BusinessCaseTable() {
       <div className="flex ml-auto items-end justify-between w-[79.3%] mb-8 ">
         <button
           scope="col"
-          className="inline-flex  relative right-12 top-2 items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
+          className="inline-flex items-center justify-between w-36 relative right-12 top-2 items-center px-4  border border-transparent text-sm font-medium rounded-md
       shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           <input
@@ -110,11 +110,13 @@ function BusinessCaseTable() {
             onChange={handleFileUpload}
             className="w-1/2 hidden"
           />
+
+          <FaFileExcel className="text-white h-9" />
           <label
             htmlFor="uploadoverall"
-            className="   rounded-md text-white text-sm cursor-pointer"
+            className="    rounded-md text-white text-sm cursor-pointer"
           >
-            Upload Overall
+            Bulk Upload
           </label>
         </button>
         <button
@@ -128,7 +130,7 @@ function BusinessCaseTable() {
           Add Business Case <AiOutlineBank className="ml-2 text-xl" />
         </button>
       </div>
-      <div className="flex flex-col w-[82.3%]  float-right fixed left-[17%]   ">
+      <div className="flex flex-col  table_resp   ">
         <div className="-my-2  sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow   border-b border-gray-200 sm:rounded-lg">

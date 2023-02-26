@@ -7,6 +7,7 @@ import {
   Router,
   useNavigate,
 } from "react-router-dom";
+import "./App.css"
 import {isAuthenticUser} from "./utils/isAuthenticated";
 import Login from "./components/Auth/SignIn";
 import Signup from "./components/Auth/Signup";
