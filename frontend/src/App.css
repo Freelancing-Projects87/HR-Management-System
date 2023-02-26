@@ -53,11 +53,17 @@
     overflow: scroll;
   }
 }
-@media screen and (min-width: 1000px) {
+@media screen and (max-width: 1000px) {
   .table_resp {
     width: 83%;
     margin-left: auto;
     overflow: scroll;
+  }
+  .sidebar{
+    /* background-color: rgb(10, 10, 10); */
+  }
+  .sidebar p{
+    font-size: 10px;
   }
 }
 @media screen and (min-width: 1120px) {

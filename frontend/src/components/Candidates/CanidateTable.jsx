@@ -7,7 +7,7 @@ import {
   AiOutlineInteraction,
   AiFillEye,
 } from "react-icons/ai";
-import {FaPencilAlt, FaMeetup} from "react-icons/fa";
+import {FaPencilAlt, FaMeetup, FaFileDownload} from "react-icons/fa";
 import axios from "axios";
 import {useNavigate, useLocation} from "react-router-dom";
 import DeleteModel from "../ModelDelete";
@@ -17,6 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 import {AiFillFilePdf, AiFillInteraction} from "react-icons/ai";
 import interview from "../../images/interview.png";
 import axiosInstance from "../../utils/axiosInstance";
+import FileDownload from "js-file-download"
 
 function Candidate() {
   const [candidateData, setCandidateData] = useState([]);
@@ -26,7 +27,7 @@ function Candidate() {
 
   const navigate = useNavigate();
   const location = useLocation();
- 
+
   const getCandidates = () => {
     axiosInstance
       .get("api/admin/getCandidates")
@@ -39,23 +40,46 @@ function Candidate() {
         console.error(err);
       });
   };
-  function checkInterviewd(candidate){
- !candidate.isInterviewed || candidate.recomendation == "SecondInterview"
-   ? navigate("/interview", { 
-       state: {id: candidate._id, isSecondTime: candidate?.recomendation},
-     })
-   : toast.info("Already Interview Taken of This Candidate!", {
-       position: "top-center",
-       autoClose: 5000,
-       hideProgressBar: false,
-       closeOnClick: true,
-       pauseOnHover: true,
-       draggable: true,
-       progress: undefined,
-       theme: "light",
-     });
+  function checkInterviewd(candidate) {
+    !candidate.isInterviewed || candidate.recomendation == "SecondInterview"
+      ? navigate("/interview", {
+          state: {id: candidate._id, isSecondTime: candidate?.recomendation,user:candidate?.firstname},
+        })
+      : toast.info("Already Interview Taken of This Candidate!", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
   }
-      console.log(candidateData && candidateData, "candidateData");
+  function downloadResume(id,candidateName) {
+    console.log(id, "look file ray");
+    axiosInstance
+      .get(`api/admin/getcandidatecv/${id}`, {responseType: "blob"})
+      .then(res => {
+        console.log(res, "ssssss");
+        const blob = new Blob([res.data], {type: res.data.type});
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `${candidateName}_resume`;
+        // link.download = res.headers["content-disposition"].split("filename=")[1];
+        link.click();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    // const url =window.URL.createObjectURL(new Blob(file));
+    // const link =document.createElement('a')
+    // link.href=url;
+    // link.setAttribute('download','resume.pdf')
+    // document.body.appendChild(link);
+    // link.click();
+  }
+  console.log(candidateData && candidateData, "candidateData");
 
   useEffect(() => {
     getCandidates();
@@ -77,7 +101,7 @@ function Candidate() {
           Add New Candidate
           <AiOutlineUserAdd className="ml-2 text-xl" />
         </button>
-      </div> 
+      </div>
       <div className="flex flex-col w-[82.3%]  table_resp ">
         <div className="-my-2  sm:-mx-6 lg:-mx-8 ">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -181,7 +205,8 @@ function Candidate() {
                               <div
                                 className={`${
                                   candidate?.recomendation ==
-                                    "SecondInterview"  ||!candidate.recomendation
+                                    "SecondInterview" ||
+                                  !candidate.recomendation
                                     ? ""
                                     : "opacity-30"
                                 } text-sm font-medium text-gray-900`}
@@ -275,7 +300,12 @@ function Candidate() {
                         <td>
                           <div className="flex items-center">
                             <div className=" cursor-pointer">
-                              <AiFillFilePdf className="h-10 w-10 ml-3 text-red-500" />
+                              <AiFillFilePdf
+                                className="h-10 w-10 ml-3 text-red-500"
+                                onClick={() => {
+                                  downloadResume(candidate?._id,candidate.firstname);
+                                }}
+                              />
                             </div>
                           </div>
                         </td>

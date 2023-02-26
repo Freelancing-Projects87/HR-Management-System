@@ -326,7 +326,7 @@ useEffect(()=>{
               </label>
             </div>
             <div className="mt-5 flex-grow flex flex-col">
-              <nav className="flex-1 px-2 pb-4 space-y-1">
+              <nav className="flex-1 px-2 pb-4 space-y-1  sidebar">
                 {sideBarData?.map((data, index) =>
                   (data.compName == "Business Pipeline" ||
                     data.compName == "Manage Users") &&
@@ -442,35 +442,38 @@ useEffect(()=>{
                     </Menu.Button>
                   </div>
 
-                  <div className={`${isOpen?'':'hidden'} flex flex-col items-start text-start origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none`}>
-                      {/* <Menu.Item> */}
-                        <>
-                          <Link
-                            to="#"
-                            className="rounded-md block px-4 py-2 w-full text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
-                          >
-                            <p
-                              onClick={() => {
-                                signOut();
-                              }}
-                            >
-                              {userNavigation[2].name}
-                            </p>
-                          </Link>
-                          <button
-                            onClick={() => {
-                              navigate("/profile", {state: user});
-                              setStyle(false);
-                              setIndex(-1);
-                              setIsOpen(false)
-                            }}
-                            className=" rounded-md block px-4 py-2  text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
-                          >
-                            <p>Profile</p>
-                          </button>
-                        </>
-                      {/* </Menu.Item> */}
-                 
+                  <div
+                    className={`${
+                      isOpen ? "" : "hidden"
+                    } flex flex-col items-start text-start origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none`}
+                  >
+                    {/* <Menu.Item> */}
+                    <>
+                      <Link
+                        to="#"
+                        className="rounded-md block px-4 py-2 w-full text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
+                      >
+                        <p
+                          onClick={() => {
+                            signOut();
+                          }}
+                        >
+                          {userNavigation[2].name}
+                        </p>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          navigate("/profile", {state: user});
+                          setStyle(false);
+                          setIndex(-1);
+                          setIsOpen(false);
+                        }}
+                        className=" rounded-md block px-4 py-2  text-sm text-gray-700 hover:bg-blue-500 hover:text-white"
+                      >
+                        <p>Profile</p>
+                      </button>
+                    </>
+                    {/* </Menu.Item> */}
                   </div>
                 </Menu>
               </div>
