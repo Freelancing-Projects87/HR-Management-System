@@ -8,6 +8,8 @@ const protectApi = require("../middleware/authMiddleware");
 var mongodb = require("mongodb");
 const {default: mongoose} = require("mongoose");
 const Questions = require("../models/Questions");
+const path=require('path')
+// const img =require('../uploads/photo_1675791125062.JPG')
 
 ////Admin Routes/////
 
@@ -15,7 +17,7 @@ const Questions = require("../models/Questions");
 
 const updateCandidate = async (req, res) => {
   console.log(req.body, "edit data in server");
-  let cv = `http://localhost:8000/cv/${req.file?.filename}`;
+  let cv = `cvs/${req.file?.filename}`;
 
   try {
     console.log(req.body, "edit data in server");
@@ -68,7 +70,7 @@ const addCandidate = async (req, res) => {
     grade,
   } = req.body;
   console.log(req.body, "add data");
-  let cv = `http://localhost:8000/cv/${req.file?.filename}`;
+  let cv = `${req.file?.filename}`;
   if (!firstname || !lastname || !email || !phone) {
     res.status(400);
     throw new Error("Please insert all required fields");
@@ -754,6 +756,28 @@ const getCandidatesInterviews=async(req,res,next)=>{
       });
     }
 }
+const downloadCv=async(req,res,next)=>{
+  try{
+console.log(req.params.id,"see candidate id");
+  Candidate.findById(req.params.id, async (err, data) => {
+    if (err) {
+      console.log(err);
+    }
+    if (!data) {
+      console.log("Data not found");
+      return;
+    } else {
+      console.log(data.cv,"candidate cv");
+      const file = data.cv;
+      const filePath = path.join(__dirname, `../${file}`);
+      console.log(filePath,"hmm");
+      return res.download(filePath);
+    }
+  });
+  }catch(err){
+console.log(err,"see err");
+  }
+}
 // update specific fields intead of pushing in candidate collection
 const adddFieldToCandidate = async (req, res, next) => {
   console.log(req.body, "extra fields");
@@ -862,5 +886,6 @@ module.exports = {
   addQuestion,
   updateQuestion,
   deleteQuestion,
-  getQuestions
+  getQuestions,
+  downloadCv
 };

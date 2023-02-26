@@ -23,6 +23,7 @@ const {
   addskill,
   getCandidatesInterviews,
   addQuestion,
+  downloadCv,
   deleteQuestion,updateQuestion,getQuestions
 } = require("../controllers/adminController");
 const multer = require("multer");
@@ -39,15 +40,27 @@ const storage = multer.diskStorage({
     return cb(
       null,
       `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`
-    );
+    )
   },
 });
-
+const fileFilter = (req, file, cb) => {
+  //reject a file if it's not a jpg or png
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/png" ||
+    file.mimetype === "application/pdf"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
 const upload = multer({
   storage: storage,
   limits: {
     fileSize: 200 * 1024 * 1024,
   },
+  // fileFilter: fileFilter,
 });
 
 router.post("/addCandidate",upload.single('cv'), addCandidate);
@@ -75,7 +88,7 @@ router.post('/addQuestion',addQuestion);
 router.post('/updateQuestion',updateQuestion);
 router.post('/deleteQuestion',deleteQuestion);
 router.get('/getQuestions',getQuestions);
-
+router.get('/getcandidatecv/:id',downloadCv);
 
 
 module.exports = router;
