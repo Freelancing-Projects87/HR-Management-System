@@ -3,15 +3,60 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const userRoute = require("./routes/userRoute");
+const adminRoute = require("./routes/adminRoute");
+const errorHandler = require("./middleware/errorMiddleware");
+const cookieParser = require("cookie-parser");
+const multer = require("multer");
+// const client = require("../frontend/build");
+const path = require("path");
+const dirname = path.resolve();
 
 const app = express();
-
+///middlewares///
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.urlencoded({extended: false}));
+app.use("/uploads", express.static(path.join(dirname, "/uploads")));
 app.use(bodyParser.json());
 
-const PORT = process.env.PORT || 5000;
+// const corsOptions = {
+//   origin: "http://localhost:3000",
+//   credentials: true, //access-control-allow-credentials:true
+//   optionSuccessStatus: 200,
+// };
+// app.use(cors(corsOptions));
+app.use(cors({origin: true, credentials: true}));
 
+////ROUTES Middleware/////
+
+app.use("/api/users", userRoute);
+app.use("/api/admin", adminRoute);
+function errHandler(err, req, res, next) {
+  if (err instanceof multer.MulterError) {
+    res.json({
+      success: 0,
+      message: err.message,
+    });
+  }
+}
+app.use(errHandler);
+///Routes/////
+app.get("/", (req, res) => {
+  res.send("Hello world");
+});
+
+////Error Middleware/////
+app.use(errorHandler);
+
+// // deployment
+// app.use(express.static(path.join(__dirname, "../frontend/build")));
+// app.get("*", function (req, res) {
+//   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+// })
+
+const PORT = process.env.PORT;
+mongoose.set("strictQuery", false);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -19,4 +64,4 @@ mongoose
       console.log("Server is running on port: ", PORT);
     });
   })
-  .catch((err) => console.log(err));
+  .catch(err => console.log(err));
